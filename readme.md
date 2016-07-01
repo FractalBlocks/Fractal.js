@@ -10,6 +10,21 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 
 ## Make your own fractal based app
 
+Install it in your browser:
+
+```
+npm i --save fractal-js
+```
+
+Or in nodejs, browserify, webpack like enviroments:
+
+```
+npm i --save fractal-js
+```
+
+The recomended way is using webpack, please download the [fractal-quickstart]() repo.
+
+
 (TODO)
 
 ## TODOs and roadmap

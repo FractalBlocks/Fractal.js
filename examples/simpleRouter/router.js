@@ -27,3 +27,9 @@ function router({path, module, props, childRoutes}) {
   let child = childRoutes[2].module
   return module({child, props})
 }
+    // let matchedRoute = urlMapper.map(path, {
+    //   '/foo/:id': 1,
+    //   '/test/:id': 2,
+    //   '*': 3,
+    // })
+    // console.log(matchedRoute)

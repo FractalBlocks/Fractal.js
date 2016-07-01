@@ -1,7 +1,7 @@
 {
-  "name": "fractaljs",
+  "name": "fractal-js",
   "version": "0.0.6",
-  "description": "Human-Computer Interfaces (HCI) made simple",
+  "description": "An intuitive framework for building applications and interactive content",
   "main": "index.js",
   "scripts": {
     "compile": "set NODE_ENV=production && webpack --config webpack/dist.config.js --progress",
@@ -15,7 +15,7 @@
   "author": "Carlos Galarza <carloslfu@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/ceotic/Ganko.git"
+    "url": "https://github.com/fractalPlatform/Fractal.js.git"
   },
   "license": "MIT",
   "devDependencies": {
