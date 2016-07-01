@@ -10,10 +10,10 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 
 ## Make your own fractal based app
 
-Install it in your browser:
+Install it in your browser for:
 
 ```
-npm i --save fractal-js
+<script src="dist/fractal.min.js"></script>
 ```
 
 Or in nodejs, browserify, webpack like enviroments:
@@ -29,7 +29,6 @@ The recomended way is using webpack, please download the [fractal-quickstart]() 
 
 ## TODOs and roadmap
 
-- Implent socketioDriver
 - Explore and document the service pattern
 - Put mailboxWithoutRouter/data in lib/services
 - Implement the Router inspired on react-router
