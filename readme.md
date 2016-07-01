@@ -1,7 +1,16 @@
 # Fractal.js
 
-A intuitive framework for building applications and interactive content.
+Build your ideas as simple as possible. Fractal.js is an intuitive framework for building applications and interactive content.
 
+## Why?
+
+- Its clear and concise
+- Shows you powerful patterns that helps you to build small and large apps
+- Your acode are flexible, composable and reausable
+
+## Make your own fractal based app
+
+(TODO)
 
 ## TODOs and roadmap
 
