@@ -22,9 +22,11 @@ Or in nodejs, browserify, webpack like enviroments:
 npm i --save fractal-js
 ```
 
-The recomended way is using webpack, please download the [fractal-quickstart]() repo.
+The recomended way is using webpack, please download the [fractal-quickstart](https://github.com/fractalPlatform/Fractal.js-quickstart) repo.
 
 ### Run the examples
+
+There are many useful examples at examples folder run it with:
 
 ```
 cd fractal-js
@@ -34,8 +36,10 @@ cd fractal-js
 npm general NAME_EXAMPLE
 ```
 
+Some examples needs a backend (e.g. Chat), run it with: `node server`.
 
-(TODO)
+
+(TODO: More)
 
 ## TODOs and roadmap
 
