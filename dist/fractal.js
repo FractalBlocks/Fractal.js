@@ -64,24 +64,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  timetravel: __webpack_require__(62),
 	  log: __webpack_require__(75),
 	  router: __webpack_require__(76),
-	  noChildren: __webpack_require__(89),
+	  service: __webpack_require__(89),
+	  noChildren: __webpack_require__(91),
 	  tasks: {
-	    data: __webpack_require__(90),
-	    fetch: __webpack_require__(91),
-	    socketio: __webpack_require__(92)
+	    data: __webpack_require__(92),
+	    fetch: __webpack_require__(93),
+	    socketio: __webpack_require__(94)
 	  },
 	  drivers: {
-	    view: __webpack_require__(93),
-	    event: __webpack_require__(100),
-	    fetch: __webpack_require__(101), // deprecated!
-	    time: __webpack_require__(102),
-	    load: __webpack_require__(103),
-	    localStorage: __webpack_require__(104),
-	    screenInfo: __webpack_require__(105)
+	    view: __webpack_require__(95),
+	    event: __webpack_require__(102),
+	    fetch: __webpack_require__(103), // deprecated!
+	    time: __webpack_require__(104),
+	    load: __webpack_require__(105),
+	    localStorage: __webpack_require__(106),
+	    screenInfo: __webpack_require__(107)
 	  }
 	}, __webpack_require__(52), {
-	  data: __webpack_require__(107),
-	  css: __webpack_require__(108)
+	  data: __webpack_require__(90),
+	  css: __webpack_require__(109)
 	});
 
 /***/ },
@@ -6209,6 +6210,174 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// abstractions for a service
+	'use strict';
+
+	var F = {
+	  data: __webpack_require__(90),
+	  service: __webpack_require__(89)
+	};
+	var R = {
+	  curry: __webpack_require__(33)
+	};
+
+	// serverName, store, events, init, connect
+	module.exports = function (defObj) {
+
+	  var serverName = defObj.serverName;
+	  var store = defObj.store;
+	  var eventQueue = [];
+
+	  // data is a proxy for store that automatically notify changes
+	  var data = new Proxy(store, {
+	    set: function set(target, name, value) {
+	      target[name] = value;
+	      notify(name);
+	      return true;
+	    }
+	  });
+
+	  var subscribers = -1;
+
+	  var init = R.curry(defObj.init)(data);
+	  var events = defObj.events(data);
+	  defObj.connect = R.curry(defObj.connect)(data);
+
+	  function notify(name) {
+	    for (var subscriber in subscribers) {
+	      var parts = subscriber.split('_');
+	      if (parts[parts.length - 1] === name) {
+	        subscribers[subscriber](data[name]);
+	      }
+	    }
+	  }
+
+	  function notifyAll() {
+	    for (var subscriber in subscribers) {
+	      if (data[subscriber]) {
+	        subscribers[subscriber](data[subscriber]);
+	      }
+	    }
+	  }
+
+	  return {
+	    serverName: serverName,
+	    get: function get(key) {
+	      return data[key];
+	    },
+	    emit: function emit(name, value, success, error) {
+	      if (events[name]) {
+	        if (data.connected) {
+	          events[name](value, success, error);
+	        } else {
+	          eventQueue.push({ name: name, value: value, success: success, error: error });
+	        }
+	      } else {
+	        // no event handler detected
+	      }
+	    },
+	    connect: function connect(socket) {
+	      function success() {
+	        var promises = [];
+	        var ev = undefined;
+	        while (ev = eventQueue.pop()) {
+	          promises.push(new Promise(function (resolve, reject) {
+	            events[ev.name](ev.value, resolve, reject);
+	          }));
+	        }
+	        // TODO: handle errors
+	        Promise.all(promises).then(function () {
+	          return init(function () {
+	            return 0;
+	          }, function () {
+	            return 0;
+	          });
+	        });
+	      }
+
+	      defObj.connect(socket, success);
+	    },
+	    subscribeAll: function subscribeAll(subs) {
+	      // avoid a bug with flyd.on TODO: needs review
+	      if (subs != undefined) {
+	        if (subscribers == -1 && data.state == 'updated') {
+	          // notify all incoming subscribers in the rare case
+	          // that data has updated before subscribers are recolected
+	          subscribers = subs;
+	          notifyAll();
+	        } else {
+	          subscribers = subs;
+	        }
+	      }
+	    }
+	  };
+	};
+
+/***/ },
+/* 90 */
+/***/ function(module, exports) {
+
+	
+	// common fetch utils
+
+	'use strict';
+
+	var fetchObj = function fetchObj(obj) {
+	  var handled = false;
+	  var status = function status(response) {
+	    if (response.status >= 200 && response.status < 300) {
+	      handled = true;
+	      return Promise.resolve(response);
+	    } else {
+	      if (response.status == 401 || response.status == 403) {
+	        obj.error('denied', response.status);
+	      } else {
+	        obj.error('error', response.status);
+	      }
+	      handled = true;
+	      return Promise.reject(new Error(response.statusText));
+	    }
+	  };
+
+	  return fetch(obj.url, obj.options).then(status).then(obj.response).then(obj.success)['catch'](function (err) {
+	    if (!handled) obj.error('netError', err);
+	  });
+	};
+
+	var fetchAll = function fetchAll(objs, success) {
+
+	  var promiseArray = objs.map(function (obj, i) {
+	    var handled = false;
+	    var status = function status(response) {
+	      if (response.status >= 200 && response.status < 300) {
+	        handled = true;
+	        return Promise.resolve(response);
+	      } else {
+	        if (response.status == 401 || response.status == 403) {
+	          obj.error('denied', response.status);
+	        } else {
+	          obj.error('error', response.status);
+	        }
+	        handled = true;
+	        return Promise.reject(new Error(response.statusText));
+	      }
+	    };
+
+	    return fetch(obj.url, obj.options).then(status).then(obj.response);
+	  });
+
+	  return Promise.all(promiseArray).then(success);
+	};
+
+	module.exports = {
+	  fetch: fetchObj,
+	  fetchAll: fetchAll
+	};
+
+/***/ },
+/* 91 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -6231,7 +6400,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 90 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6273,7 +6442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 91 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6338,7 +6507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 92 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6373,7 +6542,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 93 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6386,7 +6555,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var h = __webpack_require__(1);
 
 	// Common snabbdom patch function (convention over configuration)
-	var patch = __webpack_require__(94).init([__webpack_require__(95), __webpack_require__(96), __webpack_require__(97), __webpack_require__(98), __webpack_require__(99)]);
+	var patch = __webpack_require__(96).init([__webpack_require__(97), __webpack_require__(98), __webpack_require__(99), __webpack_require__(100), __webpack_require__(101)]);
 
 	var viewDriver = function viewDriver(selector) {
 	  var patchfn = arguments.length <= 1 || arguments[1] === undefined ? patch : arguments[1];
@@ -6418,7 +6587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 94 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// jshint newcap: false
@@ -6677,7 +6846,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { init: init };
 
 /***/ },
-/* 95 */
+/* 97 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6699,7 +6868,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateClass, update: updateClass };
 
 /***/ },
-/* 96 */
+/* 98 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6741,7 +6910,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateAttrs, update: updateAttrs };
 
 /***/ },
-/* 97 */
+/* 99 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6765,7 +6934,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateProps, update: updateProps };
 
 /***/ },
-/* 98 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6819,7 +6988,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateEventListeners, update: updateEventListeners };
 
 /***/ },
-/* 99 */
+/* 101 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6903,7 +7072,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle };
 
 /***/ },
-/* 100 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6926,7 +7095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 101 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7013,7 +7182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 102 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7115,7 +7284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 103 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7143,7 +7312,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 104 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7178,7 +7347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 105 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7188,7 +7357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	var flyd = __webpack_require__(42);
 
-	var _require = __webpack_require__(106);
+	var _require = __webpack_require__(108);
 
 	var screenInfo = _require.screenInfo;
 
@@ -7235,7 +7404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 106 */
+/* 108 */
 /***/ function(module, exports) {
 
 	// Helper functions taken from https://github.com/garth/snabbdom-material/tree/master/src/helpers
@@ -7273,68 +7442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 107 */
-/***/ function(module, exports) {
-
-	
-	// common fetch utils
-
-	'use strict';
-
-	var fetchObj = function fetchObj(obj) {
-	  var handled = false;
-	  var status = function status(response) {
-	    if (response.status >= 200 && response.status < 300) {
-	      handled = true;
-	      return Promise.resolve(response);
-	    } else {
-	      if (response.status == 401 || response.status == 403) {
-	        obj.error('denied', response.status);
-	      } else {
-	        obj.error('error', response.status);
-	      }
-	      handled = true;
-	      return Promise.reject(new Error(response.statusText));
-	    }
-	  };
-
-	  return fetch(obj.url, obj.options).then(status).then(obj.response).then(obj.success)['catch'](function (err) {
-	    if (!handled) obj.error('netError', err);
-	  });
-	};
-
-	var fetchAll = function fetchAll(objs, success) {
-
-	  var promiseArray = objs.map(function (obj, i) {
-	    var handled = false;
-	    var status = function status(response) {
-	      if (response.status >= 200 && response.status < 300) {
-	        handled = true;
-	        return Promise.resolve(response);
-	      } else {
-	        if (response.status == 401 || response.status == 403) {
-	          obj.error('denied', response.status);
-	        } else {
-	          obj.error('error', response.status);
-	        }
-	        handled = true;
-	        return Promise.reject(new Error(response.statusText));
-	      }
-	    };
-
-	    return fetch(obj.url, obj.options).then(status).then(obj.response);
-	  });
-
-	  return Promise.all(promiseArray).then(success);
-	};
-
-	module.exports = {
-	  fetch: fetchObj,
-	  fetchAll: fetchAll
-	};
-
-/***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports) {
 
 	// A set of css useful function helpers
