@@ -78,11 +78,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    time: __webpack_require__(104),
 	    load: __webpack_require__(105),
 	    localStorage: __webpack_require__(106),
-	    screenInfo: __webpack_require__(107)
+	    screenInfo: __webpack_require__(107),
+	    socketio: __webpack_require__(109)
 	  }
 	}, __webpack_require__(52), {
 	  data: __webpack_require__(90),
-	  css: __webpack_require__(109)
+	  css: __webpack_require__(110)
 	});
 
 /***/ },
@@ -5270,8 +5271,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      er = arguments[1];
 	      if (er instanceof Error) {
 	        throw er; // Unhandled 'error' event
-	      }
-	      throw TypeError('Uncaught, unspecified "error" event.');
+	      } else {
+	          // At least give some kind of context to the user
+	          var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+	          err.context = er;
+	          throw err;
+	        }
 	    }
 	  }
 
@@ -7443,6 +7448,62 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 109 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var flyd = __webpack_require__(42);
+
+	module.exports = function (socket) {
+
+	  var subscribers = -1;
+	  /* In the form: {
+	    listenerName1: [listenerFn1, listenerFn2, ...],
+	    listenerName2: [listenerFn1, listenerFn2, ...],
+	  }
+	  */
+	  var listeners = undefined;
+
+	  function setSubscribers(subs) {
+
+	    listeners = {};
+
+	    for (var subscriber in subs) {
+	      var parts = subscriber.split('_');
+	      var _name = parts[parts.length - 1];
+	      if (listeners[_name]) {
+	        listeners[_name].push(subs[subscriber]);
+	      } else {
+	        listeners[_name] = [subs[subscriber]];
+	      }
+	    }
+	    for (var listenerName in listeners) {
+	      var listenerArr = listeners[listenerName];
+	      if (listenerArr.length > 0) {
+	        socket.removeAllListeners(listenerName);
+	        for (var i = listenerArr.length - 1; i >= 0; i--) {
+	          socket.on(listenerName, listenerArr[i]);
+	        }
+	      }
+	    }
+	  }
+
+	  return {
+	    listener$: null,
+	    attach: function attach(event$) {
+	      this.listener$ = flyd.on(setSubscribers, event$);
+	    },
+	    reattach: function reattach(event$) {
+	      this.listener$ = flyd.on(setSubscribers, event$);
+	    },
+	    dispose: function dispose() {
+	      this.listener$.end(true);
+	    }
+	  };
+	};
+
+/***/ },
+/* 110 */
 /***/ function(module, exports) {
 
 	// A set of css useful function helpers

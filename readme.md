@@ -24,6 +24,16 @@ npm i --save fractal-js
 
 The recomended way is using webpack, please download the [fractal-quickstart]() repo.
 
+### Run the examples
+
+```
+cd fractal-js
+```
+
+```
+npm general NAME_EXAMPLE
+```
+
 
 (TODO)
 
