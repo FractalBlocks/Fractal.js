@@ -9,13 +9,22 @@ let socket = io(serverName, {})
 let engine = F.run({
   root: F.log(require('./chat')),
   tasks: {
+    value: F.tasks.value.task(onValue),
     socket: F.tasks.socketio.task(socket),
   },
   drivers: {
-    view: require('../../lib/drivers/view')('#app'),
-    socket: require('../../lib/drivers/socketio')(socket),
+    view: F.drivers.view('#app'),
+    socket: F.drivers.socketio(socket),
   },
 })
+
+function onValue(server) {
+  // main module can return the serverName as a value via Value Task
+  socket.disconnect()
+  socket = io(server, {})
+  engine.tasks.socket.set(socket)
+  engine.drivers.socket.set(socket)
+}
 
 // If hot module replacement is enabled
 if (module.hot) {

@@ -1,5 +1,15 @@
 # Changes
 
-## V 0.7 (Working in)
+## V 0.0.7
 
-- Add Router module.
+- Add chat example
+- Add service to core
+- Minor bug fixes
+- Add Value Task
+- Add a way to change socket in socketioTask and socketioDriver
+- Engine exposes drivers and tasks
+- Improved chat example
+
+## V 0.0.8 (Working in)
+
+- Add Router module
