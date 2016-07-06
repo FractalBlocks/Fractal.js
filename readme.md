@@ -5,8 +5,17 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 ## Why?
 
 - Its clear and concise
-- Shows you powerful patterns that helps you to build small and large apps
-- Your acode are flexible, composable and reausable
+- Shows powerful patterns that helps you to build small and large apps
+- Your code are flexible, composable and reausable
+
+## Features
+
+- Predefined patterns with all you need for building amazing apps
+- Powerful composing tools
+- Your app code has no side effects
+- A clear and flexible architecture that scales
+- Router module for easely URL integration and server side rendering (Work in progress)
+- Tools for socket.io integration
 
 ## Make your own fractal based app
 
@@ -80,5 +89,5 @@ There are TODOs for medium term:
   - Implement union-type-java
 - Implement fratal-native iOS
   - Implement flyd-swift
-  - Implement nion-type-swift
+  - Implement union-type-swift
   - Implement anvil-ios
