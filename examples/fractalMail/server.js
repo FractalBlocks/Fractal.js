@@ -80,9 +80,9 @@ router.get('/api/emails/email/:uid/read', function *() {
       doc.state = 'read'
       return doc
     })
+    console.log(res)
     if (sockets[0]) {
-      let info = yield getInfo()
-      sockets[0].emit('data', {key: 'info', value: info})
+      sockets[0].emit('data', {key: 'info', value: yield getInfo()})
     }
     this.body = 'updated'
   } catch(e) {

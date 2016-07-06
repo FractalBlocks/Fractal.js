@@ -26,18 +26,6 @@ module.exports = F.def({
     info: {
       pages: 1,
     },
-    senderText: {
-      focused: false,
-      value: '',
-    },
-    titleText: {
-      focused: false,
-      value: '',
-    },
-    contentText: {
-      focused: false,
-      value: '',
-    },
   }),
   load: (ctx, i, Action) => {
     return {
@@ -46,7 +34,6 @@ module.exports = F.def({
     }
   },
   inputs: {
-    textinputChange: (ctx, Action, name, prop, value) => Action.TextinputChange(name, prop, value),
     setSendView: (ctx, Action, value) => Action.SetSendView(value),
     dataChanged: (ctx, Action, dataName, data) => Action.DataChanged(dataName, data),
     changeMessage: (ctx, Action, idx, msg) => [
@@ -69,7 +56,6 @@ module.exports = F.def({
   },
   actions: {
     Identity: [[], R.identity],
-    TextinputChange: [[], (name, prop, value, m) => R.evolve({[name]: R.evolve({[prop]: R.always(value)})}, m)],
     SetSendView: [[R.T], (value, m) => R.evolve({sendView: R.always(value)}, m)],
     DataChanged: [[String, R.T], (dataName, data, m) => R.evolve({[dataName]: R.always(data)}, m)],
     ChangeMessage: [[Number], (idx, m) => R.evolve({
@@ -89,7 +75,7 @@ module.exports = F.def({
             h('div', {style: styles.messageItem.base, on: {click: () => i.changeMessage(idx, msg)}}, [
               h('div', {style: styles.messageItem.title(msg.state == 'read')}, msg.title),
               h('div', {style: styles.messageItem.content}, msg.content.slice(0, 30) + ' ...'),
-              h('div', {style: styles.messageItem.selectionLine.c(m.messageId == idx)}),
+              h('div', {style: styles.messageItem.selectionLine.compute(m.messageId == idx)}),
             ])
           , m.messages)
         ]),
@@ -109,47 +95,26 @@ module.exports = F.def({
             R.map(page => h('option', {style: styles.pagination.option, attrs: {value: page}}, page), R.range(1, m.info.pages + 1))
           ),
           h('div', {style: styles.pagination.countTitle}, ' of ' + m.info.pages),
+          h('div', {style: styles.pagination.countTitle}, ' of ' + m.page),
         ]),
       ]),
       h('div', {style: styles.messageContent}, [
         (m.messageId != -1) ? ctx._md.message.interfaces.view(m.message) : ctx._md.statistics.interfaces.view(m.statistics)
       ]),
-      h('div', {key: '', style: styles.sendView.c(m.sendView)}, [
+      h('div', {key: '', style: styles.sendView.compute(m.sendView)}, [
         h('div', {style: styles.sendView.container}, [
           h('div', {style: styles.sendView.controlGroup}, [
             h('label', {style: styles.sendView.label}, 'Para:'),
-            h('input', {
-              style: styles.sendView.textinput.c(m.senderText.focused),
-              on: {
-                change: ev => i.textinputChange('senderText', 'value', ev.target.value),
-                focus: ev => i.textinputChange('senderText', 'focused', true),
-                blur: ev => i.textinputChange('senderText', 'focused', false),
-              },
-            }),
-            h('span', {style: styles.sendView.sendButton}, 'Enviar'),
+            h('input', {style: styles.sendView.textinput}),
           ]),
           h('div', {style: styles.sendView.controlGroup}, [
             h('label', {style: styles.sendView.label}, 'Asunto:'),
-            h('input', {
-              style: styles.sendView.textinput.c(m.titleText.focused),
-              on: {
-                change: ev => i.textinputChange('titleText', 'value', ev.target.value),
-                focus: ev => i.textinputChange('titleText', 'focused', true),
-                blur: ev => i.textinputChange('titleText', 'focused', false),
-              },
-            }),
+            h('input', {style: styles.sendView.textinput}),
           ]),
-          h('textarea', {
-            style: styles.sendView.textarea.c(m.contentText.focused),
-            on: {
-              change: ev => i.textinputChange('contentText', 'value', ev.target.value),
-              focus: ev => i.textinputChange('contentText', 'focused', true),
-              blur: ev => i.textinputChange('contentText', 'focused', false),
-            },
-          }),
+          h('textarea', {style: styles.sendView.textarea}),
         ]),
       ]),
-      h('div', {key: '', style: styles.showSendViewBtn.c(m.sendView), on: {click: () => i.setSendView(!m.sendView)}}, 'Redactar')
+      h('div', {key: '', style: styles.showSendViewBtn.compute(m.sendView), on: {click: () => i.setSendView(!m.sendView)}}, 'Redactar')
     ]),
     data: (ctx, i, m) => ({
       state: i.dataChanged('state'),
@@ -249,7 +214,7 @@ let styles = {
       selected: {
         width: '100%',
       },
-      c: function(cond) {
+      compute: function(cond) {
         return R.merge(
           this.base,
           cond ? this.selected : {}
@@ -270,14 +235,14 @@ let styles = {
       backgroundColor: 'white',
     },
     visible: {
-      width: '510px',
+      width: '600px',
       height: '400px',
     },
     hidden: {
       width: '0px',
       height: '0px',
     },
-    c: function(sendView) {
+    compute: function(sendView) {
       return R.merge(
         this.base,
         sendView ? this.visible : this.hidden
@@ -290,62 +255,16 @@ let styles = {
     },
     controlGroup: {
       margin: '10px 0px',
-      height: '28px',
     },
     label: {
       fontWeight: 'bold',
-      margin: '0px 10px 0px 0px',
+      margin: '0px 7px 0px 0px',
     },
     textinput: {
-      base: {
-        width: '310px',
-        padding: '2px',
-        fontSize: '16px',
-        border: 'none',
-        borderBottom: '1px solid grey',
-        outline: 'none',
-      },
-      focus: {
-        borderBottom: '2px solid blue',
-      },
-      c: function(focused) {
-        return R.merge(
-          this.base,
-          focused ? this.focus : {}
-        )
-      },
+      padding: '4px',
+      fontSize: '18px',
     },
-    textarea: {
-      base: {
-        resize: 'none',
-        outline: 'none',
-        margin: '12px',
-        padding: '12px',
-        border: '2px solid grey',
-        width: '450px',
-        height: '270px',
-        fontSize: '18px',
-      },
-      focus: {
-        border: '2px solid blue',
-      },
-      c: function(focused) {
-        return R.merge(
-          this.base,
-          focused ? this.focus : {}
-        )
-      },
-    },
-    sendButton: {
-      position: 'absolute',
-      color: 'white',
-      backgroundColor: 'blue',
-      borderRadius: '3px',
-      fontSize: '16px',
-      padding: '5px 10px',
-      width: '70px',
-      marginLeft: '30px',
-    },
+    textarea: {},
   },
   showSendViewBtn: {
     base: {
@@ -360,12 +279,12 @@ let styles = {
       padding: '7px 12px',
     },
     visible: {
-      width: '510px',
+      width: '600px',
     },
     hidden: {
       width: '98px',
     },
-    c: function(sendView) {
+    compute: function(sendView) {
       return R.merge(
         this.base,
         sendView ? this.visible : this.hidden

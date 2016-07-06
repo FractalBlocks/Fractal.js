@@ -5,9 +5,10 @@ const io = require('socket.io-client')
 const realData = require('./data.service') // real data service
 const mockedData = require('./mocked-data.service') // mocked data service
 
-// realData | mockedData, for a real server uncomment socketio
-const data = mockedData
-let socket = {} // io(data.serverName, {})
+// realData | mockedData
+const data = realData
+
+let socket = io(data.serverName, {})
 
 data.connect(socket)
 

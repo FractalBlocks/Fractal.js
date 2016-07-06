@@ -43,10 +43,13 @@ Some examples needs a backend (e.g. Chat), run it with: `node server`.
 
 ## TODOs and roadmap
 
-- Explore and document the service pattern
-- Put mailboxWithoutRouter/data in lib/services
+- Implement an i18n middleware example
+- Implement and document CSS tools for js (PARTIAL)
+- Implement examples and document the service pattern
+- Implement fractalMail example using an IMAP and XMPP client, with OAuth 2.0
 - Implement the Router inspired on react-router
 - Improve and update examples, are very outdated (PARTIAL IMPLEMENTED)
+- Implement and document server side routing example
 - screenInfo as a Global listener(middleware) // maybe deprecated?
 - Separate fractal examples into other git repo, with fractalEngine as module
 - Improve documentation of fractal

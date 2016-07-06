@@ -5,6 +5,7 @@ const F = require('../../lib/')
 const childs = {
   about: require('./about'),
   inbox: require('./inbox'),
+  chat: require('./chat'),
 }
 
 // mailbox taht shows the complexity of constructing a mailbox, compare with the standard mailbox example that uses the router
@@ -16,6 +17,7 @@ module.exports =  F.def({
     connected: false,
     about: childs.about.init({key: 'about'}),
     inbox: childs.inbox.init({key: 'inbox'}),
+    chat: childs.inbox.init({key: 'chat'}),
   }),
   inputs: {
     dataChanged: (ctx, Action, dataName, data) => Action.DataChanged(dataName, data),
@@ -26,6 +28,7 @@ module.exports =  F.def({
     return {
       about: F.createContext(childs.about, {action$: i.childAction('about')}),
       inbox: F.createContext(childs.inbox, {action$: i.childAction('inbox')}),
+      chat: F.createContext(childs.chat, {action$: i.childAction('chat')}),
     }
   },
   actions: {
@@ -40,8 +43,9 @@ module.exports =  F.def({
         h('div', {style: styles.headerRight}, [
           h('div', {style: styles.title}, 'MailboxNoRouter'),
           h('div', {style: styles.tabContainer}, [
-            h('div', {style: styles.tab.c(m.tabName == 'inbox'), on: {click: () => i.changeTab('inbox')}}, 'Inbox'),
-            h('div', {style: styles.tab.c(m.tabName == 'about'), on: {click: () => i.changeTab('about')}}, 'About'),
+            h('div', {style: R.merge(styles.tab, (m.tabName == 'about') ? styles.tabSelected : styles.tabNormal), on: {click: () => i.changeTab('about')}}, 'About'),
+            h('div', {style: R.merge(styles.tab, (m.tabName == 'inbox') ? styles.tabSelected : styles.tabNormal), on: {click: () => i.changeTab('inbox')}}, 'Inbox'),
+            h('div', {style: R.merge(styles.tab, (m.tabName == 'chat') ? styles.tabSelected : styles.tabNormal), on: {click: () => i.changeTab('chat')}}, 'Chat'),
           ]),
         ]),
          // status
@@ -81,6 +85,7 @@ module.exports =  F.def({
       return {
         connected: i.dataChanged('connected'),
         ...F.mergeChild(m.inbox, childs.inbox, 'inbox', 'data', {action$: i.childAction('inbox')}),
+        ...F.mergeChild(m.chat, childs.chat, 'chat', 'data', {action$: i.childAction('chat')}),
       }
     },
   }
@@ -127,24 +132,21 @@ let styles = {
     height: '40px',
   },
   tab: {
-    base: {
-      ...F.css.noSelectable,
-      cursor: 'pointer',
-      padding: '8px',
-      fontSize: '20px',
-      borderRadius: '3px',
-      width: '70px',
-      color: 'black',
-    },
-    c: function(selected) {
-      return R.merge(this.base, selected ? this.selected : {})
-    },
-    selected: {
-      color: '#4452a0',
-    },
-    tabContent: {
-      width: '100%',
-      height: 'calc(100% - 50px)',
-    },
+    ...F.css.noSelectable,
+    cursor: 'pointer',
+    padding: '8px',
+    fontSize: '20px',
+    borderRadius: '3px',
+    width: '70px',
+  },
+  tabNormal: {
+    color: 'black',
+  },
+  tabSelected: {
+    color: '#4452a0',
+  },
+  tabContent: {
+    width: '100%',
+    height: 'calc(100% - 50px)',
   },
 }
