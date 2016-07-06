@@ -33,16 +33,19 @@ cd fractal-js
 ```
 
 ```
-npm general NAME_EXAMPLE
+npm run general NAME_EXAMPLE
 ```
 
-Some examples needs a backend (e.g. Chat), run it with: `node server`.
+Some examples needs a backend (e.g. Chat), run it with: `node server`, see the README of the example you want to run.
 
 
 (TODO: More)
 
 ## TODOs and roadmap
 
+- Implement live examples
+- Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal.js
+- Implement the forms example and document the composing tools
 - Implement an i18n middleware example
 - Implement and document CSS tools for js (PARTIAL)
 - Implement examples and document the service pattern
