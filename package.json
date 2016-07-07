@@ -1,6 +1,6 @@
 {
   "name": "fractal-js",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "An intuitive framework for building applications and interactive content",
   "main": "lib/index.js",
   "scripts": {
@@ -49,9 +49,8 @@
     "webpack": "^1.12.9",
     "webpack-cordova-plugin": "^0.1.5",
     "webpack-dev-server": "^1.14.0",
-    "webpack-merge": "^0.2.0"
-  },
-  "dependencies": {
+    "webpack-merge": "^0.2.0",
+
     "addressbar": "^1.0.2",
     "deep-diff": "^0.3.4",
     "flyd": "^0.2.1",
@@ -62,5 +61,6 @@
     "snabbdom": "^0.2.7",
     "union-type": "^0.1.6",
     "url-mapper": "^1.1.0"
-  }
+  },
+  "dependencies": {}
 }

@@ -20,7 +20,7 @@ module.exports = F.service({
     },
     page: 1,
   },
-  init: function(data, success, err) {
+  init: function(data, emit, success, err) {
     data.state = 'fetching'
     F.data.fetchAll([
       {
@@ -38,7 +38,7 @@ module.exports = F.service({
       success()
     })
   },
-  connect: function(data, socket, success) {
+  connect: function(data, emit, socket, success) {
     socket.on('connect', function(messages) {
       data.connected = true
       success()

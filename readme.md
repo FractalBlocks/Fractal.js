@@ -19,7 +19,9 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 
 ## Make your own fractal based app
 
-Install it in your browser for:
+The recomended way is using webpack, please download the [fractal-quickstart](https://github.com/fractalPlatform/Fractal.js-quickstart) repo.
+
+Or install it in your browser with:
 
 ```
 <script src="dist/fractal.min.js"></script>
@@ -30,8 +32,6 @@ Or in nodejs, browserify, webpack like enviroments:
 ```
 npm i --save fractal-js
 ```
-
-The recomended way is using webpack, please download the [fractal-quickstart](https://github.com/fractalPlatform/Fractal.js-quickstart) repo.
 
 ### Run the examples
 
@@ -60,6 +60,8 @@ Some examples needs a backend (e.g. Chat), run it with: `node server`, see the R
 - Implement examples and document the service pattern
 - Implement fractalMail example using an IMAP and XMPP client, with OAuth 2.0
 - Implement the Router inspired on react-router
+- Implement a test suite
+- Implement examples of test suite
 - Improve and update examples, are very outdated (PARTIAL IMPLEMENTED)
 - Implement and document server side routing example
 - screenInfo as a Global listener(middleware) // maybe deprecated?

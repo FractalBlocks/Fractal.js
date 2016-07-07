@@ -68,22 +68,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  noChildren: __webpack_require__(91),
 	  tasks: {
 	    data: __webpack_require__(92),
-	    fetch: __webpack_require__(93),
-	    socketio: __webpack_require__(94)
+	    value: __webpack_require__(93),
+	    fetch: __webpack_require__(94),
+	    socketio: __webpack_require__(95)
 	  },
 	  drivers: {
-	    view: __webpack_require__(95),
-	    event: __webpack_require__(102),
-	    fetch: __webpack_require__(103), // deprecated!
-	    time: __webpack_require__(104),
-	    load: __webpack_require__(105),
-	    localStorage: __webpack_require__(106),
-	    screenInfo: __webpack_require__(107),
-	    socketio: __webpack_require__(109)
+	    view: __webpack_require__(96),
+	    event: __webpack_require__(103),
+	    fetch: __webpack_require__(104), // deprecated!
+	    time: __webpack_require__(105),
+	    load: __webpack_require__(106),
+	    localStorage: __webpack_require__(107),
+	    screenInfo: __webpack_require__(108),
+	    socketio: __webpack_require__(110)
 	  }
 	}, __webpack_require__(52), {
 	  data: __webpack_require__(90),
-	  css: __webpack_require__(110)
+	  css: __webpack_require__(111)
 	});
 
 /***/ },
@@ -793,6 +794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ctx: ctx,
 	    inputs: module.inputs,
 	    tasks: engineDef.tasks,
+	    drivers: engineDef.drivers,
 	    reattach: reattach,
 	    dispose: dispose
 	  };
@@ -5271,12 +5273,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      er = arguments[1];
 	      if (er instanceof Error) {
 	        throw er; // Unhandled 'error' event
-	      } else {
-	          // At least give some kind of context to the user
-	          var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
-	          err.context = er;
-	          throw err;
-	        }
+	      }
+	      throw TypeError('Uncaught, unspecified "error" event.');
 	    }
 	  }
 
@@ -6244,9 +6242,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var subscribers = -1;
 
-	  var init = R.curry(defObj.init)(data);
 	  var events = defObj.events(data);
-	  defObj.connect = R.curry(defObj.connect)(data);
+	  function emit(name, value, cbObj) {
+	    if (events[name]) {
+	      if (data.connected) {
+	        events[name](value, cbObj);
+	      } else {
+	        eventQueue.push({ name: name, value: value, cbObj: cbObj });
+	      }
+	    } else {
+	      // no event handler detected
+	    }
+	  }
+	  var init = R.curry(defObj.init)(data, emit);
+	  defObj.connect = R.curry(defObj.connect)(data, emit);
 
 	  function notify(name) {
 	    for (var subscriber in subscribers) {
@@ -6270,17 +6279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    get: function get(key) {
 	      return data[key];
 	    },
-	    emit: function emit(name, value, success, error) {
-	      if (events[name]) {
-	        if (data.connected) {
-	          events[name](value, success, error);
-	        } else {
-	          eventQueue.push({ name: name, value: value, success: success, error: error });
-	        }
-	      } else {
-	        // no event handler detected
-	      }
-	    },
+	    emit: emit,
 	    connect: function connect(socket) {
 	      function success() {
 	        var promises = [];
@@ -6431,7 +6430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return 0;
 	        } : _ref$error;
 
-	        emitData(key, value, success, error);
+	        emitData(key, value, { success: success, error: error });
 	      }
 	    });
 
@@ -6448,6 +6447,39 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 93 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Type = __webpack_require__(10);
+	var R = {
+	  T: __webpack_require__(63)
+	};
+
+	module.exports = {
+	  types: Type({
+	    send: [String]
+	  }),
+	  task: function task(sendValue) {
+	    var taskFn = this.types.caseOn({
+	      send: function send(value) {
+	        sendValue(value);
+	      }
+	    });
+
+	    // task runner
+	    return {
+	      run: function run(task) {
+	        // perform side effect
+	        taskFn(task, '');
+	      },
+	      get: {}
+	    };
+	  }
+	};
+
+/***/ },
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6512,7 +6544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6524,30 +6556,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = {
 	  types: Type({
-	    emit: [String, R.T]
+	    emit: [String, R.T, R.T]
 	  }),
-	  task: function task(socket, cb) {
+	  task: function task(s) {
+	    var socket = s;
 	    var taskFn = this.types.caseOn({
 	      emit: function emit(channel, message) {
-	        socket.emit(channel, message);
+	        var success = arguments.length <= 2 || arguments[2] === undefined ? function () {} : arguments[2];
+
+	        socket.emit(channel, message, success);
 	      }
 	    });
-	    if (cb) {
-	      cb(socket);
-	    }
 	    // task runner
 	    return {
 	      run: function run(task) {
 	        // perform side effect
 	        taskFn(task, '');
 	      },
-	      get: socket
+	      get: socket,
+	      set: function set(s) {
+	        socket = s;
+	      }
 	    };
 	  }
 	};
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6560,7 +6595,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var h = __webpack_require__(1);
 
 	// Common snabbdom patch function (convention over configuration)
-	var patch = __webpack_require__(96).init([__webpack_require__(97), __webpack_require__(98), __webpack_require__(99), __webpack_require__(100), __webpack_require__(101)]);
+	var patch = __webpack_require__(97).init([__webpack_require__(98), __webpack_require__(99), __webpack_require__(100), __webpack_require__(101), __webpack_require__(102)]);
 
 	var viewDriver = function viewDriver(selector) {
 	  var patchfn = arguments.length <= 1 || arguments[1] === undefined ? patch : arguments[1];
@@ -6592,7 +6627,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// jshint newcap: false
@@ -6851,7 +6886,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { init: init };
 
 /***/ },
-/* 97 */
+/* 98 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6873,7 +6908,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateClass, update: updateClass };
 
 /***/ },
-/* 98 */
+/* 99 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6915,7 +6950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateAttrs, update: updateAttrs };
 
 /***/ },
-/* 99 */
+/* 100 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6939,7 +6974,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateProps, update: updateProps };
 
 /***/ },
-/* 100 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6993,7 +7028,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateEventListeners, update: updateEventListeners };
 
 /***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7077,7 +7112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle };
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7100,7 +7135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7187,7 +7222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7289,7 +7324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7317,7 +7352,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7352,7 +7387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 107 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7362,7 +7397,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	var flyd = __webpack_require__(42);
 
-	var _require = __webpack_require__(108);
+	var _require = __webpack_require__(109);
 
 	var screenInfo = _require.screenInfo;
 
@@ -7409,7 +7444,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports) {
 
 	// Helper functions taken from https://github.com/garth/snabbdom-material/tree/master/src/helpers
@@ -7447,14 +7482,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 109 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var flyd = __webpack_require__(42);
 
-	module.exports = function (socket) {
+	module.exports = function (s) {
+
+	  var socket = s;
 
 	  var subscribers = -1;
 	  /* In the form: {
@@ -7477,6 +7514,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        listeners[_name] = [subs[subscriber]];
 	      }
 	    }
+
+	    setListeners();
+	  }
+
+	  function setListeners() {
 	    for (var listenerName in listeners) {
 	      var listenerArr = listeners[listenerName];
 	      if (listenerArr.length > 0) {
@@ -7498,12 +7540,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    dispose: function dispose() {
 	      this.listener$.end(true);
+	    },
+	    get: function get() {
+	      return socket;
+	    },
+	    set: function set(s) {
+	      socket = s;
+	      setListeners();
 	    }
 	  };
 	};
 
 /***/ },
-/* 110 */
+/* 111 */
 /***/ function(module, exports) {
 
 	// A set of css useful function helpers

@@ -9,6 +9,8 @@ let pageSize = 50
 
 let messages = getInitialMessages()
 
+let messagesReceivedCb = () => 0
+
 module.exports = F.service({
   serverName,
   store: {
@@ -22,7 +24,7 @@ module.exports = F.service({
     },
     page: 1,
   },
-  init: function(data, success, err) {
+  init: function(data, emit, success, err) {
     data.state = 'fetching'
     setTimeout(function() {
       data.info = getInfo()
@@ -31,14 +33,17 @@ module.exports = F.service({
       success()
     }, 500)
   },
-  connect: function(data, socket, success) {
+  connect: function(data, emit, socket, success) {
     setTimeout(function() {
       data.connected = true
       success()
     }, 500)
+    messagesReceivedCb = function() {
+      emit('pageChanged', data.page, {}) // simulates websocket subscription
+    }
   },
   events: data => ({
-    pageChanged: function(page, success, error) {
+    pageChanged: function(page, {success, error}) {
       data.state = 'fetching'
       setTimeout(function() {
         data.page = page
@@ -47,7 +52,7 @@ module.exports = F.service({
         success()
       }, 200)
     },
-    messageRead: function(uid, success, error) {
+    messageRead: function(uid, {success, error}) {
       setTimeout(() => {
         for (let i = messages.length - 1; i >= 0; i--) {
           if (messages[i]._id ===  uid) {
@@ -56,6 +61,14 @@ module.exports = F.service({
             break
           }
         }
+        success()
+      }, 200)
+    },
+    newMessage: function(msg, {success, error}) {
+      setTimeout(() => {
+        msg._id = generateId('fractalplatform@gmail.com', msg.title.toLowerCase())
+        messages.unshift(msg)
+        messagesReceivedCb() // maock websocket
         success()
       }, 200)
     },

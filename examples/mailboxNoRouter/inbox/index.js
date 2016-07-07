@@ -120,6 +120,8 @@ module.exports = F.def({
             h('label', {style: styles.sendView.label}, 'Para:'),
             h('input', {
               style: styles.sendView.textinput.c(m.senderText.focused),
+              attrs: { disabled: 'disabled'},
+              props: {value: 'fractalplatform@gmail.com'},
               on: {
                 change: ev => i.textinputChange('senderText', 'value', ev.target.value),
                 focus: ev => i.textinputChange('senderText', 'focused', true),
