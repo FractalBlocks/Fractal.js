@@ -1,8 +1,8 @@
 {
   "name": "fractal-js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "An intuitive framework for building applications and interactive content",
-  "main": "lib/index.js",
+  "main": "dist/fractal.js",
   "scripts": {
     "compile": "set NODE_ENV=production && webpack --config webpack/dist.config.js --progress",
     "compile-dev": "set NODE_ENV=production && webpack --config webpack/dist-dev.config.js --progress",

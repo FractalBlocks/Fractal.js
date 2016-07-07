@@ -8,7 +8,8 @@ module.exports = {
       path: './dist',
       filename: 'fractal.js',
       libraryTarget: 'umd',
-      library: 'fractalEngine',
+      library: 'fractal',
+      umdNamedDefine: true
   },
   module: {
     loaders: [

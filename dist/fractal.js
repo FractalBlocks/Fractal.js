@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
+		define("fractal", [], factory);
 	else if(typeof exports === 'object')
-		exports["fractalEngine"] = factory();
+		exports["fractal"] = factory();
 	else
-		root["fractalEngine"] = factory();
+		root["fractal"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
