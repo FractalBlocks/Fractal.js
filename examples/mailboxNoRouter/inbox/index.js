@@ -38,6 +38,7 @@ module.exports = F.def({
       focused: false,
       value: '',
     },
+    dialogMsgSended: false,
   }),
   load: (ctx, i, Action) => {
     return {
@@ -46,6 +47,7 @@ module.exports = F.def({
     }
   },
   inputs: {
+    send: (ctx, Action, _) => Action.Send(),
     textinputChange: (ctx, Action, name, prop, value) => Action.TextinputChange(name, prop, value),
     setSendView: (ctx, Action, value) => Action.SetSendView(value),
     dataChanged: (ctx, Action, dataName, data) => Action.DataChanged(dataName, data),
@@ -69,6 +71,14 @@ module.exports = F.def({
   },
   actions: {
     Identity: [[], R.identity],
+    Send: [[], R.evolve({
+      titleText: R.evolve({
+        value: R.always(''),
+      }),
+      contentText: R.evolve({
+        value: R.always(''),
+      }),
+    })],
     TextinputChange: [[], (name, prop, value, m) => R.evolve({[name]: R.evolve({[prop]: R.always(value)})}, m)],
     SetSendView: [[R.T], (value, m) => R.evolve({sendView: R.always(value)}, m)],
     DataChanged: [[String, R.T], (dataName, data, m) => R.evolve({[dataName]: R.always(data)}, m)],
@@ -122,18 +132,14 @@ module.exports = F.def({
               style: styles.sendView.textinput.c(m.senderText.focused),
               attrs: { disabled: 'disabled'},
               props: {value: 'fractalplatform@gmail.com'},
-              on: {
-                change: ev => i.textinputChange('senderText', 'value', ev.target.value),
-                focus: ev => i.textinputChange('senderText', 'focused', true),
-                blur: ev => i.textinputChange('senderText', 'focused', false),
-              },
             }),
-            h('span', {style: styles.sendView.sendButton}, 'Enviar'),
+            h('span', {style: styles.sendView.sendButton, on: {click: i.send}}, 'Enviar'),
           ]),
           h('div', {style: styles.sendView.controlGroup}, [
             h('label', {style: styles.sendView.label}, 'Asunto:'),
             h('input', {
               style: styles.sendView.textinput.c(m.titleText.focused),
+              props: {value: m.titleText.value},
               on: {
                 change: ev => i.textinputChange('titleText', 'value', ev.target.value),
                 focus: ev => i.textinputChange('titleText', 'focused', true),
@@ -143,6 +149,7 @@ module.exports = F.def({
           ]),
           h('textarea', {
             style: styles.sendView.textarea.c(m.contentText.focused),
+            props: {value: m.contentText.value},
             on: {
               change: ev => i.textinputChange('contentText', 'value', ev.target.value),
               focus: ev => i.textinputChange('contentText', 'focused', true),
@@ -152,6 +159,7 @@ module.exports = F.def({
         ]),
       ]),
       h('div', {key: '', style: styles.showSendViewBtn.c(m.sendView), on: {click: () => i.setSendView(!m.sendView)}}, 'Redactar')
+      h('div', {key: '', style: styles.dialogMsgSended.c(m.dialogMsgSended), on: {click: () => i.setSendView(!m.sendView)}}, 'Redactar')
     ]),
     data: (ctx, i, m) => ({
       state: i.dataChanged('state'),

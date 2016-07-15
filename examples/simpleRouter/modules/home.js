@@ -6,13 +6,13 @@ const h = F.h
 module.exports = F.def({
   init: ({key}) => ({
     key,
-    color: 'red',
+    color: 'green',
   }),
   inputs: {
     toggleColor: (ctx, Action, _) => Action.ToggleColor(),
   },
   actions: {
-    ToggleColor: [[], m => R.evolve({color: c => (c == 'red') ? 'blue' : 'red'}, m)],
+    ToggleColor: [[], m => R.evolve({color: c => (c == 'green') ? 'grey' : 'green'}, m)],
   },
   interfaces: {
     view: (ctx, i, m) => h('div', [

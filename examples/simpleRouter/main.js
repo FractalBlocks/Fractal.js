@@ -3,38 +3,34 @@ const F = require('../../lib')
 const h = F.h
 
 
-module.exports = ({child = F.nochild, props = {}}) => F.def({
+module.exports = F.def({
   init: ({key}) => ({
     key,
-    selectedPage: -1,
+    selectedPage: '',
     text: '',
     messages: [],
-    childState: child.init({key: 'child'}),
   }),
   inputs: {
-    changePage: (ctx, Action, page) => Action.ChangePage(page),
-    childInput: (ctx, Action, a) => Action.ChildAction(a),
-  },
-  load: (ctx, i, Action) => {
-    return {
-      child: F.createContext(child, {action$: i.childInput}),
-    }
+    changePage: (ctx, Action, page) => [
+      Action.ChangePage(page),
+      ['router', F.router.types.navigateTo(page)],
+    ]
   },
   actions: {
-    ChangePage: [[Number], (page, m) => R.evolve({selectedPage: R.always(page)}, m)],
-    ChildAction: [[Array], (a, m) => R.evolve({childState: child.update(a)}, m)],
+    ChangePage: [[String], (page, m) => R.evolve({selectedPage: R.always(page)}, m)],
   },
   interfaces: {
     view: (ctx, i, m) => h('div', [
-      h('div', {style: styles.title}, 'Fractal - SimpleRouter'),
+      h('div', {style: styles.title, on: {click: () => i.changePage('')}}, 'Fractal - SimpleRouter'),
       h('div', {style: styles.mainContainer}, [
         h('div', {style: styles.sidemenu.base}, [
-          h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage(0)}}, 'Page 0'),
-          h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage(1)}}, 'Page 1'),
-          h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage(2)}}, 'Page 2'),
-          h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage(3)}}, 'Page 3'),
+          h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage('page0')}}, 'Page 0'),
+          h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage('page1')}}, 'Page 1'),
+          h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage('page2')}}, 'Page 2'),
         ]),
-        h('div', {style: styles.childContainer}, [ctx._md.child.interfaces.view(m.childState)]),
+        h('div', {style: styles.childContainer}, [
+          F.router.children(ctx, m),
+        ]),
       ]),
     ]),
   },

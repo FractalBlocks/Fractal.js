@@ -75,7 +75,7 @@ module.exports =  F.def({
           h('span', {style: styles.statusText}, ((m.connected) ? 'Online' : 'Offline')),
         ]),
       ]),
-      h('div', {style: styles.tabContent}, [ctx._md[m.tabName].interfaces.view(m[m.tabName])]),
+      h('div', {style: styles.tab.content}, [ctx._md[m.tabName].interfaces.view(m[m.tabName])]),
     ]),
     data: (ctx, i, m) => {
       return {
@@ -142,7 +142,7 @@ let styles = {
     selected: {
       color: '#4452a0',
     },
-    tabContent: {
+    content: {
       width: '100%',
       height: 'calc(100% - 50px)',
     },

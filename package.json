@@ -1,6 +1,6 @@
 {
   "name": "fractal-js",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "An intuitive framework for building applications and interactive content",
   "main": "dist/fractal.js",
   "scripts": {

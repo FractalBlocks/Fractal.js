@@ -15,6 +15,8 @@
 - Working in new examples and documentation
 - Improved services
 
-## V 0.0.10 (Working in)
+## V 0.0.10
 
 - Add Router module
+- Add free-style to core and some utilities
+- fixed playground errors
