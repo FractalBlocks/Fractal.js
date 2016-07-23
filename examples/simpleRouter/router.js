@@ -9,9 +9,10 @@ const page2 = require('./modules/page2')
 
 module.exports = F.router.def({path: '/', module: main, props: {}, childRoutes: [
   {path: '/', module: home, props: {}},
-  {path: 'page0', module: page0, props: {}, childRoutes: [
-    {path: '/', module: home, props: {}},
-  ]},
+  {path: 'page0', module: page0, props: {}},
   {path: 'page1', module: page1, props: {}},
   {path: 'page2', module: page2, props: {}},
+  {path: 'main/', module: main, props: {}, childRoutes: [
+    {path: '/', module: home, props: {}},
+  ]},
 ]})

@@ -38,7 +38,7 @@ module.exports = F.def({
       focused: false,
       value: '',
     },
-    dialogMsgSended: false,
+    // dialogMsgSended: false, //  TODO: evaluate implementation
   }),
   load: (ctx, i, Action) => {
     return {
@@ -158,8 +158,8 @@ module.exports = F.def({
           }),
         ]),
       ]),
-      h('div', {key: '', style: styles.showSendViewBtn.c(m.sendView), on: {click: () => i.setSendView(!m.sendView)}}, 'Redactar')
-      h('div', {key: '', style: styles.dialogMsgSended.c(m.dialogMsgSended), on: {click: () => i.setSendView(!m.sendView)}}, 'Redactar')
+      h('div', {key: '', style: styles.showSendViewBtn.c(m.sendView), on: {click: () => i.setSendView(!m.sendView)}}, 'Redactar'),
+      // h('div', {key: '', style: styles.dialogMsgSended.c(m.dialogMsgSended), on: {click: () => i.setSendView(!m.sendView)}}, 'Redactar'),
     ]),
     data: (ctx, i, m) => ({
       state: i.dataChanged('state'),

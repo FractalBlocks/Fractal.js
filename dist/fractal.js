@@ -4525,9 +4525,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var children = function children(ctx, m) {
-	  return ctx._md.childModules[m.childName] ? ctx._md.childModules[m.childName].interfaces.view(m.childStates[m.childName]) : function () {
-	    return 0;
-	  };
+	  return ctx._md.childModules && ctx._md.childModules[m.childName] ? ctx._md.childModules[m.childName].interfaces.view(m.childStates[m.childName]) : '';
 	};
 
 	module.exports = _extends({
@@ -4559,7 +4557,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// TODO: inyeccion de datos con router, esto seria genial: modelo -> router -> app , elimina los globales!!!
 
-	module.exports = function (_ref) {
+	function route(_ref) {
 	  var path = _ref.path;
 	  var module = _ref.module;
 	  var props = _ref.props;
@@ -4568,7 +4566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var urlPath = '';
 	  var childs = {};
 
-	  for (var i = 0, childRoute = undefined; childRoute = childRoutes[i]; i++) {
+	  for (var i = 0, childRoute = undefined, moduleTemp = undefined; childRoute = childRoutes[i]; i++) {
 	    childs[childRoute.path] = childRoute.module;
 	  }
 
@@ -4576,7 +4574,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    init: function init(_ref2) {
 	      var key = _ref2.key;
 	      return _extends({
-	        childName: '',
+	        childName: '/',
 	        childStates: R.mapObjIndexed(function (child, name) {
 	          return child.init({ key: name });
 	        }, childs)
@@ -4619,7 +4617,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  });
 	  return routerDef;
-	};
+	}
+
+	module.exports = route;
 
 	// let matchedRoute = urlMapper.map(path, {
 	//   '/foo/:id': 1,
@@ -6334,7 +6334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  addressbar.addEventListener('change', function (ev) {
 	    ev.preventDefault();
 	    var url = new URL(ev.target.value);
-	    var path = url.pathname == '/' && url.hash != '' ? url.hash.slice(1) : url.pathname;
+	    var path = url.pathname == '/' && url.hash != '' ? url.hash.slice(1) : url.pathname == '' ? '/' : url.pathname;
 	    for (var subscriber in subscribers) {
 	      subscribers[subscriber](path);
 	    }
@@ -6368,6 +6368,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Type = __webpack_require__(7);
 	var addressbar = __webpack_require__(78);
 
+	function getParentPath(path) {
+	  if (path[path.length - 1] == '/') {
+	    return path + '#';
+	  } else {
+	    var arrPath = path.split('/');
+	    return arrPath.slice(0, arrPath.length - 1).join('/') + '/#';
+	  }
+	}
+
 	module.exports = {
 	  types: Type({
 	    navigateTo: [String]
@@ -6375,6 +6384,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  task: function task() {
 	    var taskFn = this.types.caseOn({
 	      navigateTo: function navigateTo(path, _ref) {
+	        var _ref$relative = _ref.relative;
+	        var relative = _ref$relative === undefined ? true : _ref$relative;
 	        var _ref$success = _ref.success;
 	        var success = _ref$success === undefined ? function () {
 	          return 0;
@@ -6384,7 +6395,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return 0;
 	        } : _ref$error;
 
-	        addressbar.value = '#' + path;
+	        // relative(by default): allows infinite composing, absolute(relative: false): replace the whole path
+	        addressbar.value = relative ? getParentPath(addressbar.value) + path : '#' + path;
 	        // generate the event
 	        var ev = {
 	          target: {

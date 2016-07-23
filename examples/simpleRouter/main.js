@@ -6,9 +6,8 @@ const h = F.h
 module.exports = F.def({
   init: ({key}) => ({
     key,
-    selectedPage: '',
+    selectedPage: '/',
     text: '',
-    messages: [],
   }),
   inputs: {
     changePage: (ctx, Action, page) => [
@@ -20,13 +19,14 @@ module.exports = F.def({
     ChangePage: [[String], (page, m) => R.evolve({selectedPage: R.always(page)}, m)],
   },
   interfaces: {
-    view: (ctx, i, m) => h('div', [
-      h('div', {style: styles.title, on: {click: () => i.changePage('')}}, 'Fractal - SimpleRouter'),
+    view: (ctx, i, m) => h('div', {key: m.key}, [
+      h('div', {style: styles.title, on: {click: () => i.changePage('/')}}, 'Fractal - SimpleRouter'),
       h('div', {style: styles.mainContainer}, [
         h('div', {style: styles.sidemenu.base}, [
           h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage('page0')}}, 'Page 0'),
           h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage('page1')}}, 'Page 1'),
           h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage('page2')}}, 'Page 2'),
+          h('div', {style: styles.sidemenu.item, on: {click: () => i.changePage('main')}}, 'Main'),
         ]),
         h('div', {style: styles.childContainer}, [
           F.router.children(ctx, m),

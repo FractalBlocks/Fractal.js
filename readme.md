@@ -54,11 +54,13 @@ Some examples needs a backend (e.g. Chat), run it with: `node server`, see the R
 
 ## TODOs and roadmap
 
+- Fix Playgorund example images and use the Fetch Task instead of fetch driver
+- Remove duplicated code in fetch task, fetchobj is defined in utils
+- Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
 - Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal.js
 - Implement the forms example and document the composing tools
 - Implement an i18n middleware example
-- Implement and document CSS tools for js (PARTIAL)
 - Implement examples and document the service pattern
 - Implement fractalMail example using an IMAP and XMPP client, with OAuth 2.0
 - Implement the Router inspired on react-router

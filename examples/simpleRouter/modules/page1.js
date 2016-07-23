@@ -15,7 +15,7 @@ module.exports = F.def({
     ToggleColor: [[], m => R.evolve({color: c => (c == 'purple') ? 'green' : 'purple'}, m)],
   },
   interfaces: {
-    view: (ctx, i, m) => h('div', [
+    view: (ctx, i, m) => h('div', {key: m.key}, [
       h('div', 'Page 1 :)'),
       h('div', {
         style: {backgroundColor: m.color, color: 'white', padding: '20px'},
