@@ -6,16 +6,16 @@ const h = F.h
 module.exports = F.def({
   init: ({key}) => ({
     key,
-    color: 'red',
+    color: 'black',
   }),
   inputs: {
     toggleColor: (ctx, Action, _) => Action.ToggleColor(),
   },
   actions: {
-    ToggleColor: [[], m => R.evolve({color: c => (c == 'red') ? 'deepblue' : 'black'}, m)],
+    ToggleColor: [[], m => R.evolve({color: c => (c == 'black') ? 'blueviolet' : 'black'}, m)],
   },
   interfaces: {
-    view: (ctx, i, m) => h('div', [
+    view: (ctx, i, m) => h('div', {key: m.key}, [
       h('div', 'Page 2 :)'),
       h('div', {
         style: {backgroundColor: m.color, color: 'white', padding: '20px'},

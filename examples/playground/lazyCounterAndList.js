@@ -38,12 +38,12 @@ module.exports = F.def({
     remove: (ctx, Action, idx) => Action.Remove(idx),
     removeAll: (ctx, Action, d) => Action.RemoveAll(),
     resetAll: (ctx, Action, d) => [
-      Action.ResetAll()),
-      Action.SetActiveAll())
+      Action.ResetAll(),
+      Action.SetActiveAll()
     ],
     deepReset: (ctx, Action, d) => [
-      Action.DeepReset()),
-      Action.DeepActiveAll())
+      Action.DeepReset(),
+      Action.DeepActiveAll()
     ],
     deepReload: (ctx, Action, d) => Action.DeepReload(),
 

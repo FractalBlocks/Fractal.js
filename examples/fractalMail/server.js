@@ -80,9 +80,9 @@ router.get('/api/emails/email/:uid/read', function *() {
       doc.state = 'read'
       return doc
     })
+    console.log(res)
     if (sockets[0]) {
-      let info = yield getInfo()
-      sockets[0].emit('data', {key: 'info', value: info})
+      sockets[0].emit('data', {key: 'info', value: yield getInfo()})
     }
     this.body = 'updated'
   } catch(e) {
@@ -91,10 +91,11 @@ router.get('/api/emails/email/:uid/read', function *() {
 })
 
 router.post('/api/emails/new', function *() {
-  let newMessage = this.request.body
-  let _id = generateId('fractalplatform@gmail.com', newMessage.title.toLowerCase())
-  let res = emailDB.put(newMessage, _id)
-  this.body = 'created'
+  // TODO: use pouchDB
+  // let newMessage = this.request.body
+  // newMessage.uid = uuid.v4()
+  // data.messages.push(newMessage)
+  // this.body = newMessage
 })
 
 
@@ -111,6 +112,7 @@ io.on('connection', function(socket) {
     sockets.slice(sockets.indexOf(socket), 1)
   })
 })
+
 
 
 server.listen(process.env.PORT || 4000, process.env.IP || 'localhost', function() {

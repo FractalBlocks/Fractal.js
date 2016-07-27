@@ -54,14 +54,14 @@ let counterAndList = F.def({
     }
   },
   actions: {
-    Reload: R.evolve({lorempixel: R.always('fetching')}),
-    SetActiveCount: (bool, m) => R.evolve({activeCount: R.always(bool)}, m),
-    Tick: R.evolve({time: R.inc}),
-    Lorempixel: (objURL, model) => R.evolve({
+    Reload: [[], R.evolve({lorempixel: R.always('fetching')})],
+    SetActiveCount: [[R.T], (bool, m) => R.evolve({activeCount: R.always(bool)}, m)],
+    Tick: [[], R.evolve({time: R.inc})],
+    Lorempixel: [[R.T], (objURL, model) => R.evolve({
       lorempixel: R.always('success'),
       loremsrc: R.always(objURL)
-    }, model),
-    LorempixelFail: R.evolve({lorempixel: R.always('error')}),
+    }, model)],
+    LorempixelFail: [[], R.evolve({lorempixel: R.always('error')})],
     // child related actions
     Add: [[], model => R.evolve({childs: R.append(counterAndList.init())}, model)],
     Remove: [[Number], (idx, model) => R.evolve({childs: R.remove(idx, 1)}, model)],
@@ -73,25 +73,31 @@ let counterAndList = F.def({
     SetActiveAll: [[], model => R.evolve({childs: R.map(
       counterAndList.update(counterAndList.Action.SetActiveCount(true))
     )}, model)],
-    DeepActiveAll: [[], model => R.evolve({childs: R.map(
-      R.pipe(
-        counterAndList.update(counterAndList.Action.SetActiveCount(true)),
-        deepActiveAll
-      )
-    )}, model)],
-    DeepReset: [[], model => R.evolve({childs: R.map(
-      R.pipe(
-        counterAndList.update(counterAndList.Action.Counter0Action(counter.Action.Rst())),
-        counterAndList.update(counterAndList.Action.SetActiveCount(false)),
-        deepReset
-      )
-    )}, model)],
-    DeepReload: [[], model => R.evolve({childs: R.map(
-      R.pipe(
-        counterAndList.update(counterAndList.Action.Reload()),
-        deepReload
-      )
-    )}, model)],
+    DeepActiveAll: [[], function deepActiveAll(model) {
+      return R.evolve({childs: R.map(
+        R.pipe(
+          counterAndList.update(counterAndList.Action.SetActiveCount(true)),
+          deepActiveAll
+        )
+      )}, model)
+    }],
+    DeepReset: [[], function deepReset(model) {
+      return R.evolve({childs: R.map(
+        R.pipe(
+          counterAndList.update(counterAndList.Action.Counter0Action(counter.Action.Rst())),
+          counterAndList.update(counterAndList.Action.SetActiveCount(false)),
+          deepReset
+        )
+      )}, model)
+    }],
+    DeepReload: [[], function deepReload(model) {
+      return R.evolve({childs: R.map(
+        R.pipe(
+          counterAndList.update(counterAndList.Action.Reload()),
+          deepReload
+        )
+      )}, model)
+    }],
     // child actions
     Counter0Action: [[Array], (a, m) => R.evolve({counter0: counter.update(a)}, m)],
     Counter1Action: [[Array], (a, m) => R.evolve({counter1: counter.update(a)}, m)],

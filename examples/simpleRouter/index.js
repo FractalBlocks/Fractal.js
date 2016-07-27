@@ -4,9 +4,12 @@ const F = require('../../lib')
 
 let engine = F.run({
   root: F.log(require('./router')),
+  tasks: {
+    router: F.router.task(),
+  },
   drivers: {
-    view: require('../../lib/drivers/view')('#app'),
-    router: require('../../lib/drivers/router')(),
+    router: F.router.driver(),
+    view: F.drivers.view('#app'),
   },
 })
 
