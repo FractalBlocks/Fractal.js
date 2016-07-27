@@ -21,6 +21,12 @@ module.exports = {
               plugins: [
                 "typecheck",
                 "closure-elimination",
+                "object-assign",
+              ],
+            },
+            production: {
+              plugins: [
+                "object-assign",
               ],
             },
           },

@@ -1,7 +1,7 @@
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
-let name = 'eulerion'
+let name = 'fractal'
 
 // let vendorModules = /(node_modules|bower_components)/;
 
