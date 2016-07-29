@@ -56,6 +56,7 @@ Some examples needs a backend (e.g. Chat), run it with: `node server`, see the R
 
 - Make a driver for listenable things, abstract the socket driver FEATURE
 - Fix Playgorund example images and use the Fetch Task instead of fetch drivers
+- Evaluate: is service task + driver?, maybe nice. FEATURE
 - Remove duplicated code in fetch task, fetchobj is defined in utils
 - Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
