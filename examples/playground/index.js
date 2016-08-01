@@ -6,11 +6,12 @@ const F = require('../../lib')
 
 let engine = F.run({
   root: F.log(require('./lazyCounterAndList')),
+  tasks: {
+    fetch: F.tasks.fetch.task(),
+  },
   drivers: {
-    view: require('../../lib/drivers/view')('#app'),
-    time: require('../../lib/drivers/time')(),
-    fetch: require('../../lib/drivers/fetch')(),
-    screenInfo: require('../../lib/drivers/screenInfo')(),
+    view: F.drivers.view('#app'),
+    time: F.drivers.time(),
   },
 })
 
