@@ -1,33 +1,49 @@
 const R = require('ramda')
 const flyd = require('flyd')
 const h = require('snabbdom/h')
-
 const F = require('../../lib/')
+
+const fetchTask = F.tasks.fetch.types.fetch
 
 // TODO: hacer que este modulo sea una matriz de 4x4 imagenes, evaluar si agregar un metodo de ayuda para esta tarea al core
 
 let imageSet = F.def({
   // state stuff
-  init: () => ({
+  init: ({key}) => ({
+    key,
     lorempixel: 'fetching',
     loremsrc: {},
   }),
   inputs: {
-    lorempixel: (ctx, Action, blob) => Action.Lorempixel(URL.createObjectURL(blob)),
-    lorempixelError: (ctx, Action, d) => Action.LorempixelFail(),
-    reload: (ctx, Action, d) => Action.Reload(),
+    fetchImage: (ctx, Action, _) => [
+      Action.Reload(),
+      [
+        'fetch',
+        fetchTask({
+          url: 'https://unsplash.it/40/40?random',
+          options: {
+            method: 'get',
+          },
+          response: res => res.blob(),
+          success: blob => ctx.action$(Action.Lorempixel(URL.createObjectURL(blob))),
+          denied: () => ctx.action$(Action.LorempixelFail()),
+          error: () => ctx.action$(Action.LorempixelFail()),
+          netError: () => ctx.action$(Action.LorempixelFail()),
+        })
+      ]
+    ],
   },
   actions: {
     Reload: [[], R.evolve({lorempixel: R.always('fetching')})],
-    Lorempixel: [[String], (objURL, m) => R.evolve({
+    Lorempixel: [[String], (objURL, model) => R.evolve({
       lorempixel: R.always('success'),
       loremsrc: R.always(objURL)
-    }, m)],
+    }, model)],
     LorempixelFail: [[], R.evolve({lorempixel: R.always('error')})],
   },
   // side connections
   interfaces: {
-    view: (ctx, i, m) => h('div', {style: styles.base}, [
+    view: (ctx, i, m) => h('div', {key: m.key, style: styles.base, hook: {insert: i.fetchImage }}, [
       (() => {
         if (m.lorempixel == 'fetching')
           return  h('span', {style: styles.image}, 'fetching...')
@@ -36,24 +52,8 @@ let imageSet = F.def({
         if (m.lorempixel == 'error')
           return  h('span', {style: styles.image}, 'error')
       })(),
-      h('button', {style: styles.button, on: {click: i.reload}}, 'Reload'),
+      h('button', {style: styles.button, on: {click: i.fetchImage}}, 'Reload'),
     ]),
-    fetch: (ctx, i, m) => {
-      return {
-        lorempixel: {
-          url: 'http://lorempixel.com/40/40/?' + (new Date()).getTime(), // avoid caching
-          options: {
-            method: 'get',
-          },
-          active: m.lorempixel == 'fetching',
-          response: res => res.blob(),
-          success: i.lorempixel,
-          denied: i.lorempixelError,
-          error: i.lorempixelError,
-          netError: i.lorempixelError,
-        },
-      }
-    },
   }
 })
 

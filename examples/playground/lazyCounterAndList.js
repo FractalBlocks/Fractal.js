@@ -1,6 +1,7 @@
 const R = require('ramda')
 const h = require('snabbdom/h')
 const F = require('../../lib/')
+const fetchTask = F.tasks.fetch.types.fetch
 
 const counterGroup = require('./lazyCounterGroup')
 const counter = require('./counter')
@@ -18,9 +19,9 @@ module.exports = F.def({
   init: () => ({
     time: 0,
     counterGroup: counterGroup.init({key: 'counterGroup'}),
-    counter0: counter.init(),
-    counter1: counter.init(),
-    imageSet: imageSet.init(),
+    counter0: counter.init({key: 'counter0'}),
+    counter1: counter.init({key: 'counter1'}),
+    imageSet: imageSet.init({key: 'imageSet'}),
     activeCount: true,
     lorempixel: 'fetching',
     loremsrc: {},
@@ -28,9 +29,23 @@ module.exports = F.def({
   }),
 
   inputs: {
-    lorempixel: (ctx, Action, blob) => Action.Lorempixel(URL.createObjectURL(blob)),
-    lorempixelError: (ctx, Action, d) => Action.LorempixelFail(),
-    reload: (ctx, Action, d) => Action.Reload(),
+    fetchImage: (ctx, Action, _) => [
+      Action.Reload(),
+      [
+        'fetch',
+        fetchTask({
+          url: 'https://unsplash.it/40/40?random',
+          options: {
+            method: 'get',
+          },
+          response: res => res.blob(),
+          success: blob => ctx.action$(Action.Lorempixel(URL.createObjectURL(blob))),
+          denied: () => ctx.action$(Action.LorempixelFail()),
+          error: () => ctx.action$(Action.LorempixelFail()),
+          netError: () => ctx.action$(Action.LorempixelFail()),
+        })
+      ]
+    ],
     inc: (ctx, Action, d) => Action.Counter0Action(counter.Action.Inc()),
     tick: (ctx, Action, d) => Action.Tick(),
 
@@ -59,6 +74,7 @@ module.exports = F.def({
   outputNames: ['remove$'],
 
   load: (ctx, i, Action) => {
+    i.fetchImage(undefined)
     return { // static modules (Note that thay cannot be static child of itself - Infinite recursion)
       counterGroup: F.createContext(counterGroup, {action$: i.counterGroup}),
       counter0: F.createContext(counter, {action$: i.counter0Action}),
@@ -76,7 +92,7 @@ module.exports = F.def({
     }, model)],
     LorempixelFail: [[], R.evolve({lorempixel: R.always('error')})],
     // child related actions
-    Add: [[], model => R.evolve({childs: R.append(counterAndList.init())}, model)],
+    Add: [[], model => R.evolve({childs: R.append(counterAndList.init({key: model.childs.length}))}, model)],
     Remove: [[Number], (idx, model) => R.evolve({childs: R.remove(idx, 1)}, model)],
     RemoveAll: [[], R.evolve({childs: R.always([])})],
     ResetAll: [[], model => R.evolve({childs: R.map(R.pipe(
@@ -120,11 +136,11 @@ module.exports = F.def({
   },
   interfaces: {
     view: (ctx, i, m) => { // context, inputs and model
-      return h('div', {style: {
+      return h('div', {key: m.key, style: {
           position: 'relative',
           'padding': '10px 10px 10px 20px',
           margin: '5px',
-          'background-color': 'rgb(80, 150, 190)'
+          'background-color': 'rgb(80, 150, 190)',
         } }, [
         h('button', {on: { click: ctx.remove$ }, style: {top: '5px', right: '5px', position: 'absolute'}}, 'X'),
         h('div', {style: {display: 'flex'}}, [
@@ -133,7 +149,7 @@ module.exports = F.def({
           ctx._md.imageSet.interfaces.view(m.imageSet),
           ctx._md.counterGroup.interfaces.view(m.counterGroup),
         ]),
-        h('button', {on: { click: i.reload }}, 'reload image'),
+        h('button', {on: { click: i.fetchImage }}, 'reload image'),
         h('span', {style: {'margin': '0px 0px 0px 20px', 'font-size': '24px', color: 'green'}}, m.time),
         (() => {
           if (m.lorempixel == 'fetching')
@@ -154,7 +170,7 @@ module.exports = F.def({
         h('div', {style: {'padding': '10px 10px 10px 20px', 'background-color': 'white'}},
           R.addIndex(R.map)((child, idx) => {
             let a = 0
-            return F.createContext(counterAndList, {action$: i.childAction(+idx), remove$: () => i.remove(+idx)}).interfaces.view(child)
+            return F.createContext(counterAndList, {action$: i.childAction(+idx), task$: ctx.task$, remove$: () => i.remove(+idx)}).interfaces.view(child)
           }, m.childs)
         ),
       ])
@@ -174,24 +190,6 @@ module.exports = F.def({
           on: i.inc,
         },
         ...F.mergeChilds(m.childs, counterAndList, 'childs', 'time', idx => ({action$: i.childAction(+idx)})),
-      }
-    },
-    fetch: (ctx, i, m) => {
-      return {
-        lorempixel: {
-          url: 'http://lorempixel.com/40/40/?' + (new Date()).getTime(), // avoid caching
-          options: {
-            method: 'get',
-          },
-          active: m.lorempixel == 'fetching',
-          response: res => res.blob(),
-          success: i.lorempixel,
-          denied: ctx.lorempixelError$,
-          error: ctx.lorempixelError$,
-          netError: ctx.lorempixelError$,
-        },
-        ...F.mergeChilds(m.childs, counterAndList, 'childs', 'fetch', idx => ({action$: i.childAction(+idx)})),
-        ...F.mergeChild(m.imageSet, imageSet, 'imageSet', 'fetch', {action$: i.imageSetAction}),
       }
     },
   },

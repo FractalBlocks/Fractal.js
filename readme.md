@@ -6,7 +6,7 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 
 - Its clear and concise
 - Shows powerful patterns that helps you to build small and large apps
-- Your code are flexible, composable and reausable
+- Your code are flexible, composable and reausable. Modularization as a foundation
 - The state is isolated, this mean is serializable and you can hot-swap code updating the UI without reload the navigator
 
 ## Features
@@ -54,9 +54,9 @@ Some examples needs a backend (e.g. Chat), run it with: `node server`, see the R
 
 ## TODOs and roadmap
 
+- Make a dynamicMds function for dynamic input handling FEATURE
 - Make a driver for listenable things, abstract the socket driver FEATURE
-- Fix Playgorund example images and use the Fetch Task instead of fetch drivers
-- Remove duplicated code in fetch task, fetchobj is defined in utils
+- Evaluate: is service task + driver?, maybe nice. FEATURE
 - Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
 - Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal.js
