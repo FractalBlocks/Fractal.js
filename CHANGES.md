@@ -21,6 +21,6 @@
 - Add free-style to core and some utilities
 - Fixed playground errors
 
-## v0.0.11 (working in)
+## v0.0.11
 
-
+- Bug fixes and optimizations
