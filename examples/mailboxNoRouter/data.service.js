@@ -9,6 +9,7 @@ let serverName = 'http://localhost:4000'
 
 module.exports = F.service({
   serverName,
+  queue: true,
   store: {
     connected: false,
     state: 'outdated', // outdated | fetching | updated | error

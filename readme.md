@@ -65,6 +65,7 @@ Some examples needs a backend (e.g. Chat), run it with: `node server`, see the R
 - Implement examples and document the service pattern
 - Implement fractalMail example using an IMAP and XMPP client, with OAuth 2.0
 - Implement the Router inspired on react-router
+- Implement debugging tools for service (log...) FEATURE
 - Implement a test suite
 - Implement examples of test suite
 - Improve and update examples, are very outdated (PARTIAL IMPLEMENTED)

@@ -13,6 +13,7 @@ let messagesReceivedCb = () => 0
 
 module.exports = F.service({
   serverName,
+  queue: true,
   store: {
     connected: false,
     state: 'outdated', // outdated | fetching | updated | error

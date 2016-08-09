@@ -27,4 +27,8 @@
 
 ## v0.0.12
 
-- Bug fixes and optimizations
+- Specific tasks and optimizations
+
+## v0.0.13
+
+- Queue optional for services
