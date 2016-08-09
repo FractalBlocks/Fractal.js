@@ -6420,6 +6420,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	// serverName, store, events, init, connect
 	module.exports = function (defObj) {
 
+	  var isQueued = !!defObj.queue;
+
 	  var serverName = defObj.serverName;
 	  var store = defObj.store;
 	  var eventQueue = [];
@@ -6438,7 +6440,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var events = defObj.events(data);
 	  function emit(name, value, cbObj) {
 	    if (events[name]) {
-	      if (data.connected) {
+	      if (data.connected || !isQueued) {
 	        events[name](value, cbObj);
 	      } else {
 	        eventQueue.push({ name: name, value: value, cbObj: cbObj });
@@ -6492,7 +6494,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      }
 
-	      defObj.connect(socket, success);
+	      defObj.connect(socket, isQueued ? success : function () {
+	        return 0;
+	      });
 	    },
 	    subscribeAll: function subscribeAll(subs) {
 	      // avoid a bug with flyd.on TODO: needs review
