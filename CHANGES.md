@@ -24,3 +24,7 @@
 ## v0.0.11
 
 - Bug fixes and optimizations
+
+## v0.0.12
+
+- Bug fixes and optimizations

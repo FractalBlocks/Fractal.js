@@ -3220,7 +3220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var mergeModels = function mergeModels(mds) {
 	  var obj = {};
 	  for (var key in mds) {
-	    obj[key] = mds[key].root.init(_extends({ key: key }, mds[key])); // root should be not utilized
+	    obj[key] = mds[key].root ? mds[key].root.init(_extends({ key: key }, mds[key])) : mds[key].init(_extends({ key: key }, mds[key]));
 	  }
 	  return obj;
 	};

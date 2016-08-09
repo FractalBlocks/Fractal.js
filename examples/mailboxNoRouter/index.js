@@ -17,8 +17,8 @@ let engine = F.run({
     data: F.tasks.data.task(data.emit),
   },
   drivers: {
-    view: require('../../lib/drivers/view')('#app'),
-    data: require('../../lib/drivers/event')(data.subscribeAll),
+    view: F.drivers.view('#app'),
+    data: F.drivers.event(data.subscribeAll),
   },
 })
 
