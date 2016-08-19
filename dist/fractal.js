@@ -60,6 +60,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = _extends({}, __webpack_require__(1), __webpack_require__(13), {
 	  h: __webpack_require__(71),
+	  flyd: __webpack_require__(39),
 	  timetravel: __webpack_require__(58),
 	  log: __webpack_require__(74),
 	  router: __webpack_require__(75),
@@ -74,8 +75,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  drivers: {
 	    view: __webpack_require__(98),
 	    event: __webpack_require__(105),
-	    fetch: __webpack_require__(106), // deprecated!
-	    time: __webpack_require__(107), // new review!! (maybe depreecated)
+	    fetch: __webpack_require__(106), // DEPRECATED
+	    time: __webpack_require__(107), // NEEDS REVIEW!! (maybe depreecated)
 	    load: __webpack_require__(108),
 	    localStorage: __webpack_require__(109),
 	    screenInfo: __webpack_require__(110),
@@ -83,8 +84,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}, __webpack_require__(48), {
 	  data: __webpack_require__(92),
-	  css: __webpack_require__(113)
-	});
+	  style: __webpack_require__(113),
+	  css: __webpack_require__(113) });
+	// DEPRECATED
 
 /***/ },
 /* 1 */
@@ -7773,10 +7775,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'user-select': 'none'
 	};
 
+	var absoluteCenter = {
+	  display: 'flex',
+	  alignItems: 'center',
+	  justifyContent: 'center'
+	};
+
 	module.exports = {
-	  noSelectable: noSelectable,
 	  r: r,
-	  rs: rs
+	  rs: rs,
+	  absoluteCenter: absoluteCenter,
+	  noSelectable: noSelectable
 	};
 
 /***/ },

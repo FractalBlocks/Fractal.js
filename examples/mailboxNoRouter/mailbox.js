@@ -104,7 +104,7 @@ let styles = {
     display: 'flex',
   },
   title: {
-    ...F.css.noSelectable,
+    ...F.style.noSelectable,
     cursor: 'pointer',
     fontFamily: 'cursive',
     fontSize: '28px',
@@ -128,7 +128,7 @@ let styles = {
   },
   tab: {
     base: {
-      ...F.css.noSelectable,
+      ...F.style.noSelectable,
       cursor: 'pointer',
       padding: '8px',
       fontSize: '20px',

@@ -157,7 +157,7 @@ let styles = {
       justifyContent: 'flex-end',
     },
     button: {
-      ...F.css.noSelectable,
+      ...F.style.noSelectable,
       cursor: 'pointer',
       fontSize: '32px',
       padding: '0px 2px 0px 2px',

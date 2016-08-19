@@ -39,7 +39,7 @@ module.exports = F.def({
 
 let styles = {
   title: {
-    ...F.css.noSelectable,
+    ...F.style.noSelectable,
     cursor: 'pointer',
     fontFamily: 'cursive',
     fontSize: '28px',

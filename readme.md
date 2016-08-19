@@ -54,9 +54,46 @@ Some examples needs a backend (e.g. Chat), run it with: `node server`, see the R
 
 ## TODOs and roadmap
 
-- Make a dynamicMds function for dynamic input handling FEATURE
+- Put a rank function to data utils
+# Fractal.js - quickstart
+
+This is the recomended starting point for any fractal based app. Follow the next steps:
+
+- Download this repo
+- Open a system shell into the proyect folder (a command window)
+- Run `npm i` in the shell
+- Run `npm start` in the shell
+- Run a browser and navigate to `http://localhost:3000`
+
+Start hacking ... We are developing a full tutorial, comming soon ...
+[Spanish version readme](https://github.com/fractalPlatform/Fractal.js-quickstart/blob/master/readme.es.md)
+
+## Building
+
+For a production version run: `npm run compile`, and see the result in the `dist/` folder.
+
+## Tips
+
+- Assets are static, these are copied to the dist folder.
+- Resources are dynamic these are inserted when your require (e.g. require('../resources/myresource.png') ) them.
+
+## TODOs
+
+What are missing for this repo:
+
+- Improve the quickstart.
+- Reference tutorials whe done.
+
+## Ideas
+
+What maybe great for this repo:
+
+- Document integration of manifest.json
+- Implement a way to load workers
+- Implement a way to load service workers
+- Make a dynamicMds function for dynamic input handling FEATURE (Document!!!)
 - Make a driver for listenable things, abstract the socket driver FEATURE
-- Evaluate: is service task + driver?, maybe nice. FEATURE
+- Automated service merging via data task + event driver. FEATURE NICE
 - Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
 - Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal.js

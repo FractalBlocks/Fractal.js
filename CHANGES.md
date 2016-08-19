@@ -32,3 +32,13 @@
 ## v0.0.13
 
 - Queue optional for services
+
+## v0.0.14
+
+- Css utils has a absoluteCenter props with flexbox
+- DEPRECATED use of F.css, use F.style instead
+- flyd is usable as F.flyd dependency
+
+## v0.0.15 (Incomming...)
+
+-
