@@ -28,7 +28,10 @@ module.exports = F.def({
   actions: {
     SetConnected: [[R.T], (connected, m) => R.evolve({connected: R.always(connected)}, m)],
     TextChange: [[String], (controlName, text, m) => R.evolve({[controlName]: R.always(text)}, m)],
-    MessageSended: [[String], (content, m) => R.evolve({messages: R.append({sender: '@@owner', content})}, m)],
+    MessageSended: [[String], (content, m) => R.evolve({
+      text: R.always(''),
+      messages: R.append({sender: '@@owner', content}),
+    }, m)],
     MessageReceived: [[Object], (msgObj, m) => R.evolve({messages: R.append(msgObj)}, m)],
   },
   interfaces: {
@@ -60,8 +63,22 @@ module.exports = F.def({
             ])
           )
         ),
-        h('input', {style: styles.inputLarge, on: {change: (ev) => i.textChange('text', ev.target.value)}}),
-        h('button', {on: {click: () => i.sendMessage(m.username, m.text)}}, 'Send'),
+        h('input', {
+          style: styles.inputLarge,
+          props: {
+            value: m.text,
+          },
+          on: {
+            change: (ev) => i.textChange('text', ev.target.value),
+            keyup: (ev) => {
+              if (ev.keyCode == 13 && m.text != '') {
+                i.textChange('text', m.text)
+                i.sendMessage(m.username, m.text)
+              }
+            },
+          },
+        }),
+        h('button', {on: {click: () => (m.text != '') ? i.sendMessage(m.username, m.text) : 0}}, 'Send'),
       ]),
     ]),
     socket: (ctx, i, m) => ({
