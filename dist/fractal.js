@@ -70,22 +70,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    data: __webpack_require__(93),
 	    value: __webpack_require__(94),
 	    fetch: __webpack_require__(95),
-	    socketio: __webpack_require__(96)
+	    emitter: __webpack_require__(96),
+	    socketio: __webpack_require__(97)
 	  },
 	  drivers: {
-	    view: __webpack_require__(97),
-	    event: __webpack_require__(104),
-	    fetch: __webpack_require__(105), // DEPRECATED
-	    time: __webpack_require__(106), // NEEDS REVIEW!! (maybe depreecated)
+	    view: __webpack_require__(98),
+	    event: __webpack_require__(105),
+	    listenable: __webpack_require__(106),
 	    load: __webpack_require__(107),
-	    localStorage: __webpack_require__(108),
-	    screenInfo: __webpack_require__(109),
-	    socketio: __webpack_require__(111)
-	  }
+	    time: __webpack_require__(108), // NEEDS REVIEW!! (maybe depreecated)
+	    localStorage: __webpack_require__(109),
+	    screenInfo: __webpack_require__(110),
+	    fetch: __webpack_require__(112), // DEPRECATED
+	    socketio: __webpack_require__(113) }
 	}, __webpack_require__(48), {
 	  data: __webpack_require__(91),
-	  style: __webpack_require__(112),
-	  css: __webpack_require__(112) });
+	  style: __webpack_require__(114),
+	  css: __webpack_require__(114) });
+	// DEPRECATED
 	// DEPRECATED
 
 /***/ },
@@ -6711,6 +6713,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	  T: __webpack_require__(58)
 	};
 
+	// emitter should implement emit function
+	module.exports = {
+	  types: Type({
+	    emit: [String, R.T, R.T]
+	  }),
+	  task: function task(emt) {
+	    var emitter = emt;
+	    var taskFn = this.types.caseOn({
+	      emit: function emit(channel, message) {
+	        var success = arguments.length <= 2 || arguments[2] === undefined ? function () {} : arguments[2];
+
+	        if (emitter != undefined) {
+	          emitter.emit(channel, message, success);
+	        }
+	      }
+	    });
+	    // task runner
+	    return {
+	      run: function run(task) {
+	        // perform side effect
+	        taskFn(task, '');
+	      },
+	      get: emitter,
+	      set: function set(emt) {
+	        emitter = emt;
+	      }
+	    };
+	  }
+	};
+
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Type = __webpack_require__(7);
+	var R = {
+	  T: __webpack_require__(58)
+	};
+
 	module.exports = {
 	  types: Type({
 	    emit: [String, R.T, R.T]
@@ -6741,7 +6784,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 97 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6754,7 +6797,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var h = __webpack_require__(70);
 
 	// Common snabbdom patch function (convention over configuration)
-	var patch = __webpack_require__(98).init([__webpack_require__(99), __webpack_require__(100), __webpack_require__(101), __webpack_require__(102), __webpack_require__(103)]);
+	var patch = __webpack_require__(99).init([__webpack_require__(100), __webpack_require__(101), __webpack_require__(102), __webpack_require__(103), __webpack_require__(104)]);
 
 	var viewDriver = function viewDriver(selector) {
 	  var patchfn = arguments.length <= 1 || arguments[1] === undefined ? patch : arguments[1];
@@ -6786,7 +6829,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 98 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// jshint newcap: false
@@ -7045,7 +7088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { init: init };
 
 /***/ },
-/* 99 */
+/* 100 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7067,7 +7110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateClass, update: updateClass };
 
 /***/ },
-/* 100 */
+/* 101 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7109,7 +7152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateAttrs, update: updateAttrs };
 
 /***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7133,7 +7176,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateProps, update: updateProps };
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7187,7 +7230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateEventListeners, update: updateEventListeners };
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7271,7 +7314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle };
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7294,7 +7337,78 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 105 */
+/* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// WORKING
+	'use strict';
+
+	var flyd = __webpack_require__(39);
+
+	// l should implement removeAllListeners and on functions
+	module.exports = function (l) {
+
+	  var listenable = l;
+
+	  /* In the form: {
+	    listenerName1: [listenerFn1, listenerFn2, ...],
+	    listenerName2: [listenerFn1, listenerFn2, ...],
+	  }
+	  */
+	  var listeners = undefined;
+
+	  function setSubscribers(subs) {
+
+	    listeners = {};
+
+	    for (var subscriber in subs) {
+	      var parts = subscriber.split('_');
+	      var _name = parts[parts.length - 1];
+	      if (listeners[_name]) {
+	        listeners[_name].push(subs[subscriber]);
+	      } else {
+	        listeners[_name] = [subs[subscriber]];
+	      }
+	    }
+
+	    setListeners();
+	  }
+
+	  function setListeners() {
+	    for (var listenerName in listeners) {
+	      var listenerArr = listeners[listenerName];
+	      if (listenerArr.length > 0 && listenable != undefined) {
+	        listenable.removeAllListeners(listenerName);
+	        for (var i = listenerArr.length - 1; i >= 0; i--) {
+	          listenable.on(listenerName, listenerArr[i]);
+	        }
+	      }
+	    }
+	  }
+
+	  return {
+	    listener$: null,
+	    attach: function attach(event$) {
+	      this.listener$ = flyd.on(setSubscribers, event$);
+	    },
+	    reattach: function reattach(event$) {
+	      this.listener$ = flyd.on(setSubscribers, event$);
+	    },
+	    dispose: function dispose() {
+	      this.listener$.end(true);
+	    },
+	    get: function get() {
+	      return listenable;
+	    },
+	    set: function set(s) {
+	      listenable = s;
+	      setListeners();
+	    }
+	  };
+	};
+
+/***/ },
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7302,86 +7416,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+
 	var flyd = __webpack_require__(39);
 
-	var fetchDriver = function fetchDriver() {
+	var viewDriver = function viewDriver() {
 	  return {
-	    listener$: null,
-	    attach: function attach(fetch$) {
-	      this.listener$ = flyd.scan(function (lastList, list) {
-	        // TODO: cancel fetchs with fetch api or use AJAX
-	        var newList = {}; // TODO: do it with R.map
-	        for (var key in list) {
-	          newList[key] = (function (lastObj, obj) {
-	            if (!lastObj && obj.active || lastObj && obj && obj.active && obj.active != lastObj.active) {
-	              fetchObj(obj);
-	              return { active: true };
-	            }
-	            return { active: obj.active };
-	          })(lastList[key], list[key]);
-	        }
-	        return newList;
-	      }, {}, fetch$);
+	    attach: function attach(vnode$) {
+	      flyd.on(function (f) {
+	        f();
+	        vnode$.end(true);
+	      }, vnode$);
 	    },
-	    reattach: function reattach(fetch$) {
-	      this.listener$ = flyd.scan(function (lastList, list) {
-	        // TODO: cancel fetchs with fetch api or use AJAX
-	        var newList = {}; // TODO: do it with R.map
-	        for (var key in list) {
-	          newList[key] = (function (lastObj, obj) {
-	            if (!lastObj && obj.active || lastObj && obj && obj.active && obj.active != lastObj.active) {
-	              fetchObj(obj);
-	              return { active: true };
-	            }
-	            return { active: obj.active };
-	          })(lastList[key], list[key]);
-	        }
-	        return newList;
-	      }, this.listener$(), fetch$);
-	    },
-	    dispose: function dispose() {
-	      this.listener$.end(true);
-	    }
+	    reattach: function reattach(vnode$) {},
+	    dispose: function dispose() {}
 	  };
 	};
 
-	exports['default'] = fetchDriver;
-
-	var fetchObj = function fetchObj(obj) {
-	  var handled = false;
-	  var status = function status(response) {
-	    if (response.status >= 200 && response.status < 300) {
-	      handled = true;
-	      return Promise.resolve(response);
-	    } else {
-	      if (response.status == 401 || response.status == 403) {
-	        obj.denied(response.status);
-	      } else {
-	        obj.error(response.status);
-	      }
-	      handled = true;
-	      return Promise.reject(new Error(response.statusText));
-	    }
-	  };
-
-	  obj.denied = obj.denied || function () {
-	    return 0;
-	  };
-	  obj.error = obj.error || function () {
-	    return 0;
-	  };
-	  obj.netError = obj.netError || function () {
-	    return 0;
-	  };
-
-	  fetch(obj.url, obj.options).then(status).then(obj.response).then(obj.success)['catch'](function (err) {
-	    if (!handled) obj.netError(err);
-	  });
-	};
+	exports['default'] = viewDriver;
 	module.exports = exports['default'];
 
 /***/ },
-/* 106 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7483,35 +7538,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 107 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var flyd = __webpack_require__(39);
-
-	var viewDriver = function viewDriver() {
-	  return {
-	    attach: function attach(vnode$) {
-	      flyd.on(function (f) {
-	        f();
-	        vnode$.end(true);
-	      }, vnode$);
-	    },
-	    reattach: function reattach(vnode$) {},
-	    dispose: function dispose() {}
-	  };
-	};
-
-	exports['default'] = viewDriver;
-	module.exports = exports['default'];
-
-/***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7546,7 +7573,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 109 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7556,7 +7583,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	var flyd = __webpack_require__(39);
 
-	var _require = __webpack_require__(110);
+	var _require = __webpack_require__(111);
 
 	var screenInfo = _require.screenInfo;
 
@@ -7603,7 +7630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 110 */
+/* 111 */
 /***/ function(module, exports) {
 
 	// Helper functions taken from https://github.com/garth/snabbdom-material/tree/master/src/helpers
@@ -7641,13 +7668,101 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 111 */
+/* 112 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var flyd = __webpack_require__(39);
+
+	var fetchDriver = function fetchDriver() {
+	  return {
+	    listener$: null,
+	    attach: function attach(fetch$) {
+	      this.listener$ = flyd.scan(function (lastList, list) {
+	        // TODO: cancel fetchs with fetch api or use AJAX
+	        var newList = {}; // TODO: do it with R.map
+	        for (var key in list) {
+	          newList[key] = (function (lastObj, obj) {
+	            if (!lastObj && obj.active || lastObj && obj && obj.active && obj.active != lastObj.active) {
+	              fetchObj(obj);
+	              return { active: true };
+	            }
+	            return { active: obj.active };
+	          })(lastList[key], list[key]);
+	        }
+	        return newList;
+	      }, {}, fetch$);
+	    },
+	    reattach: function reattach(fetch$) {
+	      this.listener$ = flyd.scan(function (lastList, list) {
+	        // TODO: cancel fetchs with fetch api or use AJAX
+	        var newList = {}; // TODO: do it with R.map
+	        for (var key in list) {
+	          newList[key] = (function (lastObj, obj) {
+	            if (!lastObj && obj.active || lastObj && obj && obj.active && obj.active != lastObj.active) {
+	              fetchObj(obj);
+	              return { active: true };
+	            }
+	            return { active: obj.active };
+	          })(lastList[key], list[key]);
+	        }
+	        return newList;
+	      }, this.listener$(), fetch$);
+	    },
+	    dispose: function dispose() {
+	      this.listener$.end(true);
+	    }
+	  };
+	};
+
+	exports['default'] = fetchDriver;
+
+	var fetchObj = function fetchObj(obj) {
+	  var handled = false;
+	  var status = function status(response) {
+	    if (response.status >= 200 && response.status < 300) {
+	      handled = true;
+	      return Promise.resolve(response);
+	    } else {
+	      if (response.status == 401 || response.status == 403) {
+	        obj.denied(response.status);
+	      } else {
+	        obj.error(response.status);
+	      }
+	      handled = true;
+	      return Promise.reject(new Error(response.statusText));
+	    }
+	  };
+
+	  obj.denied = obj.denied || function () {
+	    return 0;
+	  };
+	  obj.error = obj.error || function () {
+	    return 0;
+	  };
+	  obj.netError = obj.netError || function () {
+	    return 0;
+	  };
+
+	  fetch(obj.url, obj.options).then(status).then(obj.response).then(obj.success)['catch'](function (err) {
+	    if (!handled) obj.netError(err);
+	  });
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var flyd = __webpack_require__(39);
 
+	// DEPRECATED!!!
 	module.exports = function (s) {
 
 	  var socket = s;
@@ -7710,14 +7825,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 112 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// A set of css useful function helpers
 
 	'use strict';
 
-	var FreeStyle = __webpack_require__(113);
+	var FreeStyle = __webpack_require__(115);
 
 	function r(styleObj) {
 
@@ -7780,7 +7895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 113 */
+/* 115 */
 /***/ function(module, exports) {
 
 	'use strict';
