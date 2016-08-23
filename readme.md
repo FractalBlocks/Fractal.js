@@ -88,12 +88,12 @@ What are missing for this repo:
 
 What maybe great for this repo:
 
+- Evaluate error handling, maybe an error$ stream
 - Document integration of manifest.json
 - Implement a way to load workers
 - Implement a way to load service workers
 - Make a dynamicMds function for dynamic input handling FEATURE (Document!!!)
 - Make a driver for listenable things, abstract the socket driver FEATURE
-- Automated service merging via data task + event driver. FEATURE NICE
 - Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
 - Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal.js

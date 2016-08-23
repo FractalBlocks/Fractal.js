@@ -1,0 +1,21 @@
+{
+  "name": "mailbox-norouter",
+  "version": "0.0.1",
+  "description": "FractalMail example",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "example",
+    "mail",
+    "chat",
+    "realtime"
+  ],
+  "author": "Carlos Galarza <carloslfu@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^1.4.6"
+  }
+}

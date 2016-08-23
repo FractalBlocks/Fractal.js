@@ -13,6 +13,9 @@ data.connect(socket)
 
 let engine = F.run({
   root: F.log(require('./mailbox')),
+  services: {
+    data,
+  },
   tasks: {
     data: F.tasks.data.task(data.emit),
   },

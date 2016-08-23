@@ -39,6 +39,12 @@
 - DEPRECATED use of F.css, use F.style instead
 - flyd is usable as F.flyd dependency
 
-## v0.0.15 (Incomming...)
+## v0.0.15
 
--
+- Error exceptions DEPRECATED in favor of future error$ stream implementation
+- Services are automerged in engine definition (F.run)
+- Added chatWithService example of using automerged services
+
+## v0.0.16 (Incomming...)
+
+- ...
