@@ -9,12 +9,12 @@ module.exports = F.service({
     socket: '',
   },
   tasks: emit => ({
-    _: F.tasks.socketio.task(), // Root task, TODO: document it!! (namespacing in services)
+    _: F.tasks.emitter.task(), // Root task, TODO: document it!! (namespacing in services)
     value: F.tasks.value.task(value => emit('serverNameChanged', value)),
   }),
   drivers: (emit, subscribeAll) => ({
-    _: F.drivers.socketio(), // Root driver, TODO: document it!! (namespacing in services)
-    data: F.drivers.event(subscribeAll), // Root driver, TODO: document it!! (namespacing in services)
+    _: F.drivers.listenable(), // Root driver, TODO: document it!! (namespacing in services)
+    data: F.drivers.event(subscribeAll),
   }),
   init: function(data, emit, success, err) {},
   connect: function(data, emit, initialServerName, success) {

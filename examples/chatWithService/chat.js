@@ -3,7 +3,7 @@ const h = require('snabbdom/h')
 const F = require('../../lib')
 
 const sendValueTask = F.tasks.value.types.send
-const emitTask = F.tasks.socketio.types.emit
+const emitTask = F.tasks.emitter.types.emit
 
 
 module.exports = F.def({

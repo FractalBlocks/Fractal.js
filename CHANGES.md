@@ -45,6 +45,13 @@
 - Services are automerged in engine definition (F.run)
 - Added chatWithService example of using automerged services
 
-## v0.0.16 (Incomming...)
+## v0.0.16
+
+- Add emitter task handler
+- Add listenable driver
+- Deprecated socketio task handler
+- Deprecated socketio driver
+
+## v0.0.17 (Incomming...)
 
 - ...

@@ -10,11 +10,11 @@ let engine = F.run({
   root: F.log(require('./chat')),
   tasks: {
     value: F.tasks.value.task(onValue),
-    socket: F.tasks.socketio.task(socket),
+    socket: F.tasks.emitter.task(socket),
   },
   drivers: {
     view: F.drivers.view('#app'),
-    socket: F.drivers.socketio(socket),
+    socket: F.drivers.listenable(socket),
   },
 })
 
