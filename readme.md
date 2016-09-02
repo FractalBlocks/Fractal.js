@@ -81,6 +81,11 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
+- Make inputs async functions
+- Add async/await transform to babel plugins in quickstart
+- Implement _error task and attach it by default, this can be done all error handling
+- Implement module validation and dispatch a semantic error
+- Implement semantic errors via _error task
 - Improve the quickstart.
 - Reference tutorials whe done.
 
@@ -88,7 +93,6 @@ What are missing for this repo:
 
 What maybe great for this repo:
 
-- Evaluate error handling, maybe an error$ stream
 - Document integration of manifest.json
 - Implement a way to load workers
 - Implement a way to load service workers
