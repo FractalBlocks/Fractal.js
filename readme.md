@@ -81,8 +81,9 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
-- Make inputs async functions
-- Add async/await transform to babel plugins in quickstart
+- Add async/await transform to babel plugins in quickstart, examples and fractal-core
+- Implement and document serviceTest
+- Implement an example of whole service pattern, serviceTest module and API definitions
 - Implement _error task and attach it by default, this can be done all error handling
 - Implement module validation and dispatch a semantic error
 - Implement semantic errors via _error task
