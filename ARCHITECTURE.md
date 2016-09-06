@@ -1,27 +1,8 @@
-## Interaction Patterns
+# Architecture
 
-- feature adding: model(data + state) -> logic -> interface
-- debugging code
-- code navigation
-- composing
-- UI interaction
+## What is fractal?
 
-## Module Patterns model - logic - interface
-
-- sequential
-- router
-- string handling (i18n)
-- animations
-
-## Composition Patterns for: modules and model
-
-- simple: a -> a
-- router: (arr:[a, b, c], num) -> arr[num]
-- lazy router: (arr:[a, b, c], num) -> arr[num], and only evualuates arr[num]; AKA async composing
-- dinamic list
-- lazy rendered dinamic list (Comming soon ...), AKA infinite list
-
-Modules that use load or loadAfter to dispatch actions shouldn't to be composed dinamically, this causes infinite loops. Note that lazy loaded modules can't be composed dinamically for this reason but not make sense to do that!.
+## How many parts have?
 
 ## Fractal best practices
 
@@ -66,3 +47,29 @@ See an example of service pattern in the mailbox example
 ### The router pattern
 
 (TODO)
+
+## Interaction Patterns
+
+- feature adding: model(data + state) -> logic -> interface
+- debugging code
+- code navigation
+- composing
+- UI interaction
+
+## Module Patterns model - logic - interface
+
+- sequential
+- router
+- string handling (i18n)
+- animations
+
+## Composition Patterns for: modules and model
+
+- simple: a -> a
+- router: (arr:[a, b, c], num) -> arr[num]
+- lazy router: (arr:[a, b, c], num) -> arr[num], and only evualuates arr[num]; AKA async composing
+- dinamic list
+- lazy rendered dinamic list (Comming soon ...), AKA infinite list
+
+Modules that use load or loadAfter to dispatch actions shouldn't to be composed dinamically, this causes infinite loops. Note that lazy loaded modules can't be composed dinamically for this reason but not make sense to do that!.
+

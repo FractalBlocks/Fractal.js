@@ -3372,6 +3372,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    arr.push(fn(obj[key], key));
 	  }return arr;
 	};
+	// TODO: implement funtion that takes [list] -> ( (key, value) -> ({key, value}) ) -> {[key]: value}
+	// Useful for optional styles
 
 	var setDynamicMds = function setDynamicMds(ctxArray, ctx) {};
 
@@ -6465,10 +6467,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  // merge tasks and drivers to store
-	  defObj.tasks = defObj.tasks(emit);
-	  store._tasks = defObj.tasks;
-	  defObj.drivers = defObj.drivers(emit, subscribeAll);
-	  store._drivers = defObj.drivers;
+	  if (defObj.tasks) {
+	    defObj.tasks = defObj.tasks(emit);
+	    store._tasks = defObj.tasks;
+	  }
+	  if (defObj.drivers) {
+	    defObj.drivers = defObj.drivers(emit, subscribeAll);
+	    store._drivers = defObj.drivers;
+	  }
 
 	  return {
 	    serverName: serverName,

@@ -52,6 +52,11 @@
 - Deprecated socketio task handler
 - Deprecated socketio driver
 
-## v0.0.17 (Incomming...)
+## v0.0.17
+
+- Fix bug with services that not exposes tasks or drivers
+- Added starter tutorial (TODO)
+
+## v0.0.18 (Incomming...)
 
 - ...

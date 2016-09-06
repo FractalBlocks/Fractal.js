@@ -1,5 +1,6 @@
 const F = require('fractal-js')
 
+// TODO: put this in F.data.jsonHeaders and document it!!
 let jsonHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
