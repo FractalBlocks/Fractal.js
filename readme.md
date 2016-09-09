@@ -25,7 +25,7 @@ The recomended way is using webpack, please download the [fractal-quickstart](ht
 
 Or install it in your browser with:
 
-```
+```html
 <script src="dist/fractal.min.js"></script>
 ```
 
@@ -55,18 +55,6 @@ Some examples needs a backend (e.g. Chat), run it with: `node server`, see the R
 ## TODOs and roadmap
 
 - Put a rank function to data utils
-# Fractal.js - quickstart
-
-This is the recomended starting point for any fractal based app. Follow the next steps:
-
-- Download this repo
-- Open a system shell into the proyect folder (a command window)
-- Run `npm i` in the shell
-- Run `npm start` in the shell
-- Run a browser and navigate to `http://localhost:3000`
-
-Start hacking ... We are developing a full tutorial, comming soon ...
-[Spanish version readme](https://github.com/fractalPlatform/Fractal.js-quickstart/blob/master/readme.es.md)
 
 ## Building
 
@@ -81,6 +69,9 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
+- Expose snabbdom
+- Notify when a service receive an event with no handler
+- Notify when receive a task with no handler
 - Add async/await transform to babel plugins in quickstart, examples and fractal-core
 - Implement and document serviceTest
 - Implement an example of whole service pattern, serviceTest module and API definitions
