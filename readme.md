@@ -35,19 +35,29 @@ Or in nodejs, browserify, webpack like enviroments:
 npm i --save fractal-js
 ```
 
+See [Tutorial](https://github.com/fractalPlatform/Fractal.js/blob/master/TUTORIAL.md) for getting started with fractal.
+
 ### Run the examples
 
 There are many useful examples at examples folder run it with:
 
 ```
-cd fractal-js
+git clone https://github.com/fractalPlatform/Fractal.js.git
+cd Fractal.js
 ```
+
+Be sure that you have installed [Node.js.](https://nodejs.org/en/). The examples you can run are:
+
+- playground
+- counterAndList
+- chat
+- mailboxNoRouter
 
 ```
 npm run general NAME_EXAMPLE
 ```
 
-Some examples needs a backend (e.g. Chat), run it with: `node server`, see the README of the example you want to run.
+Some examples needs a backend (e.g. Chat or mailboxNoRouter), run it with: `node server`, see the README of the example you want to run for a detailed description.
 
 
 (TODO: More)
