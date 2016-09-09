@@ -4,18 +4,12 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 
 ## Why?
 
-- Its clear and concise
-- Shows powerful patterns that helps you to build small and large apps
+- A clear and flexible architecture that scales
+- Its clear and concise, all you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
+- Gives you powerful patterns and composing tools that helps to build small and large apps
 - Your code are flexible, composable and reausable. Modularization as a foundation
 - The state is isolated, this mean is serializable and you can hot-swap code updating the UI without reload the navigator
-
-## Features
-
-- Predefined patterns with all you need for building amazing apps
-- Powerful composing tools
-- Your app has no side effects
 - You can lazy loading modules
-- A clear and flexible architecture that scales
 - Router module for easely URL integration and server side rendering (Work in progress)
 - Tools for socket.io integration
 

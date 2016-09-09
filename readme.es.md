@@ -4,6 +4,8 @@ Construye tus ideas tan simple como sea posible. Fractal.js es un framework intu
 
 Tomamos lo mejor de [functional-frontend-architecture](https://github.com/paldepind/functional-frontend-architecture) y la arquitectura [ELM](https://github.com/evancz/elm-architecture-tutorial/) (Modelos Vista Actualizador), lo adaptamos con patrones fáciles de utilizar en la `Programación Funcional Reactiva` ([Functional Reactive Programing](https://en.wikipedia.org/wiki/Functional_reactive_programming)).
 
+(TODO: Update. Translate the english version)
+
 ## ¿Por qué?
 
 - Es claro y conciso.
@@ -15,7 +17,7 @@ Tomamos lo mejor de [functional-frontend-architecture](https://github.com/paldep
 
 - Patrones predefinidos con todo lo necesario para construir aplicaciones sorprendentes
 - Poderosa herramienta de composisión
-- Tus aplicaciones no tienen [efectos colaterales](https://es.wikipedia.org/wiki/Efecto_secundario_(inform%C3%A1tica))
+- Tus aplicaciones NO tienen [efectos colaterales](https://es.wikipedia.org/wiki/Efecto_secundario_(inform%C3%A1tica))
 - Puedes hacer [carga perezosa](https://es.wikipedia.org/wiki/Lazy_loading) de tus módulos.
 - Módulo `router` para una fácil integración URL
 - Herramientas para la integración con `socket.io`
