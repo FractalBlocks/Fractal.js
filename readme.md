@@ -25,7 +25,7 @@ Or install it in your browser with:
 
 Or in nodejs, browserify, webpack like enviroments:
 
-```
+```bash
 npm i --save fractal-js
 ```
 
@@ -33,28 +33,30 @@ See [Tutorial](https://github.com/fractalPlatform/Fractal.js/blob/master/TUTORIA
 
 ### Run the examples
 
-There are many useful examples at examples folder run it with:
+There are many useful examples at examples folder. Be sure that you have installed [Node.js](https://nodejs.org/en/), please [download Fractal source](https://github.com/fractalPlatform/Fractal.js/archive/master.zip) and extract them.
 
-```
-git clone https://github.com/fractalPlatform/Fractal.js.git
-cd Fractal.js
-```
-
-Be sure that you have installed [Node.js.](https://nodejs.org/en/). The examples you can run are:
+The examples you can run are:
 
 - playground
 - counterAndList
 - chat
 - mailboxNoRouter
 
+Open a command window into `Fractal.js` folder and run:
+
+```bash
+npm i
+npm run general NAME_OF_EXAMPLE
 ```
-npm run general NAME_EXAMPLE
+
+Some examples needs a backend (e.g. Chat or mailboxNoRouter), run it with:
+
+```bash
+npm i
+node server
 ```
 
-Some examples needs a backend (e.g. Chat or mailboxNoRouter), run it with: `node server`, see the README of the example you want to run for a detailed description.
-
-
-(TODO: More)
+See the [README of the example](https://github.com/fractalPlatform/Fractal.js/tree/master/examples) you want to run for a detailed description.
 
 ## TODOs and roadmap
 
