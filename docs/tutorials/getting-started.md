@@ -16,6 +16,7 @@ If you don't have Node.js in your machine please [install it](https://nodejs.org
 - Unzip the file
 - Open a system shell into the project folder (a command window)
 - Run `npm i` in the shell for it to install the packages listed in package.json
+- Run `npm start` in the shell
 - Run a browser and navigate to http://localhost:3000
 
 Good!! Now you can see a toggle button in action, come on! Click it!
