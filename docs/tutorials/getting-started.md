@@ -2,7 +2,7 @@
 
 You will learn how a Fractal application is structured, how setup a development enviropment and make some live changes to the application.
 
-## Overviw
+## Overview
 
 This application has a very simple funcionality. A botton that toggle between two states and messages when you click it.
 
