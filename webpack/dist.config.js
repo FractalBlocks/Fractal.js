@@ -14,24 +14,16 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js$/,
-        loader: "babel",
+        test: /.js/,
+        loader: 'babel',
         query: {
-          env: {
-            development: {
-              plugins: [
-                "typecheck",
-                "closure-elimination",
-                "object-assign",
-              ],
-            },
-            production: {
-              plugins: [
-                "object-assign",
-              ],
-            },
-          },
-          stage: 0,
+          presets: ['es2015', 'es2017'],
+          plugins: [
+            'transform-runtime',
+            'transform-es2015-destructuring',
+            'transform-object-rest-spread',
+            'transform-async-to-generator'
+          ],
         },
       },
     ],

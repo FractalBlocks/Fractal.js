@@ -54,6 +54,7 @@ npm run general NAME_OF_EXAMPLE
 Some examples needs a backend (e.g. Chat or mailboxNoRouter), run it with:
 
 ```bash
+cd examples/NAME_OF_EXAMPLE
 npm i
 node server
 ```

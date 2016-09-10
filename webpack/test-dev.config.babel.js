@@ -1,3 +1,4 @@
+// TODO: evaluate testing
 let hostname = 'localhost'
 let port = 8080
 
@@ -11,9 +12,18 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
-                loaders: ['babel'],
-                exclude: /node_modules/
+                test: /.js/,
+                loader: 'babel',
+                exclude: /node_modules/,
+                query: {
+                  presets: ['es2015', 'es2017'],
+                  plugins: [
+                    'transform-runtime',
+                    'transform-es2015-destructuring',
+                    'transform-object-rest-spread',
+                    'transform-async-to-generator'
+                  ],
+                },
             },
             {
                 test: /(\.css|\.less)$/,
