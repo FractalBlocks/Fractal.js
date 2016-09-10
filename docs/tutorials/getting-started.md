@@ -1,4 +1,4 @@
-# getting started
+# Getting started
 
 You will learn how a Fractal application is structured, how setup a development enviropment and make some live changes to the application.
 
@@ -35,3 +35,5 @@ You have the following structure:
 
 
 ## My First Module
+
+(TODO)

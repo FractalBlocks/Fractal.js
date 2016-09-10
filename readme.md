@@ -15,7 +15,7 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 
 See the detailed [architecture here](https://github.com/fractalPlatform/Fractal.js/blob/master/docs/ARCHITECTURE.md).
 
-## Make your own fractal based app
+## Make your own Fractal based app
 
 The recomended way is using webpack, please download the [fractal-quickstart](https://github.com/fractalPlatform/Fractal.js-quickstart) repo.
 
@@ -31,7 +31,7 @@ Or in nodejs, browserify, webpack like enviroments:
 npm i --save fractal-js
 ```
 
-See [Tutorial](https://github.com/fractalPlatform/Fractal.js/blob/master/docs/tutorials/tutorial.md) for getting started with fractal.
+See [Tutorial](https://github.com/fractalPlatform/Fractal.js/blob/master/docs/tutorials/tutorial.md) for getting started with Fractal.
 
 ### Run the examples
 
@@ -71,7 +71,7 @@ For a production version run: `npm run compile`, and see the result in the `dist
 ## Tips
 
 - Assets are static, these are copied to the dist folder when you compile the app.
-- Resources are dynamic these are inserted when your require (e.g. require('../resources/myresource.png') ) them, this are serialized and inserted into code .
+- Resources are dynamic these are inserted when your require (e.g. require('../resources/myresource.png') ) them, this are serialized and inserted into code.
 
 ## TODOs
 

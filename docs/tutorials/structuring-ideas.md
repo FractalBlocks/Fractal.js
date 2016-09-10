@@ -1,4 +1,4 @@
-# Creative process
+# Structuring ideas
 
 How bring your idea to life? there are some keys: decontruct, select, make a secuence, encourage and implement. This section describes the process more
 
