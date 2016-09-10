@@ -13,6 +13,8 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 - Router module for easely URL integration and server side rendering (Work in progress)
 - Tools for socket.io integration
 
+See the detailed [architecture here](https://github.com/fractalPlatform/Fractal.js/blob/master/docs/ARCHITECTURE.md).
+
 ## Make your own fractal based app
 
 The recomended way is using webpack, please download the [fractal-quickstart](https://github.com/fractalPlatform/Fractal.js-quickstart) repo.
@@ -29,7 +31,7 @@ Or in nodejs, browserify, webpack like enviroments:
 npm i --save fractal-js
 ```
 
-See [Tutorial](https://github.com/fractalPlatform/Fractal.js/blob/master/TUTORIAL.md) for getting started with fractal.
+See [Tutorial](https://github.com/fractalPlatform/Fractal.js/blob/master/docs/tutorials/tutorial.md) for getting started with fractal.
 
 ### Run the examples
 
@@ -75,7 +77,6 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
-- Expose snabbdom
 - Notify when a service receive an event with no handler
 - Notify when receive a task with no handler
 - Add async/await transform to babel plugins in quickstart, examples and fractal-core
@@ -91,7 +92,8 @@ What are missing for this repo:
 
 What maybe great for this repo:
 
-- Document integration of manifest.json
+- Evaluate converting project into a monorepo using Lernajs
+- Document integration of manifest.json for webapps
 - Implement a way to load workers
 - Implement a way to load service workers
 - Make a dynamicMds function for dynamic input handling FEATURE (Document!!!)
@@ -116,7 +118,7 @@ What maybe great for this repo:
 - Improve documentation of fractal-examples
 - Publish fractal-examples to github
 - Implement fractal-tutorial and publish to github
-- Implement the whole library in Typescript
+- Evaluate implement the whole library in Typescript
 - Implement ramda-mori helpers for Persistent Data Structures
 - Implement an app that uses PouchDB
 - Implement more examples and tutorials

@@ -59,4 +59,17 @@
 
 ## v0.0.18 (Incomming...)
 
-- ...
+-
+- serviceTest module (drafted, work in progress)
+- Improve docs and readme
+
+
+## v0.1.0 (Incomming, short term ...)
+
+- Router relased (work in progress)
+- Remove DEPRECATED methods (work in progress)
+- Testing
+
+## v0.1.1 (Incomming, medium term ...)
+
+- Introduce TypeScript to repo (planned, evaluate)
