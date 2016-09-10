@@ -4,15 +4,15 @@ let HtmlWebpackPlugin = require('html-webpack-plugin')
 
 let vendorModules = /(node_modules|bower_components)/
 
-import CompressionPlugin from 'compression-webpack-plugin'
-import CleanPlugin from 'clean-webpack-plugin'
+let CompressionPlugin = require('compression-webpack-plugin')
+let CleanPlugin = require('clean-webpack-plugin')
 
 
 let option = process.env.OPTION
 let path = process.env.OPTION_PATH
 
 
-export default {
+module.exports = {
   target: "web",
   entry: {
     app: "./" + path + "/" + option,
@@ -31,16 +31,24 @@ export default {
     ],
     loaders: [
       {
-        test: /\.js$/,
+        test: /.js/,
         exclude: vendorModules,
-        loader: "babel",
+        loader: 'babel',
+        query: {
+          presets: ['es2015', 'es2017'],
+          plugins: [
+            'transform-runtime',
+            'transform-es2015-destructuring',
+            'transform-object-rest-spread',
+            'transform-async-to-generator'
+          ],
+        },
       },
       { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
       { test: /\.jpg$/, loader: "url-loader?mimetype=image/jpg" },
       { test: /\.bmp$/, loader: "url-loader?mimetype=image/bmp" },
       { test: /\.png$/, loader: "url-loader?mimetype=image/png" },
-      { test: /\.scss$/, loaders: ["style", "css", "sass"] },
     ],
   },
 

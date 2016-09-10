@@ -7,7 +7,7 @@ let vendorModules = /(node_modules|bower_components)/
 let option = process.env.OPTION
 let path = process.env.OPTION_PATH
 
-export default {
+module.exports = {
   target: "web",
   entry: {
     app: "./" + path + "/" + option,
@@ -22,20 +22,27 @@ export default {
 
   module: {
     preLoaders: [
-      // {test: /\.jsx?$/, loader: "eslint-loader", exclude: vendorModules},
     ],
     loaders: [
       {
-        test: /\.js$/,
+        test: /.js/,
         exclude: vendorModules,
-        loader: "babel",
+        loader: 'babel',
+        query: {
+          presets: ['es2015', 'es2017'],
+          plugins: [
+            'transform-runtime',
+            'transform-es2015-destructuring',
+            'transform-object-rest-spread',
+            'transform-async-to-generator'
+          ],
+        },
       },
       { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
       { test: /\.jpg$/, loader: "url-loader?mimetype=image/jpg" },
       { test: /\.bmp$/, loader: "url-loader?mimetype=image/bmp" },
-      { test: /\.png$/, loader: "url-loader?mimetype=image/png" },
-      { test: /\.scss$/, loaders: ["style", "css", "sass"] },
+      { test: /\.png$/, loader: "url-loader?mimetype=image/png" }
     ],
   },
 
@@ -62,7 +69,7 @@ export default {
     new webpack.HotModuleReplacementPlugin()
   ],
   debug: true,
-  devtool: "cheap-module-inline-source-map",
+  devtool: "source-map",
   profile: false,
 
   devServer: {

@@ -25,25 +25,17 @@ export default {
     ],
     loaders: [
       {
-        test: /\.jsx?$/,
+        test: /.js/,
         exclude: vendorModules,
-        loader: "babel",
+        loader: 'babel',
         query: {
-          optional: [
-            "runtime",
-            // "validation.undeclaredVariableCheck",
-            "optimisation.react.constantElements",
+          presets: ['es2015', 'es2017'],
+          plugins: [
+            'transform-runtime',
+            'transform-es2015-destructuring',
+            'transform-object-rest-spread',
+            'transform-async-to-generator'
           ],
-          env: {
-            development: {
-              plugins: [
-                "typecheck",
-                "closure-elimination",
-              ],
-            },
-          },
-          // jsxPragma: "hJSX",
-          stage: 0,
         },
       },
       { test: /\.css$/, loader: "style-loader!css-loader" },
@@ -51,7 +43,6 @@ export default {
       { test: /\.jpg$/, loader: "url-loader?mimetype=image/jpg" },
       { test: /\.bmp$/, loader: "url-loader?mimetype=image/bmp" },
       { test: /\.png$/, loader: "url-loader?mimetype=image/png" },
-      { test: /\.scss$/, loaders: ["style", "css", "sass"] },
     ],
   },
 
