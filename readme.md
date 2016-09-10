@@ -70,8 +70,8 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 ## Tips
 
-- Assets are static, these are copied to the dist folder.
-- Resources are dynamic these are inserted when your require (e.g. require('../resources/myresource.png') ) them.
+- Assets are static, these are copied to the dist folder when you compile the app.
+- Resources are dynamic these are inserted when your require (e.g. require('../resources/myresource.png') ) them, this are serialized and inserted into code .
 
 ## TODOs
 
