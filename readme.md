@@ -61,10 +61,6 @@ node server
 
 See the [README of the example](https://github.com/fractalPlatform/Fractal.js/tree/master/examples) you want to run for a detailed description.
 
-## TODOs and roadmap
-
-- Put a rank function to data utils
-
 ## Building
 
 For a production version run: `npm run compile`, and see the result in the `dist/` folder.
@@ -80,8 +76,8 @@ What are missing for this repo:
 
 - Notify when a service receive an event with no handler
 - Notify when receive a task with no handler
-- Add async/await transform to babel plugins in quickstart, examples and fractal-core
-- Implement and document serviceTest
+- Implement task middleware, this allows modules to take control on module tasks (FEATURE)
+- Implement and document serviceTest (FEATURE)
 - Implement an example of whole service pattern, serviceTest module and API definitions
 - Implement _error task and attach it by default, this can be done all error handling
 - Implement module validation and dispatch a semantic error
@@ -124,6 +120,7 @@ What maybe great for this repo:
 - Implement an app that uses PouchDB
 - Implement more examples and tutorials
 - Make videotutorials and start a difusion campaign
+- Put a rank function to data utils
 
 ## Roadmap
 

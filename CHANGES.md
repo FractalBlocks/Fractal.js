@@ -69,7 +69,7 @@
 ## v0.1.0 (Incomming, short term ...)
 
 - Router relased (work in progress)
-- Remove DEPRECATED methods (work in progress)
+- Deleted DEPRECATED fetch task (work in progress)
 
 ## v0.1.1 (Incomming, medium term ...)
 

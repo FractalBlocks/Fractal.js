@@ -7,3 +7,7 @@ How bring your idea to life? there are some keys: decontruct, select, make a sec
 - what you know?
 - What you need?
 - What you have?
+
+Work in progress ...
+
+(TODO-DOCS)
