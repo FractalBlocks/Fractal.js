@@ -16,7 +16,6 @@ module.exports = F.def({
     messages: [],
   }),
   inputs: {
-    setConnected: (ctx, Action, connected) => Action.SetConnected(connected),
     connectServer: (ctx, Action, serverName) => ['socketService_value', sendValueTask(serverName)],
     textChange: (ctx, Action, controlName, text) => Action.TextChange(controlName, text),
     sendMessage: (ctx, Action, username, content) => [
@@ -82,7 +81,7 @@ module.exports = F.def({
       ]),
     ]),
     socketService_data: (ctx, i, m) => ({
-      connected: i.setConnected,
+      connected: i._action('SetConnected'),
     }),
     socketService: (ctx, i, m) => ({
       messages: i.receiveMessage,

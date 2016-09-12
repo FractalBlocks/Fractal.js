@@ -16,7 +16,6 @@ module.exports = F.def({
     messages: [],
   }),
   inputs: {
-    setConnected: (ctx, Action, connected) => Action.SetConnected(connected),
     connectServer: (ctx, Action, serverName) => ['value', sendValueTask(serverName)],
     textChange: (ctx, Action, controlName, text) => Action.TextChange(controlName, text),
     sendMessage: (ctx, Action, username, content) => [
@@ -52,7 +51,7 @@ module.exports = F.def({
         ]),
         h('div', {style: styles.row}, [
           h('label', {style: styles.label}, 'Username: '),
-          h('input', {style: styles.input, on: {change: (ev) => i.textChange('username', ev.target.value)}}),
+          h('input', {style: styles.input, on: {change: ev => i.textChange('username', ev.target.value)}}),
         ]),
         h('div', {style: styles.messageContainer},
           m.messages.map(
@@ -69,8 +68,8 @@ module.exports = F.def({
             value: m.text,
           },
           on: {
-            change: (ev) => i.textChange('text', ev.target.value),
-            keyup: (ev) => {
+            change: ev => i.textChange('text', ev.target.value),
+            keyup: ev => {
               if (ev.keyCode == 13 && m.text != '') {
                 i.textChange('text', m.text)
                 i.sendMessage(m.username, m.text)
@@ -82,8 +81,8 @@ module.exports = F.def({
       ]),
     ]),
     socket: (ctx, i, m) => ({
-      connect: () => i.setConnected(true),
-      disconnect: () => i.setConnected(false),
+      connect: () => i._action('SetConnected', true),
+      disconnect: () => i._action('SetConnected', false),
       messages: i.receiveMessage,
     }),
   },

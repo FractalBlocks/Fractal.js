@@ -59,6 +59,7 @@
 
 ## v0.0.18 (Incomming...)
 
+- Implement _action input for easy subscription to an event that don't require processing or multiple dispatching
 - Clean and update deps
 - Support async/await
 - Deleted DEPRECATED fetch driver

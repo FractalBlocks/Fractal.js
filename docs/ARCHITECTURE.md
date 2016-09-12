@@ -124,6 +124,8 @@ let myModule = F.def({
 })
 ```
 
+There are an input called _action created by default for easy subscription to an event that don't require processing or multiple dispatching. You can use this input in the same way a any input by passing the Action name and the data it must dispatch: `i._action('SomeAction', someValue)`
+
 ### Actions
 
 An Action is the unique way to modify the model. An Action are a function that receives some data and the actual model (state) and returns the new model. This mean that is a tranform function, also is pure, in the same way as all app functions in Fractal.
