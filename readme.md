@@ -89,6 +89,7 @@ What are missing for this repo:
 
 What maybe great for this repo:
 
+- Evaluate usage of Fractal for backend and nano-micro services approach
 - Evaluate converting project into a monorepo using Lernajs
 - Document integration of manifest.json for webapps
 - Implement a way to load workers
@@ -126,7 +127,7 @@ What maybe great for this repo:
 
 There are TODOs for short term:
 
-- Start implementation of fractal-ui
+- Start implementation of fractal-ui (work in progess...)
 
 There are TODOs for medium term:
 
