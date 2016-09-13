@@ -1,14 +1,14 @@
 {
   "name": "fractal-js",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "An intuitive framework for building applications and interactive content",
   "main": "dist/fractal.js",
   "scripts": {
     "compile": "set NODE_ENV=production && webpack --config webpack/dist.config.js --progress",
     "compile-dev": "set NODE_ENV=production && webpack --config webpack/dist-dev.config.js --progress",
-    "compile-server": "set NODE_ENV=production && webpack --config webpack/webpack-server.config.babel.js --progress",
+    "compile-server": "set NODE_ENV=production && webpack --config webpack/webpack-server.config.js --progress",
     "lint": "eslint .",
-    "test-dev": "webpack-dev-server --config webpack/test-dev.config.babel.js --progress",
+    "test-dev": "webpack-dev-server --config webpack/test-dev.config.js --progress",
     "general": "set NODE_ENV=development && node tasktool",
     "general-compile": "set NODE_ENV=production && node tasktool"
   },

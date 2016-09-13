@@ -25,7 +25,7 @@ Or install it in your browser with:
 <script src="dist/fractal.min.js"></script>
 ```
 
-Or in nodejs, browserify, webpack like enviroments:
+Or in nodejs, browserify, webpack like environments:
 
 ```bash
 npm i --save fractal-js
@@ -74,12 +74,12 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
-- Notify when a service receive an event with no handler
-- Notify when receive a task with no handler
-- Implement task middleware, this allows modules to take control on module tasks (FEATURE)
 - Implement and document serviceTest (FEATURE)
+- Implement _error task and attach it by default, this can be done all app error handling
+- Implement names for all the modules and examples
+- Implement tests in TESTS.md and document all TODOs
 - Implement an example of whole service pattern, serviceTest module and API definitions
-- Implement _error task and attach it by default, this can be done all error handling
+- Implement task middleware, this allows modules to take control on module tasks (FEATURE)
 - Implement module validation and dispatch a semantic error
 - Implement semantic errors via _error task
 - Improve the quickstart.
@@ -110,7 +110,7 @@ What maybe great for this repo:
 - Improve and update examples, are very outdated (PARTIAL IMPLEMENTED)
 - Implement and document server side routing example
 - screenInfo as a Global listener(middleware) // maybe deprecated?
-- Separate fractal examples into other git repo, with fractalEngine as module
+- Separate fractal examples into other git repo, with fractalEngine as module // (EVALUATE)
 - Improve documentation of fractal
 - Fix dependencies and verify that examples works
 - Improve documentation of fractal-examples

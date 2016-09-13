@@ -35,16 +35,19 @@ A module is a set of your app functionality that is related to a topic. Modules 
 
 For each module should be a module definition. Implementation is described in the following lines.
 
-The `def` function is responsible to convert definition objects into module objects.
 
 ```javascript
-definitionObj = {
-  init, inputs, outputNames,
-}
-def : definitionObj -> moduleObj
+// The `def` function is responsible to convert definition objects into module objects
+let myModule = F.def({
+  name: 'ModuleName',
+  init,
+  ...inputs,
+  ...actions,
+  ...interfaces,
+})
 ```
 
-Module objects are similar to definition objects. `def` function makes some validations and prepare the definition object to be executed by Fractal core or merged in another module.
+Module objects are similar to definition objects. `F.def` function makes some validations and prepare the definition object to be executed by Fractal core or merged in another module. Note that modules should have a name in upper camelcase.
 
 ### Model
 
@@ -52,6 +55,7 @@ The model contains all the module state and only can be changed by an Action upd
 
 ```javascript
 let myModule = F.def({
+  name,
   init : ({key, otherParam1, otherParam2, ...otherParams}) => ({
     key,
     otherParam1,
@@ -72,7 +76,8 @@ Inputs are described into an object, and have a function that behaves like expec
 
 ```javascript
 let myModule = F.def({
-  ...init,
+  name,
+  init,
   inputs: {
     // Inputs can return an Action
     input1: (ctx, Action, data1, data2 ...) => Action.SomeAction(data1, ...),
@@ -103,7 +108,8 @@ The action$ stream is the spine of Fractal, all Actions are dispatched by it. Th
 
 ```javascript
 let myModule = F.def({
-  ...init,
+  name,
+  init,
   inputs: {
     // Inputs can dispatch Action and Tasks asyncronously
     input1: (ctx, Action, data1, data2 ...) => someAsyncStuff1.then(result => ctx.action$(Action.SomeAction(data1, ...))),
@@ -134,6 +140,7 @@ Description of Actions should be an object with the Action name as key and an ar
 
 ```javascript
 let myModule = F.def({
+  name,
   init: ({key}) => ({
     key,
     count: 0,

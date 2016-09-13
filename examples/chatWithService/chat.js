@@ -7,6 +7,7 @@ const emitTask = F.tasks.emitter.types.emit
 
 
 module.exports = F.def({
+  name: 'Chat',
   init: ({key}) => ({
     key,
     server: 'http://localhost:4000',

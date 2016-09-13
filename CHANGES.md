@@ -57,15 +57,25 @@
 - Fix bug with services that not exposes tasks or drivers
 - Added starter tutorial (TODO)
 
-## v0.0.18 (Incomming...)
+## v0.0.18
 
+- Module definitions should have a name in upper camelcase
 - Implement _action input for easy subscription to an event that don't require processing or multiple dispatching
+- Notify when a service receive an event with no handler
+- Implement _modulePath string for tasks
+- Notify when receive a task with no handler
 - Clean and update deps
 - Support async/await
 - Deleted DEPRECATED fetch driver
-- serviceTest module (drafted, work in progress)
 - Improve docs and readme
 
+## v0.0.19 (Incomming...)
+
+- serviceTest module (drafted, work in progress)
+
+## v0.0.20 (Incomming...)
+
+- ...
 
 ## v0.1.0 (Incomming, short term ...)
 
