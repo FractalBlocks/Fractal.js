@@ -82,6 +82,7 @@ What are missing for this repo:
 - Implement tests in TESTS.md and document all TODOs
 - Implement an example of whole service pattern, serviceTest module and API definitions
 - Implement task middleware, this allows modules to take control on module tasks (FEATURE)
+- Implement ui-modules, take the button from quickstart repo
 - Implement module validation and dispatch a semantic error
 - Implement semantic errors via _error task
 - Improve the quickstart.

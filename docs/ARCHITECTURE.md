@@ -1,11 +1,11 @@
 # Architecture
 
-Fractal is a fully featured framework to make frontend apps using a simple and powerfull architecture. Is based on functional programming and other aproaches that simplifies UI development. Also may be used in other contexts, note that Fractal.js is an implementation of the architecture for the web platform but its designed for be language agnostic.
+Fractal is a fully featured framework to make frontend apps using a simple and powerfull architecture. Is based on functional programming and other aproaches that simplifies UI development. Also may be used in other contexts, note that Fractal.js is an implementation of the Fractal architecture for the web platform, but its designed to be language agnostic.
 
 Fractal is an unidirectional user interface architeture that is fractal:
 
 > A unidirectional architecture is said to be fractal if subcomponents are structured in the same way as the whole is.
-> - [Andre Staltz](http://staltz.com/unidirectional-user-interface-architectures.html)
+> -[ Andre Staltz](http://staltz.com/unidirectional-user-interface-architectures.html)
 
 Fractal modules are based on the [Model View Update architecture](http://staltz.com/unidirectional-user-interface-architectures.html#elm). This means that each module are mostly structured in this way.
 
@@ -20,19 +20,19 @@ If you want to learn more about foundations see:
 - An awesome article called [Unidirectional user interface architectures](http://staltz.com/unidirectional-user-interface-architectures.html) by [Andre Staltz](http://staltz.com/)
 - A nice repo and discuss in [functional-frontend-architecture](https://github.com/paldepind/functional-frontend-architecture) by [Simon Friss Vindum](https://github.com/paldepind)
 - [Controlling Time and Space: understanding the many formulations of FRP](https://www.youtube.com/watch?v=Agu6jipKfYw) talk by Evan Czaplicki
-- An article on why Fractal is [writen in Typescript](http://staltz.com/all-js-libraries-should-be-authored-in-typescript.html) (This is a work in progress) (TODO-DOCS)
+- An article on why Fractal.js is [implemented in Typescript](http://staltz.com/all-js-libraries-should-be-authored-in-typescript.html) (This is a work in progress) (TODO-DOCS)
 
 ## Modules
 
 A module is a set of your app functionality that is related to a topic. Modules are computing units and have 3 parts:
 
-- Model -> All the module state are in one data structure called model. This are defined by the `init` function
-- Processing -> Is the way in that application transform data and react to it. Here live two types of functions:
-  - Inputs -> Are used to react to events. This functions transform data and return a list (or one) of Action and/or Tasks structures with that transformed data, this list is dispatched to the corresponding Action Updates and Task Handlers by Fractal.
-  - Actions -> Are functions that transform or modifies specific parts of the model. An Action has three parts: a name, data related to it and a tranform function (also called update in Model View Update pattern). Think in Actions like things triggered for doing certain modifications to the model and therefore all the interfaces (also functions) are recomputed including the view.
-- Comunications -> Interaction with external world, here live two type of functions:
-  - Interfaces -> Are functions that depends on the model and there are many types of interfaces, eg view. Each change on the model causes a recompute of all interfaces, the result of an interface of a module is passed to the parent module and are propagated to the main module which pass them to a Driver related to this specific type of interface (eg View Driver). Drivers interact with external world and perform side effects, also can subscribe Inputs to events that occurs in the interface context, eg a View interface can subscribe an Input to the click event over a button. Interfaces are designed for continuous communication with external world, via model updates or event subscriptions. The key here is that interfaces are recomputed on each model change (done by an Action) and sends data and Input subscriptions to external world. That Inputs are triggered by events from the external world (note that the initiative are taken out of the module).
-  - Tasks -> Are data structures that have attached a name and some data, when dispatched, Task Handlers runs an especific task an perform a side effect using this data. Tasks are designed for discrete communication with external world. The key here is that the module takes the initiative, and may have incoming data in response to the Task via callbacks and those are asyncronous.
+- Model -> All module state is in one data structure called model. This is defined by the `init` function.
+- Processing -> Is the way in which the application transform data and react to events. Here live two types of functions:
+  - Inputs -> Are used to react to events. This functions transform data and return a list of Action and/or Task structures (or one) with the transformed data, this list is dispatched to the corresponding Action Updates and Task Handlers by Fractal.
+  - Actions -> Are functions that transform or modify specific parts of the model. An Action has three parts: a name, data related to it and one transform function (also called update in Model View Update pattern). Think in Actions like things triggered for doing certain modifications to the model and therefore all interfaces (also functions) are recomputed including the view.
+- Comunications -> Interaction with external world. Here live two types of functions:
+  - Interfaces -> Are functions that depends on the model, there are many types of interfaces (e.g. view). Each change on the model, causes a recompute of all interfaces. The result of an interface recompute is passed to the parent module, then it is propagated to main module, which pass this to a Driver related to this specific type of interface (e.g. View Driver). Drivers interact with external world and perform side effects, it also can subscribe Inputs to events that occurs in the interface context, for example a View interface can subscribe an Input to the click event over a button. Interfaces are designed for continuous communication with external world, via model updates or event subscriptions. The key here is that interfaces are recomputed on each model change (done by an Action) and sends data and Input subscriptions to external world. That Inputs are triggered by events from the external world, note that the initiative are taken out of the module.
+  - Tasks -> Are data structures that have attached a name and some data. When dispatched, Task Handlers runs an especific task an perform a side effect using this data. Tasks are designed for discrete communication with external world. The key here is that the module takes the initiative, and may have incoming data in response to the Task via callbacks and those are asyncronous.
 
 For each module should be a module definition. Implementation is described in the following lines.
 
