@@ -1,13 +1,13 @@
+import '../styles.css'
 import F from '../../lib'
 
 
 let engine = F.run({
-  root: require('./app').default,
-  log: true, // debugging <DEVELOP>
+  root: F.log(require('./app').default),
+  tasks: {
+  },
   drivers: {
     view: F.drivers.view('#app'),
-    // time: require('../../lib/drivers/time')(), // TODO: replace deprecated drivers
-    // fetch: require('../../lib/drivers/fetch')(), // TODO: replace deprecated drivers
   },
 })
 
@@ -20,4 +20,3 @@ if (module.hot) {
     engine.reattach(module)
   })
 }
-

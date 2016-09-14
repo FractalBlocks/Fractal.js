@@ -1,11 +1,9 @@
-const R = require('ramda')
-const flyd = require('flyd')
-const h = require('snabbdom/h')
-
-const F = require('../../lib/')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
 
 
-let counter = F.def({
+export default F.def({
   init: () => ({
     count: 0,
   }),
@@ -29,8 +27,6 @@ let counter = F.def({
     ]),
   }
 })
-
-module.exports = counter
 
 let styles = {
   base: {

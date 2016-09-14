@@ -1,11 +1,10 @@
-const R = require('ramda')
-const flyd = require('flyd')
+import '../styles.css'
+import F from '../../lib'
+import flyd from 'flyd'
 
-require('../styles.css')
-const F = require('../../lib')
 
 let engine = F.run({
-  root: F.log(require('./lazyCounterAndList')),
+  root: F.log(require('./lazyCounterAndList').default),
   tasks: {
     fetch: F.tasks.fetch.task(),
   },
@@ -22,8 +21,7 @@ if (module.hot) {
   // We accept updates to the top component
   module.hot.accept('./lazyCounterAndList', (comp) => {
     // Mutate the variable holding our component
-    let module = require('./lazyCounterAndList')
+    let module = require('./lazyCounterAndList').default
     engine.reattach(module)
   })
 }
-

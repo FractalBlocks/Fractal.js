@@ -74,6 +74,8 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
+- Implement granular log option for modules
+- Implement pouchdb integration example
 - Implement and document serviceTest (FEATURE)
 - Implement _error task and attach it by default, this can be done all app error handling
 - Implement names for all the modules and examples
@@ -84,6 +86,7 @@ What are missing for this repo:
 - Implement semantic errors via _error task
 - Improve the quickstart.
 - Reference tutorials whe done.
+- Implement the whole library in Typescript (EVALUATE INCREMENTAL)
 
 ## Ideas
 
@@ -116,7 +119,6 @@ What maybe great for this repo:
 - Improve documentation of fractal-examples
 - Publish fractal-examples to github
 - Implement fractal-tutorial and publish to github
-- Evaluate implement the whole library in Typescript
 - Implement ramda-mori helpers for Persistent Data Structures
 - Implement an app that uses PouchDB
 - Implement more examples and tutorials

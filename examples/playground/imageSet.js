@@ -1,13 +1,12 @@
-const R = require('ramda')
-const flyd = require('flyd')
-const h = require('snabbdom/h')
-const F = require('../../lib/')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
 
 const fetchTask = F.tasks.fetch.types.fetch
 
 // TODO: hacer que este modulo sea una matriz de 4x4 imagenes, evaluar si agregar un metodo de ayuda para esta tarea al core
 
-let imageSet = F.def({
+export default F.def({
   // state stuff
   init: ({key}) => ({
     key,
@@ -56,8 +55,6 @@ let imageSet = F.def({
     ]),
   }
 })
-
-module.exports = imageSet
 
 let styles = {
   base: {

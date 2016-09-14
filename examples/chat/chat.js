@@ -1,12 +1,15 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
-const F = require('../../lib')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
+// import F from '../../dist/fractal'
+
 
 const sendValueTask = F.tasks.value.types.send
 const emitTask = F.tasks.emitter.types.emit
 
 
-module.exports = F.def({
+export default F.def({
+  name: 'Chat',
   init: ({key}) => ({
     key,
     server: 'http://localhost:4000',
@@ -17,7 +20,6 @@ module.exports = F.def({
   }),
   inputs: {
     connectServer: (ctx, Action, serverName) => ['value', sendValueTask(serverName)],
-    textChange: (ctx, Action, controlName, text) => Action.TextChange(controlName, text),
     sendMessage: (ctx, Action, username, content) => [
       Action.MessageSended(content),
       ['socket', emitTask('messages', {sender: username, content: content}, () => 0)],
@@ -26,7 +28,7 @@ module.exports = F.def({
   },
   actions: {
     SetConnected: [[R.T], (connected, m) => R.evolve({connected: R.always(connected)}, m)],
-    TextChange: [[String], (controlName, text, m) => R.evolve({[controlName]: R.always(text)}, m)],
+    TextChange: [[R.T], ({controlName, text}, m) => R.evolve({[controlName]: R.always(text)}, m)],
     MessageSended: [[String], (content, m) => R.evolve({
       text: R.always(''),
       messages: R.append({sender: '@@owner', content}),
@@ -51,7 +53,10 @@ module.exports = F.def({
         ]),
         h('div', {style: styles.row}, [
           h('label', {style: styles.label}, 'Username: '),
-          h('input', {style: styles.input, on: {change: ev => i.textChange('username', ev.target.value)}}),
+          h('input', {style: styles.input, on: {change: ev => i._action('TextChange', {
+            controlName: 'username',
+            text: ev.target.value,
+          })}}),
         ]),
         h('div', {style: styles.messageContainer},
           m.messages.map(
@@ -68,10 +73,16 @@ module.exports = F.def({
             value: m.text,
           },
           on: {
-            change: ev => i.textChange('text', ev.target.value),
+            change: ev => i._action('TextChange', {
+              controlName: 'text',
+              text: ev.target.value,
+            }),
             keyup: ev => {
               if (ev.keyCode == 13 && m.text != '') {
-                i.textChange('text', m.text)
+                i._action('TextChange', {
+                  controlName: 'text',
+                  text: m.text,
+                })
                 i.sendMessage(m.username, m.text)
               }
             },

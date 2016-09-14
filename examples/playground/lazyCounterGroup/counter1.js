@@ -1,42 +1,29 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../../lib'
 
-const F = require('../../../lib/')
 
-
-let counter = F.def({
-  inputs: {
-    inc: (ctx, Action, m) => Action.Inc(),
-    rst: (ctx, Action, m) => Action.Rst(),
-    dec: (ctx, Action, m) => Action.Dec(),
-  },
+export default F.def({
   // state stuff
   init: ({key}) => ({
     key,
     count: 1,
   }),
-  Action: {
-    Inc: [],
-    Dec: [],
-    Rst: [],
-  },
-  update: {
-    Inc: R.evolve({count: R.inc}),
-    Dec: R.evolve({count: R.dec}),
-    Rst: R.evolve({count: R.always(0)}),
+  actions: {
+    Inc: [[], R.evolve({count: R.inc})],
+    Dec: [[], R.evolve({count: R.dec})],
+    Rst: [[], R.evolve({count: R.always(0)})],
   },
   // side connections
   interfaces: {
     view: (ctx, i, m) => h('div', {style: styles.base}, [
       h('div', {style: styles.count}, m.count),
-      h('button', {style: styles.button, on: {click: i.inc}}, 'Inc'),
-      h('button', {style: styles.button, on: {click: i.rst}}, 'Rst'),
-      h('button', {style: styles.button, on: {click: i.dec}}, 'Dec'),
+      h('button', {style: styles.button, on: {click: i._action('Inc')}}, 'Inc'),
+      h('button', {style: styles.button, on: {click: i._action('Rst')}}, 'Rst'),
+      h('button', {style: styles.button, on: {click: i._action('Dec')}}, 'Dec'),
     ]),
   }
 })
-
-module.exports = counter
 
 let styles = {
   base: {

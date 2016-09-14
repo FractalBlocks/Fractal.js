@@ -1,6 +1,6 @@
 # Architecture
 
-Fractal is a fully featured framework to make frontend apps using a simple and powerfull architecture. Is based on functional programming and other aproaches that simplifies UI development.
+Fractal is a fully featured framework to make frontend apps using a simple and powerfull architecture. Is based on functional programming and other aproaches that simplifies UI development. Also may be used in other contexts, note that Fractal.js is an implementation of the architecture for the web platform but its designed for be language agnostic.
 
 Fractal is an unidirectional user interface architeture that is fractal:
 
@@ -20,6 +20,7 @@ If you want to learn more about foundations see:
 - An awesome article called [Unidirectional user interface architectures](http://staltz.com/unidirectional-user-interface-architectures.html) by [Andre Staltz](http://staltz.com/)
 - A nice repo and discuss in [functional-frontend-architecture](https://github.com/paldepind/functional-frontend-architecture) by [Simon Friss Vindum](https://github.com/paldepind)
 - [Controlling Time and Space: understanding the many formulations of FRP](https://www.youtube.com/watch?v=Agu6jipKfYw) talk by Evan Czaplicki
+- An article on why Fractal is [writen in Typescript](http://staltz.com/all-js-libraries-should-be-authored-in-typescript.html) (This is a work in progress) (TODO-DOCS)
 
 ## Modules
 
@@ -201,18 +202,8 @@ See an example of service pattern in the mailbox example
 
 ### The router pattern
 
-(TODO)
-
-## Tips
-
-(TODO: put tips in each topic)
-
-- Your init function should be pure
-- Your view should be pure
-- Use styles with toggeable classes in your views
-- Your inputs should be pure and may contain all tasks (side effects and ctx.action$ calls are in form of tasks - Task API is an incomming feature)
-- Your actions should be pure
-- Use the Router for binding your data with components, and Router should have all the navigation logic (Router is an incomming feature)
+Use the Router for binding your data with components, and Router should have all the navigation logic (Router is an incomming feature)
+(TODO FEATURE)
 
 ## Interaction Patterns
 

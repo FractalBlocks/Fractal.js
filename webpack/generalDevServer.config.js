@@ -34,7 +34,7 @@ module.exports = {
             'transform-runtime',
             'transform-es2015-destructuring',
             'transform-object-rest-spread',
-            'transform-async-to-generator'
+            'transform-async-to-generator',
           ],
         },
       },

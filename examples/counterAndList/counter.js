@@ -1,18 +1,13 @@
-const R = require('ramda')
-const flyd = require('flyd')
-const h = require('snabbdom/h')
-
-const F = require('../../lib/')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
 
 
-let counter = F.def({
-  inputs: {
-    inc: (ctx, Action, m) => ctx.action$(Action.Inc()),
-    rst: (ctx, Action, m) => ctx.action$(Action.Rst()),
-    dec: (ctx, Action, m) => ctx.action$(Action.Dec()),
-  },
+export default F.def({
+  name: 'counter',
   // state stuff
-  init: () => ({
+  init: ({key}) => ({
+    key,
     count: 0,
   }),
   actions: {
@@ -24,14 +19,12 @@ let counter = F.def({
   interfaces: {
     view: (ctx, i, m) => h('div', {style: styles.base}, [
       h('div', {style: styles.count}, m.count),
-      h('button', {style: styles.button, on: {click: i.inc}}, 'Inc'),
-      h('button', {style: styles.button, on: {click: i.rst}}, 'Rst'),
-      h('button', {style: styles.button, on: {click: i.dec}}, 'Dec'),
+      h('button', {style: styles.button, on: {click: i._action('Inc')}}, 'Inc'),
+      h('button', {style: styles.button, on: {click: i._action('Rst')}}, 'Rst'),
+      h('button', {style: styles.button, on: {click: i._action('Dec')}}, 'Dec'),
     ]),
   }
 })
-
-module.exports = counter
 
 let styles = {
   base: {

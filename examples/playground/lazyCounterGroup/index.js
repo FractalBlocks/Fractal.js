@@ -1,11 +1,11 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
-const F = require('../../../lib/')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../../lib'
+import counter0 from './counter0'
 
-const counter0 = require('./counter0')
 
-module.exports = F.def({
-
+export default F.def({
+  name: 'lazyCounterGroup',
   init: ({key}) => ({
     key,
     counter0: counter0.init({key: 'count0'}),
@@ -25,8 +25,8 @@ module.exports = F.def({
     setTimeout(() => require.ensure([], () => {
       let mds = {
         counter0,
-        counter1: require('./counter1'),
-        counter2: require('./counter2'),
+        counter1: require('./counter1').default,
+        counter2: require('./counter2').default,
       }
       ctx.action$(Action.ChargeModule(mds))
       md({

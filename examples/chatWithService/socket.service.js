@@ -1,8 +1,8 @@
-const F = require('../../lib')
-const io = require('socket.io-client')
+import F from '../../lib'
+import io from 'socket.io-client'
 
 
-module.exports = F.service({
+export default F.service({
   store: { // _tasks and _drivers scope are reserved
     serverName: 'http://localhost:4000', // defual
     connected: false,

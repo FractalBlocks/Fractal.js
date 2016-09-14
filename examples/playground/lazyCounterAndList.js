@@ -1,21 +1,20 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
-const F = require('../../lib/')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
+import counterGroup from './lazyCounterGroup'
+import counter from './counter'
+import imageSet from './imageSet'
+import counterAndList from './counterAndList'
+
 const fetchTask = F.tasks.fetch.types.fetch
-
-const counterGroup = require('./lazyCounterGroup')
-const counter = require('./counter')
-const imageSet = require('./imageSet')
-
-let counterAndList = require('./counterAndList')
 
 // TODO: use F.mergeModels in init
 // note that lazy loaded things can't be dinamically composed (and make no sense to do that)
 //// self contained module, it contains a list of itself
 // counterAndList is a module definition and a constructor
 
-module.exports = F.def({
-
+export default F.def({
+  name: 'lazyCounterAndList',
   init: () => ({
     time: 0,
     counterGroup: counterGroup.init({key: 'counterGroup'}),
@@ -27,7 +26,6 @@ module.exports = F.def({
     loremsrc: {},
     childs: [],
   }),
-
   inputs: {
     fetchImage: (ctx, Action, _) => [
       Action.Reload(),
@@ -70,9 +68,7 @@ module.exports = F.def({
     //dynamic childs
     childAction: (ctx, Action, idx, a) => Action.ChildAction(idx, a),
   },
-
   outputNames: ['remove$'],
-
   load: (ctx, i, Action) => {
     i.fetchImage(undefined)
     return { // static modules (Note that thay cannot be static child of itself - Infinite recursion)
@@ -193,5 +189,4 @@ module.exports = F.def({
       }
     },
   },
-
 })

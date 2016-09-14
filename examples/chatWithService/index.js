@@ -1,12 +1,12 @@
-require('../styles.css') // Global styles , TODO: Document it!! (should be in a quickstart or seed documentation)
-const F = require('../../lib')
+import '../styles.css' // Global styles , TODO: Document it!! (should be in a quickstart or seed documentation)
+import F from '../../lib'
+import socketService from './socket.service'
 
-const socketService = require('./socket.service')
 socketService.connect()
 
 
 let engine = F.run({
-  root: F.log(require('./chat')),
+  root: F.log(require('./chat').default),
   services: {
     socketService,
   },
@@ -21,7 +21,7 @@ if (module.hot) {
   // We accept updates to the top component
   module.hot.accept('./chat', (comp) => {
     // Mutate the variable holding our component
-    let module = require('./chat')
+    let module = require('./chat').default
     engine.reattach(module)
   })
 }

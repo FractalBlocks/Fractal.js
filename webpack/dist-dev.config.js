@@ -1,15 +1,19 @@
+var StatsPlugin = require('stats-webpack-plugin')
 var webpack = require('webpack')
 
 module.exports = {
+  target: 'web',
   entry: {
-    fractalEngine: "./lib/index.js",
+    fractal: './lib/index.js',
   },
+  devtool: 'source-map',
   output: {
-      path: './dist',
-      filename: 'fractal.js',
-      libraryTarget: 'umd',
-      library: 'fractal',
-      umdNamedDefine: true
+    path: './dist',
+    filename: 'fractal.js',
+    sourceMapFilename: 'fractal.map',
+    libraryTarget: 'umd',
+    library: 'fractal',
+    umdNamedDefine: true,
   },
   module: {
     loaders: [
@@ -19,14 +23,22 @@ module.exports = {
         query: {
           presets: ['es2015', 'es2017'],
           plugins: [
-            'transform-runtime',
+            ['transform-runtime', {
+              helpers: false,
+              polyfill: false,
+              regenerator: true,
+            }],
             'transform-es2015-destructuring',
             'transform-object-rest-spread',
-            'transform-async-to-generator'
+            'transform-async-to-generator',
           ],
         },
       },
     ],
   },
-  plugins: [],
+  plugins: [
+    new StatsPlugin('webpack-stats.json', {
+      chunkModules: true,
+    }),
+  ],
 }

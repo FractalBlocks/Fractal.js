@@ -1,49 +1,50 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
-const F = require('../../lib/')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
 
-const counter = require('./counter')
+import counter from './counter'
 
 // TODO: use F.mergeModels in init
 // note that lazy loaded things can't be dinamically composed (and make no sense to do that)
 //// self contained module, it contains a list of itself
 // counterAndList is a module definition and a constructor
 let counterAndList = F.defineModule({
-
-  init: () => ({
+  name: 'counterAndList',
+  init: ({key}) => ({
+    key,
     time: 0,
     activeCount: true,
     lorempixel: 'fetching',
     loremsrc: {},
-    counter0: counter.init(),
-    counter1: counter.init(),
+    counter0: counter.init({key: 'counter0'}),
+    counter1: counter.init({key: 'counter1'}),
     childs: [],
   }),
 
   inputs: {
-    lorempixel: (ctx, Action, blob) => ctx.action$(Action.Lorempixel(URL.createObjectURL(blob))),
-    lorempixelError: (ctx, Action, d) => ctx.action$(Action.LorempixelFail()),
-    reload: (ctx, Action, d) => ctx.action$(Action.Reload()),
-    inc: (ctx, Action, d) => ctx.action$(Action.Counter0Action(counter.Action.Inc())),
-    tick: (ctx, Action, d) => ctx.action$(Action.Tick()),
+    lorempixel: (ctx, Action, blob) => Action.Lorempixel(URL.createObjectURL(blob)),
+    lorempixelError: (ctx, Action, _) => Action.LorempixelFail(),
+    reload: (ctx, Action, _) => Action.Reload(),
+    inc: (ctx, Action, _) => Action.Counter0Action(counter.Action.Inc()),
+    tick: (ctx, Action, _) => Action.Tick(),
 
-    add: (ctx, Action, d) => ctx.action$(Action.Add()),
-    remove: (ctx, Action, idx) => ctx.action$(Action.Remove(idx)),
-    removeAll: (ctx, Action, d) => ctx.action$(Action.RemoveAll()),
-    resetAll: (ctx, Action, d) => {
-      ctx.action$(Action.ResetAll())
-      ctx.action$(Action.SetActiveAll())
-    },
-    deepReset: (ctx, Action, d) => {
-      ctx.action$(Action.DeepReset())
-      ctx.action$(Action.DeepActiveAll())
-    },
-    deepReload: (ctx, Action, d) => ctx.action$(Action.DeepReload()),
+    add: (ctx, Action, _) => Action.Add(),
+    remove: (ctx, Action, idx) => Action.Remove(idx),
+    removeAll: (ctx, Action, _) => Action.RemoveAll(),
+    resetAll: (ctx, Action, _) => [
+      Action.ResetAll(),
+      Action.SetActiveAll(),
+    ],
+    deepReset: (ctx, Action, _) => [
+      Action.DeepReset(),
+      Action.DeepActiveAll(),
+    ],
+    deepReload: (ctx, Action, _) => Action.DeepReload(),
 
     //dynamic childs
-    counter0Action: (ctx, Action, a) => ctx.action$(Action.Counter0Action(a)),
-    counter1Action: (ctx, Action, a) => ctx.action$(Action.Counter1Action(a)),
-    childAction: (ctx, Action, idx, a) => ctx.action$(Action.ChildAction(idx, a)),
+    counter0Action: (ctx, Action, a) => Action.Counter0Action(a),
+    counter1Action: (ctx, Action, a) => Action.Counter1Action(a),
+    childAction: (ctx, Action, idx, a) => Action.ChildAction(idx, a),
   },
 
   outputNames: ['remove$'],
@@ -54,55 +55,35 @@ let counterAndList = F.defineModule({
       counter1: F.createContext(counter, {action$: i.counter1Action}),
     }
   },
-  Action: {
-    Reload: [],
-    SetActiveCount: [R.T],
-    Tick: [],
-    Lorempixel: [String],
-    LorempixelFail: [],
-    // child related actions
-    Add: [],
-    Remove: [Number],
-    RemoveAll: [],
-    ResetAll: [],
-    SetActiveAll: [],
-    DeepActiveAll: [],
-    DeepReset: [],
-    DeepReload: [],
-    // child actions
-    Counter0Action: [Array], // static composing
-    Counter1Action: [Array], // static composing
-    ChildAction: [Number, Array], // dynamic composing
-  },
-  update: {
-    Reload: R.evolve({lorempixel: R.always('fetching')}),
-    SetActiveCount: (bool, m) => R.evolve({activeCount: R.always(bool)}, m),
-    Tick: R.evolve({time: R.inc}),
-    Lorempixel: (objURL, model) => R.evolve({
+  actions: {
+    Reload: [[], R.evolve({lorempixel: R.always('fetching')})],
+    SetActiveCount: [[R.T], (bool, m) => R.evolve({activeCount: R.always(bool)}, m)],
+    Tick: [[], R.evolve({time: R.inc})],
+    Lorempixel: [[String], (objURL, model) => R.evolve({
       lorempixel: R.always('success'),
       loremsrc: R.always(objURL)
-    }, model),
-    LorempixelFail: R.evolve({lorempixel: R.always('error')}),
+    }, model)],
+    LorempixelFail: [[], R.evolve({lorempixel: R.always('error')})],
     // child related actions
-    Add: model => R.evolve({childs: R.append(counterAndList.init())}, model),
-    Remove: (idx, model) => R.evolve({childs: R.remove(idx, 1)}, model),
-    RemoveAll: R.evolve({childs: R.always([])}),
-    ResetAll: model => R.evolve({childs: R.map(R.pipe(
+    Add: [[], model => R.evolve({childs: R.append(counterAndList.init({key: model.childs.length}))}, model)],
+    Remove: [[Number], (idx, model) => R.evolve({childs: R.remove(idx, 1)}, model)],
+    RemoveAll: [[], R.evolve({childs: R.always([])})],
+    ResetAll: [[], model => R.evolve({childs: R.map(R.pipe(
       counterAndList.update(counterAndList.Action.Counter0Action(counter.Action.Rst())),
       counterAndList.update(counterAndList.Action.SetActiveCount(false)),
-    ))}, model),
-    SetActiveAll: model => R.evolve({childs: R.map(
+    ))}, model)],
+    SetActiveAll: [[], model => R.evolve({childs: R.map(
       counterAndList.update(counterAndList.Action.SetActiveCount(true))
-    )}, model),
-    DeepActiveAll: function deepActiveAll (model) { // recusive examples
+    )}, model)],
+    DeepActiveAll: [[], function deepActiveAll (model) { // recusive examples
       return R.evolve({childs: R.map(
         R.pipe(
           counterAndList.update(counterAndList.Action.SetActiveCount(true)),
           deepActiveAll
         )
       )}, model)
-    },
-    DeepReset: function deepReset (model) { // recusive examples
+    }],
+    DeepReset: [[], function deepReset (model) { // recusive examples
       return R.evolve({childs: R.map(
         R.pipe(
           counterAndList.update(counterAndList.Action.Counter0Action(counter.Action.Rst())),
@@ -110,20 +91,20 @@ let counterAndList = F.defineModule({
           deepReset
         )
       )}, model)
-    },
-    DeepReload: function deepReload (model) { // recusive examples
+    }],
+    DeepReload: [[], function deepReload (model) { // recusive examples
       return R.evolve({childs: R.map(
         R.pipe(
           counterAndList.update(counterAndList.Action.Reload()),
           deepReload
         )
       )}, model)
-    },
+    }],
 
     // child actions
-    Counter0Action: (a, m) => R.evolve({counter0: counter.update(a)}, m),
-    Counter1Action: (a, m) => R.evolve({counter1: counter.update(a)}, m),
-    ChildAction: (idx, action, model) => R.evolve({childs: R.adjust(counterAndList.update(action), idx)}, model),
+    Counter0Action: [[Array], (a, m) => R.evolve({counter0: counter.update(a)}, m)],
+    Counter1Action: [[Array], (a, m) => R.evolve({counter1: counter.update(a)}, m)],
+    ChildAction: [[Number, Array], (idx, action, model) => R.evolve({childs: R.adjust(counterAndList.update(action), idx)}, model)],
   },
 
   interfaces: {
@@ -202,4 +183,4 @@ let counterAndList = F.defineModule({
 
 })
 
-module.exports = counterAndList
+export default counterAndList

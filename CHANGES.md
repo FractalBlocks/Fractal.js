@@ -69,19 +69,22 @@
 - Deleted DEPRECATED fetch driver
 - Improve docs and readme
 
-## v0.0.19 (Incomming...)
+## v0.1.0 (Incomming...)
+
+- Fix broken v0.0.18, and add es6 modules to Fractal (no more module.exports, require used for dynamic loading and use with .default), refactoring the whole library
+- Update examples and DEPRECATE log
+- Implement granular log option for modules
+- Deleted DEPRECATED methods
+
+## v0.1.1 (Incomming...)
 
 - serviceTest module (drafted, work in progress)
-
-## v0.0.20 (Incomming...)
-
 - ...
 
-## v0.1.0 (Incomming, short term ...)
+## v0.1.2 (Incomming, short term ...)
 
 - Router relased (work in progress)
-- Deleted DEPRECATED fetch task (work in progress)
 
-## v0.1.1 (Incomming, medium term ...)
+## v0.1.3 (Incomming, medium term ...)
 
 - Introduce TypeScript to repo (planned, evaluate)

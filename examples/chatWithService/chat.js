@@ -1,12 +1,12 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
-const F = require('../../lib')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
 
 const sendValueTask = F.tasks.value.types.send
 const emitTask = F.tasks.emitter.types.emit
 
 
-module.exports = F.def({
+export default F.def({
   name: 'Chat',
   init: ({key}) => ({
     key,

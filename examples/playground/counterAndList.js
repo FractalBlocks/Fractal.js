@@ -1,11 +1,11 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
-const F = require('../../lib/')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
+import counter from './counter'
+import imageSet from './imageSet'
+
 
 const fetchTask = F.tasks.fetch.types.fetch
-
-const counter = require('./counter')
-const imageSet = require('./imageSet')
 
 // TODO: use F.mergeModels in init
 // note that lazy loaded things can't be dinamically composed (and make no sense to do that)
@@ -185,4 +185,4 @@ let counterAndList = F.def({
 
 })
 
-module.exports = counterAndList
+export default counterAndList
