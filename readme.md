@@ -76,6 +76,7 @@ What are missing for this repo:
 
 - Implement granular log option for modules
 - Implement pouchdb integration example
+- Document granular log option for modules
 - Implement and document serviceTest (FEATURE)
 - Implement _error task and attach it by default, this can be done all app error handling
 - Implement names for all the modules and examples

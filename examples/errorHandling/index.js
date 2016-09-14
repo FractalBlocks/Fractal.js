@@ -3,7 +3,9 @@ import F from '../../lib'
 
 
 let engine = F.run({
-  root: F.log(require('./app').default),
+  log: true,
+  // logAll: true,
+  root: require('./app').default,
   tasks: {
   },
   drivers: {

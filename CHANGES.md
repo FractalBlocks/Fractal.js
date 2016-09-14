@@ -71,10 +71,10 @@
 
 ## v0.1.0 (Incomming...)
 
-- Fix broken v0.0.18, and add es6 modules to Fractal (no more module.exports, require used for dynamic loading and use with .default), refactoring the whole library
-- Update examples and DEPRECATE log
-- Deleted DEPRECATED methods
 - Implement granular log option for modules
+- Deleted DEPRECATED methods
+- Fix broken v0.0.18, and add es6 modules to Fractal (no more module.exports, require used for dynamic loading and use with .default), refactoring the whole library
+- Update examples and DEPRECATE REMOVED log
 
 ## v0.1.1 (Incomming...)
 

@@ -200,7 +200,15 @@ A service is an entity that contains state that is transversal to modules(e.g. d
 `// TODO: improve this explanation`
 See an example of service pattern in the mailbox example
 
-### The router pattern
+## Engine
+
+(TODO-DOCS)
+
+### Middleware
+
+(TODO-DOCS)
+
+## The router pattern
 
 Use the Router for binding your data with components, and Router should have all the navigation logic (Router is an incomming feature)
 (TODO FEATURE)
