@@ -2,18 +2,26 @@ import R from 'ramda'
 import h from 'snabbdom/h'
 import F from '../../lib'
 
+let childs = {
+  submodule: require('./submodule').default,
+}
 
 export default F.def({
-  log: true,
   name: 'Main',
   init: ({key}) => ({
     key,
     isActive: false,
+    ...F.mergeModels(childs),
   }),
+  load: (ctx, i, Action) => {
+    return R.mapObjIndexed((md, name) => F.createContext(md, {action$: i._childAction(name, md.update)}), childs)
+  },
   inputs: {
+    _childAction: (ctx, Action, name, update, a) => Action._ChildAction(name, update, a),
   },
   actions: {
     Toggle: [[], R.evolve({isActive: R.not})],
+    _ChildAction: [[String, R.T, Array], (name, update, a, m) => R.evolve({[name]: update(a)}, m)],
   },
   interfaces: {
     view: (ctx, i, m) => h('div', {key: m.key, class: {[styles.base]: true}}, [
@@ -26,6 +34,7 @@ export default F.def({
           click: i._action('Toggle'),
         },
       }, (m.isActive) ? 'nice!! :)' : 'Click me!!'),
+      ctx._md.submodule.interfaces.view(m.submodule),
     ]),
   },
 })

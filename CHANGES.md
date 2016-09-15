@@ -69,7 +69,7 @@
 - Deleted DEPRECATED fetch driver
 - Improve docs and readme
 
-## v0.1.0 (Incomming...)
+## v0.1.0
 
 - Implement granular log option for modules
 - Deleted DEPRECATED methods

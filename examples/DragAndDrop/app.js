@@ -23,7 +23,7 @@ module.exports = F.def({
   actions: {
     BlockAction: [[Number, Array], (index, action, m) => R.evolve({ blocks: R.adjust(blocksM.update(action), index) }, m)],
   },
-  responses: {
+  interfaces: {
     view: (ctx, i, m) => {
       return h('svg', {
           attrs: {

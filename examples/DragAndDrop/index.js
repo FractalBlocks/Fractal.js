@@ -9,9 +9,11 @@ const patch = require('snabbdom').init([
 ])
 
 require('../styles.css')
-const F = require('../../lib')
+import F from '../../lib'
+
 
 let engine = F.run({
+  logAll: true,
   root: F.log(require('./app')),
   drivers: {
     view: require('../../lib/drivers/view')('#app', patch),

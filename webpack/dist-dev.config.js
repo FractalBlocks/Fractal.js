@@ -1,6 +1,7 @@
 var StatsPlugin = require('stats-webpack-plugin')
 var webpack = require('webpack')
 
+
 module.exports = {
   target: 'web',
   entry: {

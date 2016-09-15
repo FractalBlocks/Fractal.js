@@ -64,30 +64,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = _extends({}, __webpack_require__(1).default, __webpack_require__(13).default, {
 	  h: __webpack_require__(62).default,
-	  flyd: __webpack_require__(41).default,
+	  flyd: __webpack_require__(14).default,
 	  timetravel: __webpack_require__(48).default,
-	  log: __webpack_require__(73).default,
 	  // router: require('./router').default,
-	  service: __webpack_require__(74).default,
-	  noChildren: __webpack_require__(76).default,
+	  service: __webpack_require__(73).default,
+	  noChildren: __webpack_require__(75).default,
 	  tasks: {
-	    data: __webpack_require__(77).default,
-	    value: __webpack_require__(78).default,
-	    fetch: __webpack_require__(79).default,
-	    emitter: __webpack_require__(80).default
+	    data: __webpack_require__(76).default,
+	    value: __webpack_require__(77).default,
+	    fetch: __webpack_require__(78).default,
+	    emitter: __webpack_require__(79).default
 	  },
 	  drivers: {
-	    view: __webpack_require__(81).default,
-	    event: __webpack_require__(88).default,
-	    listenable: __webpack_require__(89).default,
-	    load: __webpack_require__(90).default,
-	    time: __webpack_require__(91), // NEEDS REVIEW!! (maybe depreecated.default)
-	    localStorage: __webpack_require__(92).default,
-	    screenInfo: __webpack_require__(93).default
+	    view: __webpack_require__(80).default,
+	    event: __webpack_require__(87).default,
+	    listenable: __webpack_require__(88).default,
+	    load: __webpack_require__(89).default,
+	    time: __webpack_require__(90).default, // NEEDS REVIEW!! (maybe depreecated.default)
+	    localStorage: __webpack_require__(91).default,
+	    screenInfo: __webpack_require__(92).default
 	  }
-	}, __webpack_require__(16).default, {
-	  data: __webpack_require__(75).default,
-	  style: __webpack_require__(95).default
+	}, __webpack_require__(23).default, {
+	  data: __webpack_require__(74).default,
+	  style: __webpack_require__(94).default
 	});
 
 /***/ },
@@ -107,6 +106,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var def = function def(moduleDef) {
 	  var mDef = R.clone(moduleDef);
 	  mDef.name = mDef.hasOwnProperty('name') ? mDef.name : 'UnamedModule';
+	  mDef.log = mDef.hasOwnProperty('log') ? mDef.log : false;
+	  mDef.logAll = mDef.hasOwnProperty('logAll') ? mDef.logAll : false;
 	  if (mDef.actions) {
 	    mDef.Action = {};
 	    mDef.update = {};
@@ -121,7 +122,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    mDef.inputs = {};
 	  }
 	  mDef.inputs._action = function (ctx, Action, name, data) {
-	    return Action[name](data);
+	    return Action[name].length > 0 ? Action[name](data) : Action[name]();
 	  };
 	  if (!mDef.outputNames) {
 	    mDef.outputNames = [];
@@ -141,8 +142,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	exports.default = {
-	  def: def,
-	  defineModule: def };
+	  def: def
+	};
 
 /***/ },
 /* 2 */
@@ -636,9 +637,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _logdiff = __webpack_require__(14);
+	var _flyd = __webpack_require__(14);
 	
-	var _helpers = __webpack_require__(16);
+	var _flyd2 = _interopRequireDefault(_flyd);
+	
+	var _unionType = __webpack_require__(7);
+	
+	var _unionType2 = _interopRequireDefault(_unionType);
+	
+	var _logdiff = __webpack_require__(21);
+	
+	var _helpers = __webpack_require__(23);
 	
 	var _helpers2 = _interopRequireDefault(_helpers);
 	
@@ -651,11 +660,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var R = {
 	  pipe: __webpack_require__(65),
 	  flip: __webpack_require__(71),
-	  equals: __webpack_require__(37)
+	  equals: __webpack_require__(44)
 	};
-	var flyd = __webpack_require__(41);
-	var Type = __webpack_require__(7);
-	
 	
 	// Attach architecture to the main module
 	var run = function run(engineDef) {
@@ -665,7 +671,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      driverStreams = {},
 	      module = void 0;
 	  var middleUpdatesArr = [],
-	      middleware = engineDef.middleware || {};
+	      middleware = engineDef.middleware || {},
+	      log = engineDef.log || false;
+	  engineDef.logAll = engineDef.hasOwnProperty('logAll') ? engineDef.logAll : false;
 	
 	  for (var key in middleware) {
 	    middleUpdatesArr.push(middleware[key]);
@@ -684,9 +692,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    module = _helpers2.default.createContext(moduleDef);
 	    ctx = module.ctx;
 	
-	    model$ = flyd.scan(function (m, a) {
-	      return middleUpdates(module.update(a, m));
-	    }, middleUpdates(model ? model : module.init({ key: 'mainModule' })), ctx.action$); // state
+	    function log(m, newModel) {
+	      var action = arguments.length <= 2 || arguments[2] === undefined ? { _initial: true, _log: engineDef.log || engineDef.logAll, _moduleName: module.name } : arguments[2];
+	
+	      var actionInfo = (0, _logdiff.actionModuleInfo)(action);
+	      if (engineDef.log && actionInfo.log || engineDef.logAll) {
+	        if (!action._initial) {
+	          (0, _logdiff.logAction)(action);
+	          (0, _logdiff.displayFromDiff)((0, _logdiff.diff)(m, newModel));
+	        } else {
+	          console.log('%c Fractal is initializing your app.', 'color: purple; font-size: 14px');
+	          console.log('%c Model computed ...', 'color: purple; font-size: 14px');
+	          console.log('%c Connecting machines ...', 'color: purple; font-size: 14px');
+	          console.log('%c Done, have a nice day :)', 'color: purple; font-size: 14px');
+	        }
+	        console.log(newModel);
+	      }
+	      return newModel;
+	    }
+	
+	    model$ = _flyd2.default.scan(function (m, a) {
+	      return log(m, middleUpdates(module.update(a, m)), _helpers2.default.addModuleInfo(module, a));
+	    }, log({}, middleUpdates(model ? model : module.init({ key: 'mainModule' }))), ctx.action$); // state
 	
 	    // automerge services
 	    if (!engineDef.tasks) {
@@ -713,11 +740,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    // connect tasks handlers to interfaces
-	    flyd.on(function (task) {
+	    _flyd2.default.on(function (t) {
+	      var task = _helpers2.default.addModuleInfo(t);
 	      if (engineDef.tasks[task[0]]) {
 	        engineDef.tasks[task[0]].run(task[1]);
-	      } else {
-	        console.warn('There are no handler for ' + task[0] + ' task, sended by ' + task._modulePath + ' module');
+	      } else if (engineDef.log && task._log || engineDef.logAll) {
+	        console.warn('There are no handler for ' + task[0] + ' task, sended by ' + task._moduleName + ' module');
 	      }
 	    }, ctx.task$);
 	
@@ -727,7 +755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // TODO: evaluate error handling, maybe an error$ stream
 	        // driverStreams[driverName] =
 	        //   flyd.map(model => e('driverExecution', {name: driverName, model}, () => module.interfaces[driverName](model)), model$)
-	        driverStreams[_driverName] = flyd.map(module.interfaces[_driverName], model$);
+	        driverStreams[_driverName] = _flyd2.default.map(module.interfaces[_driverName], model$);
 	        if (model) {
 	          engineDef.drivers[_driverName].reattach(driverStreams[_driverName]);
 	        } else {
@@ -768,8 +796,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	exports.default = {
-	  run: run,
-	  createEngine: run };
+	  run: run
+	};
 
 /***/ },
 /* 14 */
@@ -777,1677 +805,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _require = __webpack_require__(15);
-	
-	var diff = _require.diff;
-	
-	
-	var prettyAction = function prettyAction(action) {
-	  var path = [],
-	      nested = action;
-	  while (nested[nested.length - 1] != undefined && nested[nested.length - 1].of != undefined) {
-	    if (nested.length == 0) path.push(nested.name);else {
-	      var name = '';
-	      for (var i = 0; i < nested.length - 1; i++) {
-	        name += nested[i] + ' ';
-	      }
-	      path.push(nested.name + ' ' + name);
-	    }
-	    nested = nested[nested.length - 1];
-	  }
-	  path.push(nested.name);
-	  return path.join(' -> ') + ' : ' + (nested[0] ? nested[0] : 'none');
-	};
-	
-	var prettyDiff = function prettyDiff(diffArray) {
-	  diffArray = diffArray || [];
-	  var logs = [];
-	  diffArray.forEach(function (diff) {
-	    var getType = function getType(diff) {
-	      if (diff.kind == 'N') return 'added';else if (diff.kind == 'D') return 'deleted';else if (diff.kind == 'E') return 'edited';else if (diff.kind == 'A') return 'array';
-	    };
-	
-	    var type = getType(diff);
-	
-	    if (type == 'array') // if an array is modified
-	      logs.push(type + ' ' + diff.path.join('.') + ' : index ' + diff.index + ' ' + getType(diff.item));else logs.push(type + ' ' + diff.path.join('.') + ' : ' + diff.lhs + ' -> ' + diff.rhs);
-	  });
-	  return logs;
-	};
-	
-	var logAction = function logAction(action) {
-	  return console.log('%c' + prettyAction(action), 'color: green');
-	};
-	
-	var displayFromDiff = function displayFromDiff(diffArray) {
-	  prettyDiff(diffArray).forEach(function (log) {
-	    return console.log('%c' + log, 'color: darkblue');
-	  });
-	};
-	
-	exports.default = {
-	  logAction: logAction,
-	  displayFromDiff: displayFromDiff,
-	  prettyDiff: prettyDiff,
-	  prettyAction: prettyAction,
-	  diff: diff
-	};
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {'use strict';
-	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
-	/*!
-	 * deep-diff.
-	 * Licensed under the MIT License.
-	 */
-	;(function (root, factory) {
-	  'use strict';
-	
-	  if (true) {
-	    // AMD. Register as an anonymous module.
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-	      return factory();
-	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
-	    // Node. Does not work with strict CommonJS, but
-	    // only CommonJS-like environments that support module.exports,
-	    // like Node.
-	    module.exports = factory();
-	  } else {
-	    // Browser globals (root is window)
-	    root.DeepDiff = factory();
-	  }
-	})(undefined, function (undefined) {
-	  'use strict';
-	
-	  var $scope,
-	      conflict,
-	      conflictResolution = [];
-	  if ((typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object' && global) {
-	    $scope = global;
-	  } else if (typeof window !== 'undefined') {
-	    $scope = window;
-	  } else {
-	    $scope = {};
-	  }
-	  conflict = $scope.DeepDiff;
-	  if (conflict) {
-	    conflictResolution.push(function () {
-	      if ('undefined' !== typeof conflict && $scope.DeepDiff === accumulateDiff) {
-	        $scope.DeepDiff = conflict;
-	        conflict = undefined;
-	      }
-	    });
-	  }
-	
-	  // nodejs compatible on server side and in the browser.
-	  function inherits(ctor, superCtor) {
-	    ctor.super_ = superCtor;
-	    ctor.prototype = Object.create(superCtor.prototype, {
-	      constructor: {
-	        value: ctor,
-	        enumerable: false,
-	        writable: true,
-	        configurable: true
-	      }
-	    });
-	  }
-	
-	  function Diff(kind, path) {
-	    Object.defineProperty(this, 'kind', {
-	      value: kind,
-	      enumerable: true
-	    });
-	    if (path && path.length) {
-	      Object.defineProperty(this, 'path', {
-	        value: path,
-	        enumerable: true
-	      });
-	    }
-	  }
-	
-	  function DiffEdit(path, origin, value) {
-	    DiffEdit.super_.call(this, 'E', path);
-	    Object.defineProperty(this, 'lhs', {
-	      value: origin,
-	      enumerable: true
-	    });
-	    Object.defineProperty(this, 'rhs', {
-	      value: value,
-	      enumerable: true
-	    });
-	  }
-	  inherits(DiffEdit, Diff);
-	
-	  function DiffNew(path, value) {
-	    DiffNew.super_.call(this, 'N', path);
-	    Object.defineProperty(this, 'rhs', {
-	      value: value,
-	      enumerable: true
-	    });
-	  }
-	  inherits(DiffNew, Diff);
-	
-	  function DiffDeleted(path, value) {
-	    DiffDeleted.super_.call(this, 'D', path);
-	    Object.defineProperty(this, 'lhs', {
-	      value: value,
-	      enumerable: true
-	    });
-	  }
-	  inherits(DiffDeleted, Diff);
-	
-	  function DiffArray(path, index, item) {
-	    DiffArray.super_.call(this, 'A', path);
-	    Object.defineProperty(this, 'index', {
-	      value: index,
-	      enumerable: true
-	    });
-	    Object.defineProperty(this, 'item', {
-	      value: item,
-	      enumerable: true
-	    });
-	  }
-	  inherits(DiffArray, Diff);
-	
-	  function arrayRemove(arr, from, to) {
-	    var rest = arr.slice((to || from) + 1 || arr.length);
-	    arr.length = from < 0 ? arr.length + from : from;
-	    arr.push.apply(arr, rest);
-	    return arr;
-	  }
-	
-	  function realTypeOf(subject) {
-	    var type = typeof subject === 'undefined' ? 'undefined' : _typeof(subject);
-	    if (type !== 'object') {
-	      return type;
-	    }
-	
-	    if (subject === Math) {
-	      return 'math';
-	    } else if (subject === null) {
-	      return 'null';
-	    } else if (Array.isArray(subject)) {
-	      return 'array';
-	    } else if (Object.prototype.toString.call(subject) === '[object Date]') {
-	      return 'date';
-	    } else if (typeof subject.toString !== 'undefined' && /^\/.*\//.test(subject.toString())) {
-	      return 'regexp';
-	    }
-	    return 'object';
-	  }
-	
-	  function deepDiff(lhs, rhs, changes, prefilter, path, key, stack) {
-	    path = path || [];
-	    var currentPath = path.slice(0);
-	    if (typeof key !== 'undefined') {
-	      if (prefilter) {
-	        if (typeof prefilter === 'function' && prefilter(currentPath, key)) {
-	          return;
-	        } else if ((typeof prefilter === 'undefined' ? 'undefined' : _typeof(prefilter)) === 'object') {
-	          if (prefilter.prefilter && prefilter.prefilter(currentPath, key)) {
-	            return;
-	          }
-	          if (prefilter.normalize) {
-	            var alt = prefilter.normalize(currentPath, key, lhs, rhs);
-	            if (alt) {
-	              lhs = alt[0];
-	              rhs = alt[1];
-	            }
-	          }
-	        }
-	      }
-	      currentPath.push(key);
-	    }
-	
-	    // Use string comparison for regexes
-	    if (realTypeOf(lhs) === 'regexp' && realTypeOf(rhs) === 'regexp') {
-	      lhs = lhs.toString();
-	      rhs = rhs.toString();
-	    }
-	
-	    var ltype = typeof lhs === 'undefined' ? 'undefined' : _typeof(lhs);
-	    var rtype = typeof rhs === 'undefined' ? 'undefined' : _typeof(rhs);
-	    if (ltype === 'undefined') {
-	      if (rtype !== 'undefined') {
-	        changes(new DiffNew(currentPath, rhs));
-	      }
-	    } else if (rtype === 'undefined') {
-	      changes(new DiffDeleted(currentPath, lhs));
-	    } else if (realTypeOf(lhs) !== realTypeOf(rhs)) {
-	      changes(new DiffEdit(currentPath, lhs, rhs));
-	    } else if (Object.prototype.toString.call(lhs) === '[object Date]' && Object.prototype.toString.call(rhs) === '[object Date]' && lhs - rhs !== 0) {
-	      changes(new DiffEdit(currentPath, lhs, rhs));
-	    } else if (ltype === 'object' && lhs !== null && rhs !== null) {
-	      stack = stack || [];
-	      if (stack.indexOf(lhs) < 0) {
-	        stack.push(lhs);
-	        if (Array.isArray(lhs)) {
-	          var i,
-	              len = lhs.length;
-	          for (i = 0; i < lhs.length; i++) {
-	            if (i >= rhs.length) {
-	              changes(new DiffArray(currentPath, i, new DiffDeleted(undefined, lhs[i])));
-	            } else {
-	              deepDiff(lhs[i], rhs[i], changes, prefilter, currentPath, i, stack);
-	            }
-	          }
-	          while (i < rhs.length) {
-	            changes(new DiffArray(currentPath, i, new DiffNew(undefined, rhs[i++])));
-	          }
-	        } else {
-	          var akeys = Object.keys(lhs);
-	          var pkeys = Object.keys(rhs);
-	          akeys.forEach(function (k, i) {
-	            var other = pkeys.indexOf(k);
-	            if (other >= 0) {
-	              deepDiff(lhs[k], rhs[k], changes, prefilter, currentPath, k, stack);
-	              pkeys = arrayRemove(pkeys, other);
-	            } else {
-	              deepDiff(lhs[k], undefined, changes, prefilter, currentPath, k, stack);
-	            }
-	          });
-	          pkeys.forEach(function (k) {
-	            deepDiff(undefined, rhs[k], changes, prefilter, currentPath, k, stack);
-	          });
-	        }
-	        stack.length = stack.length - 1;
-	      }
-	    } else if (lhs !== rhs) {
-	      if (!(ltype === 'number' && isNaN(lhs) && isNaN(rhs))) {
-	        changes(new DiffEdit(currentPath, lhs, rhs));
-	      }
-	    }
-	  }
-	
-	  function accumulateDiff(lhs, rhs, prefilter, accum) {
-	    accum = accum || [];
-	    deepDiff(lhs, rhs, function (diff) {
-	      if (diff) {
-	        accum.push(diff);
-	      }
-	    }, prefilter);
-	    return accum.length ? accum : undefined;
-	  }
-	
-	  function applyArrayChange(arr, index, change) {
-	    if (change.path && change.path.length) {
-	      var it = arr[index],
-	          i,
-	          u = change.path.length - 1;
-	      for (i = 0; i < u; i++) {
-	        it = it[change.path[i]];
-	      }
-	      switch (change.kind) {
-	        case 'A':
-	          applyArrayChange(it[change.path[i]], change.index, change.item);
-	          break;
-	        case 'D':
-	          delete it[change.path[i]];
-	          break;
-	        case 'E':
-	        case 'N':
-	          it[change.path[i]] = change.rhs;
-	          break;
-	      }
-	    } else {
-	      switch (change.kind) {
-	        case 'A':
-	          applyArrayChange(arr[index], change.index, change.item);
-	          break;
-	        case 'D':
-	          arr = arrayRemove(arr, index);
-	          break;
-	        case 'E':
-	        case 'N':
-	          arr[index] = change.rhs;
-	          break;
-	      }
-	    }
-	    return arr;
-	  }
-	
-	  function applyChange(target, source, change) {
-	    if (target && source && change && change.kind) {
-	      var it = target,
-	          i = -1,
-	          last = change.path ? change.path.length - 1 : 0;
-	      while (++i < last) {
-	        if (typeof it[change.path[i]] === 'undefined') {
-	          it[change.path[i]] = typeof change.path[i] === 'number' ? [] : {};
-	        }
-	        it = it[change.path[i]];
-	      }
-	      switch (change.kind) {
-	        case 'A':
-	          applyArrayChange(change.path ? it[change.path[i]] : it, change.index, change.item);
-	          break;
-	        case 'D':
-	          delete it[change.path[i]];
-	          break;
-	        case 'E':
-	        case 'N':
-	          it[change.path[i]] = change.rhs;
-	          break;
-	      }
-	    }
-	  }
-	
-	  function revertArrayChange(arr, index, change) {
-	    if (change.path && change.path.length) {
-	      // the structure of the object at the index has changed...
-	      var it = arr[index],
-	          i,
-	          u = change.path.length - 1;
-	      for (i = 0; i < u; i++) {
-	        it = it[change.path[i]];
-	      }
-	      switch (change.kind) {
-	        case 'A':
-	          revertArrayChange(it[change.path[i]], change.index, change.item);
-	          break;
-	        case 'D':
-	          it[change.path[i]] = change.lhs;
-	          break;
-	        case 'E':
-	          it[change.path[i]] = change.lhs;
-	          break;
-	        case 'N':
-	          delete it[change.path[i]];
-	          break;
-	      }
-	    } else {
-	      // the array item is different...
-	      switch (change.kind) {
-	        case 'A':
-	          revertArrayChange(arr[index], change.index, change.item);
-	          break;
-	        case 'D':
-	          arr[index] = change.lhs;
-	          break;
-	        case 'E':
-	          arr[index] = change.lhs;
-	          break;
-	        case 'N':
-	          arr = arrayRemove(arr, index);
-	          break;
-	      }
-	    }
-	    return arr;
-	  }
-	
-	  function revertChange(target, source, change) {
-	    if (target && source && change && change.kind) {
-	      var it = target,
-	          i,
-	          u;
-	      u = change.path.length - 1;
-	      for (i = 0; i < u; i++) {
-	        if (typeof it[change.path[i]] === 'undefined') {
-	          it[change.path[i]] = {};
-	        }
-	        it = it[change.path[i]];
-	      }
-	      switch (change.kind) {
-	        case 'A':
-	          // Array was modified...
-	          // it will be an array...
-	          revertArrayChange(it[change.path[i]], change.index, change.item);
-	          break;
-	        case 'D':
-	          // Item was deleted...
-	          it[change.path[i]] = change.lhs;
-	          break;
-	        case 'E':
-	          // Item was edited...
-	          it[change.path[i]] = change.lhs;
-	          break;
-	        case 'N':
-	          // Item is new...
-	          delete it[change.path[i]];
-	          break;
-	      }
-	    }
-	  }
-	
-	  function applyDiff(target, source, filter) {
-	    if (target && source) {
-	      var onChange = function onChange(change) {
-	        if (!filter || filter(target, source, change)) {
-	          applyChange(target, source, change);
-	        }
-	      };
-	      deepDiff(target, source, onChange);
-	    }
-	  }
-	
-	  Object.defineProperties(accumulateDiff, {
-	
-	    diff: {
-	      value: accumulateDiff,
-	      enumerable: true
-	    },
-	    observableDiff: {
-	      value: deepDiff,
-	      enumerable: true
-	    },
-	    applyDiff: {
-	      value: applyDiff,
-	      enumerable: true
-	    },
-	    applyChange: {
-	      value: applyChange,
-	      enumerable: true
-	    },
-	    revertChange: {
-	      value: revertChange,
-	      enumerable: true
-	    },
-	    isConflict: {
-	      value: function value() {
-	        return 'undefined' !== typeof conflict;
-	      },
-	      enumerable: true
-	    },
-	    noConflict: {
-	      value: function value() {
-	        if (conflictResolution) {
-	          conflictResolution.forEach(function (it) {
-	            it();
-	          });
-	          conflictResolution = null;
-	        }
-	        return accumulateDiff;
-	      },
-	      enumerable: true
-	    }
-	  });
-	
-	  return accumulateDiff;
-	});
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
-	var R = {
-	  mapObjIndexed: __webpack_require__(17),
-	  clone: __webpack_require__(2),
-	  map: __webpack_require__(27),
-	  merge: __webpack_require__(36),
-	  curryN: __webpack_require__(34),
-	  equals: __webpack_require__(37)
-	};
-	var flyd = __webpack_require__(41);
-	
-	var connectInterface = function connectInterface(md, name, model, connections) {
-	  return md.interfaces[name] ? createContext(md, connections).interfaces[name](model) : {};
-	};
-	
-	var mergeModels = function mergeModels(mds) {
-	  var obj = {};
-	  for (var key in mds) {
-	    obj[key] = mds[key].root ? mds[key].root.init(_extends({ key: key }, mds[key])) : mds[key].init(_extends({ key: key }, mds[key]));
-	  }
-	  return obj;
-	};
-	
-	/* Merge child interfaces, flatten
-	  childs : Array[Object]
-	  interfaceName : String
-	  scope : String // use scope if use this function uses two or more times in an interface
-	*/
-	var mergeChilds = function mergeChilds(childs, md) {
-	  var scope = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
-	  var interfaceName = arguments[3];
-	  var connections = arguments[4];
-	
-	  var objs = {};
-	  R.mapObjIndexed(function (model, idx) {
-	    R.mapObjIndexed(function (obj, name) {
-	      objs[scope + idx + '_' + name] = obj;
-	    }, connectInterface(md, interfaceName, model, connections(+idx)));
-	  }, childs);
-	  return objs;
-	};
-	
-	var mergeChild = function mergeChild(model, md, scope, interfaceName, connections) {
-	  var objs = {};
-	  R.mapObjIndexed(function (obj, name) {
-	    objs[scope + '_' + name] = obj;
-	  }, connectInterface(md, interfaceName, model, connections));
-	  return objs;
-	};
-	
-	// Composition for Fractal core, (mDefinition, connections = {}) -> ContextualizedModule
-	var createContext = function createContext(mDefinition) {
-	  var connections = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-	
-	  var mDef = R.clone(mDefinition);
-	  var ctx = {
-	    action$: flyd.stream(),
-	    task$: flyd.stream()
-	  };
-	  // append the outputs in the context
-	  for (var idx in mDef.outputNames) {
-	    ctx[mDef.outputNames[idx]] = flyd.stream();
-	  }
-	  // connect task$ by default
-	
-	  // append the outputs in the context
-	  for (var _idx in connections) {
-	    if (!!ctx[_idx]) flyd.on(connections[_idx], ctx[_idx]);
-	  }
-	  // contextualize inputs
-	  var inputs = R.map(function (i) {
-	    return R.curryN(i.length, function () {
-	      // wrapper function for tasks
-	      var tasks = i.apply(undefined, arguments);
-	      if (tasks != undefined) {
-	        if (tasks instanceof Array && tasks.of == undefined && !(typeof tasks[0] == 'string' && tasks[1] && _typeof(tasks[1].of) == 'object')) {
-	          // verify that is not a task in the form [String, TaskAction]
-	          // multiple action-task syntax
-	          tasks.forEach(function (t) {
-	            if (R.equals(t.of, mDef.Action)) {
-	              ctx.action$(t);
-	            } else {
-	              ctx.task$(t);
-	            }
-	          });
-	        } else if (R.equals(tasks.of, mDef.Action)) {
-	          // single action syntax for an action
-	          ctx.action$(tasks);
-	        } else if (tasks instanceof Array) {
-	          // single action syntax for a task
-	          ctx.task$(tasks);
-	        }
-	      } else {
-	        // none sense return
-	        // ctx.task$('undefined') // DEBUG
-	      }
-	    })(ctx, mDef.Action);
-	  }, mDef.inputs);
-	  ctx._md = mDef.load(ctx, inputs, mDef.Action) || {};
-	  // space for dynamic modules
-	  ctx._dynamicMd = [];
-	
-	  // connect task$
-	  connectTasks(ctx._md);
-	
-	  function addModulePath(task) {
-	    task._modulePath = task.hasOwnProperty('_modulePath') ? task._modulePath + '->' + mDef.name : mDef.name;
-	    return task;
-	  }
-	  function connectTasks(mds) {
-	    for (var name in mds) {
-	      if (mds[name].mDef) {
-	        flyd.on(function (task) {
-	          return ctx.task$(addModulePath(task));
-	        }, mds[name].ctx.task$);
-	      } else {
-	        // connect categorized modules
-	        for (var subName in mds[name]) {
-	          flyd.on(function (task) {
-	            return ctx.task$(addModulePath(task));
-	          }, mds[name][subName].ctx.task$);
-	        }
-	      }
-	    }
-	  }
-	
-	  var md = function md(mds) {
-	    // connect task$
-	    connectTasks(mds);
-	    ctx._md = R.merge(ctx._md, mds);
-	  };
-	  setTimeout(function () {
-	    return mDef.loadAfter(ctx, inputs, mDef.Action, md);
-	  }, 0);
-	  // contextualize interfaces
-	  mDef.interfaces = R.map(function (i) {
-	    return R.curryN(3, i)(ctx)(inputs);
-	  }, mDef.interfaces);
-	  return _extends({}, mDef, {
-	    ctx: ctx,
-	    inputs: inputs
-	  });
-	};
-	
-	// select a set of _md and map to a list of view interfaces
-	var mergeChildList = function mergeChildList(ctx, rootModel, childNames) {
-	  var f = arguments.length <= 3 || arguments[3] === undefined ? function (x) {
-	    return x;
-	  } : arguments[3];
-	  return R.map(function (name) {
-	    return f(ctx._md[name].interfaces.view(rootModel[name]));
-	  }, childNames);
-	};
-	
-	var mapObjToArray = function mapObjToArray(fn, obj) {
-	  var arr = [];
-	  for (var key in obj) {
-	    arr.push(fn(obj[key], key));
-	  }return arr;
-	};
-	// TODO: implement funtion that takes [list] -> ( (key, value) -> ({key, value}) ) -> {[key]: value}
-	// Useful for optional styles
-	
-	var setDynamicMds = function setDynamicMds(ctxArray, ctx) {};
-	
-	exports.default = {
-	  createContext: createContext,
-	  mergeModels: mergeModels,
-	  mergeChild: mergeChild,
-	  mergeChilds: mergeChilds,
-	  mergeChildList: mergeChildList,
-	  connectInterface: connectInterface,
-	  mapObjToArray: mapObjToArray,
-	  setDynamicMds: setDynamicMds
-	};
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry2 = __webpack_require__(18);
-	var _reduce = __webpack_require__(19);
-	var keys = __webpack_require__(25);
-	
-	/**
-	 * Like `mapObj`, but passes additional arguments to the predicate function. The
-	 * predicate function is passed three arguments: *(value, key, obj)*.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.9.0
-	 * @category Object
-	 * @sig (v, k, {k: v} -> v) -> {k: v} -> {k: v}
-	 * @param {Function} fn A function called for each property in `obj`. Its return value will
-	 *        become a new property on the return object.
-	 * @param {Object} obj The object to iterate over.
-	 * @return {Object} A new object with the same keys as `obj` and values that are the result
-	 *         of running each property through `fn`.
-	 * @example
-	 *
-	 *      var values = { x: 1, y: 2, z: 3 };
-	 *      var prependKeyAndDouble = (num, key, obj) => key + (num * 2);
-	 *
-	 *      R.mapObjIndexed(prependKeyAndDouble, values); //=> { x: 'x2', y: 'y4', z: 'z6' }
-	 */
-	module.exports = _curry2(function mapObjIndexed(fn, obj) {
-	  return _reduce(function (acc, key) {
-	    acc[key] = fn(obj[key], key, obj);
-	    return acc;
-	  }, {}, keys(obj));
-	});
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry1 = __webpack_require__(6);
-	
-	/**
-	 * Optimized internal two-arity curry function.
-	 *
-	 * @private
-	 * @category Function
-	 * @param {Function} fn The function to curry.
-	 * @return {Function} The curried function.
-	 */
-	module.exports = function _curry2(fn) {
-	  return function f2(a, b) {
-	    var n = arguments.length;
-	    if (n === 0) {
-	      return f2;
-	    } else if (n === 1 && a != null && a['@@functional/placeholder'] === true) {
-	      return f2;
-	    } else if (n === 1) {
-	      return _curry1(function (b) {
-	        return fn(a, b);
-	      });
-	    } else if (n === 2 && a != null && a['@@functional/placeholder'] === true && b != null && b['@@functional/placeholder'] === true) {
-	      return f2;
-	    } else if (n === 2 && a != null && a['@@functional/placeholder'] === true) {
-	      return _curry1(function (a) {
-	        return fn(a, b);
-	      });
-	    } else if (n === 2 && b != null && b['@@functional/placeholder'] === true) {
-	      return _curry1(function (b) {
-	        return fn(a, b);
-	      });
-	    } else {
-	      return fn(a, b);
-	    }
-	  };
-	};
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _xwrap = __webpack_require__(20);
-	var bind = __webpack_require__(21);
-	var isArrayLike = __webpack_require__(23);
-	
-	module.exports = function () {
-	  function _arrayReduce(xf, acc, list) {
-	    var idx = 0,
-	        len = list.length;
-	    while (idx < len) {
-	      acc = xf['@@transducer/step'](acc, list[idx]);
-	      if (acc && acc['@@transducer/reduced']) {
-	        acc = acc['@@transducer/value'];
-	        break;
-	      }
-	      idx += 1;
-	    }
-	    return xf['@@transducer/result'](acc);
-	  }
-	
-	  function _iterableReduce(xf, acc, iter) {
-	    var step = iter.next();
-	    while (!step.done) {
-	      acc = xf['@@transducer/step'](acc, step.value);
-	      if (acc && acc['@@transducer/reduced']) {
-	        acc = acc['@@transducer/value'];
-	        break;
-	      }
-	      step = iter.next();
-	    }
-	    return xf['@@transducer/result'](acc);
-	  }
-	
-	  function _methodReduce(xf, acc, obj) {
-	    return xf['@@transducer/result'](obj.reduce(bind(xf['@@transducer/step'], xf), acc));
-	  }
-	
-	  var symIterator = typeof Symbol !== 'undefined' ? Symbol.iterator : '@@iterator';
-	  return function _reduce(fn, acc, list) {
-	    if (typeof fn === 'function') {
-	      fn = _xwrap(fn);
-	    }
-	    if (isArrayLike(list)) {
-	      return _arrayReduce(fn, acc, list);
-	    }
-	    if (typeof list.reduce === 'function') {
-	      return _methodReduce(fn, acc, list);
-	    }
-	    if (list[symIterator] != null) {
-	      return _iterableReduce(fn, acc, list[symIterator]());
-	    }
-	    if (typeof list.next === 'function') {
-	      return _iterableReduce(fn, acc, list);
-	    }
-	    throw new TypeError('reduce: list must be array or iterable');
-	  };
-	}();
-
-/***/ },
-/* 20 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	module.exports = function () {
-	  function XWrap(fn) {
-	    this.f = fn;
-	  }
-	  XWrap.prototype['@@transducer/init'] = function () {
-	    throw new Error('init not implemented on XWrap');
-	  };
-	  XWrap.prototype['@@transducer/result'] = function (acc) {
-	    return acc;
-	  };
-	  XWrap.prototype['@@transducer/step'] = function (acc, x) {
-	    return this.f(acc, x);
-	  };
-	
-	  return function _xwrap(fn) {
-	    return new XWrap(fn);
-	  };
-	}();
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _arity = __webpack_require__(22);
-	var _curry2 = __webpack_require__(18);
-	
-	/**
-	 * Creates a function that is bound to a context.
-	 * Note: `R.bind` does not provide the additional argument-binding capabilities of
-	 * [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.6.0
-	 * @category Function
-	 * @category Object
-	 * @see R.partial
-	 * @sig (* -> *) -> {*} -> (* -> *)
-	 * @param {Function} fn The function to bind to context
-	 * @param {Object} thisObj The context to bind `fn` to
-	 * @return {Function} A function that will execute in the context of `thisObj`.
-	 */
-	module.exports = _curry2(function bind(fn, thisObj) {
-	  return _arity(fn.length, function () {
-	    return fn.apply(thisObj, arguments);
-	  });
-	});
-
-/***/ },
-/* 22 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	module.exports = function _arity(n, fn) {
-	  // jshint unused:vars
-	  switch (n) {
-	    case 0:
-	      return function () {
-	        return fn.apply(this, arguments);
-	      };
-	    case 1:
-	      return function (a0) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 2:
-	      return function (a0, a1) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 3:
-	      return function (a0, a1, a2) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 4:
-	      return function (a0, a1, a2, a3) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 5:
-	      return function (a0, a1, a2, a3, a4) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 6:
-	      return function (a0, a1, a2, a3, a4, a5) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 7:
-	      return function (a0, a1, a2, a3, a4, a5, a6) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 8:
-	      return function (a0, a1, a2, a3, a4, a5, a6, a7) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 9:
-	      return function (a0, a1, a2, a3, a4, a5, a6, a7, a8) {
-	        return fn.apply(this, arguments);
-	      };
-	    case 10:
-	      return function (a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
-	        return fn.apply(this, arguments);
-	      };
-	    default:
-	      throw new Error('First argument to _arity must be a non-negative integer no greater than ten');
-	  }
-	};
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
-	var _curry1 = __webpack_require__(6);
-	var _isArray = __webpack_require__(24);
-	
-	/**
-	 * Tests whether or not an object is similar to an array.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.5.0
-	 * @category Type
-	 * @category List
-	 * @sig * -> Boolean
-	 * @param {*} x The object to test.
-	 * @return {Boolean} `true` if `x` has a numeric length property and extreme indices defined; `false` otherwise.
-	 * @example
-	 *
-	 *      R.isArrayLike([]); //=> true
-	 *      R.isArrayLike(true); //=> false
-	 *      R.isArrayLike({}); //=> false
-	 *      R.isArrayLike({length: 10}); //=> false
-	 *      R.isArrayLike({0: 'zero', 9: 'nine', length: 10}); //=> true
-	 */
-	module.exports = _curry1(function isArrayLike(x) {
-	  if (_isArray(x)) {
-	    return true;
-	  }
-	  if (!x) {
-	    return false;
-	  }
-	  if ((typeof x === 'undefined' ? 'undefined' : _typeof(x)) !== 'object') {
-	    return false;
-	  }
-	  if (x instanceof String) {
-	    return false;
-	  }
-	  if (x.nodeType === 1) {
-	    return !!x.length;
-	  }
-	  if (x.length === 0) {
-	    return true;
-	  }
-	  if (x.length > 0) {
-	    return x.hasOwnProperty(0) && x.hasOwnProperty(x.length - 1);
-	  }
-	  return false;
-	});
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	/**
-	 * Tests whether or not an object is an array.
-	 *
-	 * @private
-	 * @param {*} val The object to test.
-	 * @return {Boolean} `true` if `val` is an array, `false` otherwise.
-	 * @example
-	 *
-	 *      _isArray([]); //=> true
-	 *      _isArray(null); //=> false
-	 *      _isArray({}); //=> false
-	 */
-	module.exports = Array.isArray || function _isArray(val) {
-	  return val != null && val.length >= 0 && Object.prototype.toString.call(val) === '[object Array]';
-	};
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry1 = __webpack_require__(6);
-	var _has = __webpack_require__(26);
-	
-	/**
-	 * Returns a list containing the names of all the enumerable own
-	 * properties of the supplied object.
-	 * Note that the order of the output array is not guaranteed to be
-	 * consistent across different JS platforms.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category Object
-	 * @sig {k: v} -> [k]
-	 * @param {Object} obj The object to extract properties from
-	 * @return {Array} An array of the object's own properties.
-	 * @example
-	 *
-	 *      R.keys({a: 1, b: 2, c: 3}); //=> ['a', 'b', 'c']
-	 */
-	module.exports = function () {
-	  // cover IE < 9 keys issues
-	  var hasEnumBug = !{ toString: null }.propertyIsEnumerable('toString');
-	  var nonEnumerableProps = ['constructor', 'valueOf', 'isPrototypeOf', 'toString', 'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
-	
-	  var contains = function contains(list, item) {
-	    var idx = 0;
-	    while (idx < list.length) {
-	      if (list[idx] === item) {
-	        return true;
-	      }
-	      idx += 1;
-	    }
-	    return false;
-	  };
-	
-	  return typeof Object.keys === 'function' ? _curry1(function keys(obj) {
-	    return Object(obj) !== obj ? [] : Object.keys(obj);
-	  }) : _curry1(function keys(obj) {
-	    if (Object(obj) !== obj) {
-	      return [];
-	    }
-	    var prop,
-	        ks = [],
-	        nIdx;
-	    for (prop in obj) {
-	      if (_has(prop, obj)) {
-	        ks[ks.length] = prop;
-	      }
-	    }
-	    if (hasEnumBug) {
-	      nIdx = nonEnumerableProps.length - 1;
-	      while (nIdx >= 0) {
-	        prop = nonEnumerableProps[nIdx];
-	        if (_has(prop, obj) && !contains(ks, prop)) {
-	          ks[ks.length] = prop;
-	        }
-	        nIdx -= 1;
-	      }
-	    }
-	    return ks;
-	  });
-	}();
-
-/***/ },
-/* 26 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	module.exports = function _has(prop, obj) {
-	  return Object.prototype.hasOwnProperty.call(obj, prop);
-	};
-
-/***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry2 = __webpack_require__(18);
-	var _dispatchable = __webpack_require__(28);
-	var _map = __webpack_require__(31);
-	var _reduce = __webpack_require__(19);
-	var _xmap = __webpack_require__(32);
-	var curryN = __webpack_require__(34);
-	var keys = __webpack_require__(25);
-	
-	/**
-	 * Returns a new list, constructed by applying the supplied function to every element of the
-	 * supplied list.
-	 *
-	 * Note: `R.map` does not skip deleted or unassigned indices (sparse arrays), unlike the
-	 * native `Array.prototype.map` method. For more details on this behavior, see:
-	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map#Description
-	 *
-	 * Dispatches to the `map` method of the second argument, if present.
-	 *
-	 * Acts as a transducer if a transformer is given in list position.
-	 * @see R.transduce
-	 *
-	 * Map treats also treats functions as functors and will compose them together.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category List
-	 * @sig Functor f => (a -> b) -> f a -> f b
-	 * @param {Function} fn The function to be called on every element of the input `list`.
-	 * @param {Array} list The list to be iterated over.
-	 * @return {Array} The new list.
-	 * @example
-	 *
-	 *      var double = x => x * 2;
-	 *
-	 *      R.map(double, [1, 2, 3]); //=> [2, 4, 6]
-	 *
-	 *      R.map(double, {x: 1, y: 2, z: 3}); //=> {x: 2, y: 4, z: 6}
-	 */
-	module.exports = _curry2(_dispatchable('map', _xmap, function map(fn, functor) {
-	  switch (Object.prototype.toString.call(functor)) {
-	    case '[object Function]':
-	      return curryN(functor.length, function () {
-	        return fn.call(this, functor.apply(this, arguments));
-	      });
-	    case '[object Object]':
-	      return _reduce(function (acc, key) {
-	        acc[key] = fn(functor[key]);
-	        return acc;
-	      }, {}, keys(functor));
-	    default:
-	      return _map(fn, functor);
-	  }
-	}));
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _isArray = __webpack_require__(24);
-	var _isTransformer = __webpack_require__(29);
-	var _slice = __webpack_require__(30);
-	
-	/**
-	 * Returns a function that dispatches with different strategies based on the
-	 * object in list position (last argument). If it is an array, executes [fn].
-	 * Otherwise, if it has a  function with [methodname], it will execute that
-	 * function (functor case). Otherwise, if it is a transformer, uses transducer
-	 * [xf] to return a new transformer (transducer case). Otherwise, it will
-	 * default to executing [fn].
-	 *
-	 * @private
-	 * @param {String} methodname property to check for a custom implementation
-	 * @param {Function} xf transducer to initialize if object is transformer
-	 * @param {Function} fn default ramda implementation
-	 * @return {Function} A function that dispatches on object in list position
-	 */
-	module.exports = function _dispatchable(methodname, xf, fn) {
-	  return function () {
-	    var length = arguments.length;
-	    if (length === 0) {
-	      return fn();
-	    }
-	    var obj = arguments[length - 1];
-	    if (!_isArray(obj)) {
-	      var args = _slice(arguments, 0, length - 1);
-	      if (typeof obj[methodname] === 'function') {
-	        return obj[methodname].apply(obj, args);
-	      }
-	      if (_isTransformer(obj)) {
-	        var transducer = xf.apply(null, args);
-	        return transducer(obj);
-	      }
-	    }
-	    return fn.apply(this, arguments);
-	  };
-	};
-
-/***/ },
-/* 29 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	module.exports = function _isTransformer(obj) {
-	  return typeof obj['@@transducer/step'] === 'function';
-	};
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	/**
-	 * An optimized, private array `slice` implementation.
-	 *
-	 * @private
-	 * @param {Arguments|Array} args The array or arguments object to consider.
-	 * @param {Number} [from=0] The array index to slice from, inclusive.
-	 * @param {Number} [to=args.length] The array index to slice to, exclusive.
-	 * @return {Array} A new, sliced array.
-	 * @example
-	 *
-	 *      _slice([1, 2, 3, 4, 5], 1, 3); //=> [2, 3]
-	 *
-	 *      var firstThreeArgs = function(a, b, c, d) {
-	 *        return _slice(arguments, 0, 3);
-	 *      };
-	 *      firstThreeArgs(1, 2, 3, 4); //=> [1, 2, 3]
-	 */
-	module.exports = function _slice(args, from, to) {
-	  switch (arguments.length) {
-	    case 1:
-	      return _slice(args, 0, args.length);
-	    case 2:
-	      return _slice(args, from, args.length);
-	    default:
-	      var list = [];
-	      var idx = 0;
-	      var len = Math.max(0, Math.min(args.length, to) - from);
-	      while (idx < len) {
-	        list[idx] = args[from + idx];
-	        idx += 1;
-	      }
-	      return list;
-	  }
-	};
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	module.exports = function _map(fn, functor) {
-	  var idx = 0;
-	  var len = functor.length;
-	  var result = Array(len);
-	  while (idx < len) {
-	    result[idx] = fn(functor[idx]);
-	    idx += 1;
-	  }
-	  return result;
-	};
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry2 = __webpack_require__(18);
-	var _xfBase = __webpack_require__(33);
-	
-	module.exports = function () {
-	  function XMap(f, xf) {
-	    this.xf = xf;
-	    this.f = f;
-	  }
-	  XMap.prototype['@@transducer/init'] = _xfBase.init;
-	  XMap.prototype['@@transducer/result'] = _xfBase.result;
-	  XMap.prototype['@@transducer/step'] = function (result, input) {
-	    return this.xf['@@transducer/step'](result, this.f(input));
-	  };
-	
-	  return _curry2(function _xmap(f, xf) {
-	    return new XMap(f, xf);
-	  });
-	}();
-
-/***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	module.exports = {
-	  init: function init() {
-	    return this.xf['@@transducer/init']();
-	  },
-	  result: function result(_result) {
-	    return this.xf['@@transducer/result'](_result);
-	  }
-	};
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _arity = __webpack_require__(22);
-	var _curry1 = __webpack_require__(6);
-	var _curry2 = __webpack_require__(18);
-	var _curryN = __webpack_require__(35);
-	
-	/**
-	 * Returns a curried equivalent of the provided function, with the
-	 * specified arity. The curried function has two unusual capabilities.
-	 * First, its arguments needn't be provided one at a time. If `g` is
-	 * `R.curryN(3, f)`, the following are equivalent:
-	 *
-	 *   - `g(1)(2)(3)`
-	 *   - `g(1)(2, 3)`
-	 *   - `g(1, 2)(3)`
-	 *   - `g(1, 2, 3)`
-	 *
-	 * Secondly, the special placeholder value `R.__` may be used to specify
-	 * "gaps", allowing partial application of any combination of arguments,
-	 * regardless of their positions. If `g` is as above and `_` is `R.__`,
-	 * the following are equivalent:
-	 *
-	 *   - `g(1, 2, 3)`
-	 *   - `g(_, 2, 3)(1)`
-	 *   - `g(_, _, 3)(1)(2)`
-	 *   - `g(_, _, 3)(1, 2)`
-	 *   - `g(_, 2)(1)(3)`
-	 *   - `g(_, 2)(1, 3)`
-	 *   - `g(_, 2)(_, 3)(1)`
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.5.0
-	 * @category Function
-	 * @sig Number -> (* -> a) -> (* -> a)
-	 * @param {Number} length The arity for the returned function.
-	 * @param {Function} fn The function to curry.
-	 * @return {Function} A new, curried function.
-	 * @see R.curry
-	 * @example
-	 *
-	 *      var sumArgs = (...args) => R.sum(args);
-	 *
-	 *      var curriedAddFourNumbers = R.curryN(4, sumArgs);
-	 *      var f = curriedAddFourNumbers(1, 2);
-	 *      var g = f(3);
-	 *      g(4); //=> 10
-	 */
-	module.exports = _curry2(function curryN(length, fn) {
-	  if (length === 1) {
-	    return _curry1(fn);
-	  }
-	  return _arity(length, _curryN(length, [], fn));
-	});
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _arity = __webpack_require__(22);
-	
-	/**
-	 * Internal curryN function.
-	 *
-	 * @private
-	 * @category Function
-	 * @param {Number} length The arity of the curried function.
-	 * @return {array} An array of arguments received thus far.
-	 * @param {Function} fn The function to curry.
-	 */
-	module.exports = function _curryN(length, received, fn) {
-	  return function () {
-	    var combined = [];
-	    var argsIdx = 0;
-	    var left = length;
-	    var combinedIdx = 0;
-	    while (combinedIdx < received.length || argsIdx < arguments.length) {
-	      var result;
-	      if (combinedIdx < received.length && (received[combinedIdx] == null || received[combinedIdx]['@@functional/placeholder'] !== true || argsIdx >= arguments.length)) {
-	        result = received[combinedIdx];
-	      } else {
-	        result = arguments[argsIdx];
-	        argsIdx += 1;
-	      }
-	      combined[combinedIdx] = result;
-	      if (result == null || result['@@functional/placeholder'] !== true) {
-	        left -= 1;
-	      }
-	      combinedIdx += 1;
-	    }
-	    return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
-	  };
-	};
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry2 = __webpack_require__(18);
-	var keys = __webpack_require__(25);
-	
-	/**
-	 * Create a new object with the own properties of `a`
-	 * merged with the own properties of object `b`.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category Object
-	 * @sig {k: v} -> {k: v} -> {k: v}
-	 * @param {Object} a
-	 * @param {Object} b
-	 * @return {Object}
-	 * @example
-	 *
-	 *      R.merge({ 'name': 'fred', 'age': 10 }, { 'age': 40 });
-	 *      //=> { 'name': 'fred', 'age': 40 }
-	 *
-	 *      var resetToDefault = R.merge(R.__, {x: 0});
-	 *      resetToDefault({x: 5, y: 2}); //=> {x: 0, y: 2}
-	 */
-	module.exports = _curry2(function merge(a, b) {
-	  var result = {};
-	  var ks = keys(a);
-	  var idx = 0;
-	  while (idx < ks.length) {
-	    result[ks[idx]] = a[ks[idx]];
-	    idx += 1;
-	  }
-	  ks = keys(b);
-	  idx = 0;
-	  while (idx < ks.length) {
-	    result[ks[idx]] = b[ks[idx]];
-	    idx += 1;
-	  }
-	  return result;
-	});
-
-/***/ },
-/* 37 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry2 = __webpack_require__(18);
-	var _equals = __webpack_require__(38);
-	
-	/**
-	 * Returns `true` if its arguments are equivalent, `false` otherwise.
-	 * Dispatches to an `equals` method if present. Handles cyclical data
-	 * structures.
-	 *
-	 * Dispatches to the `equals` method of both arguments, if present.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.15.0
-	 * @category Relation
-	 * @sig a -> b -> Boolean
-	 * @param {*} a
-	 * @param {*} b
-	 * @return {Boolean}
-	 * @example
-	 *
-	 *      R.equals(1, 1); //=> true
-	 *      R.equals(1, '1'); //=> false
-	 *      R.equals([1, 2, 3], [1, 2, 3]); //=> true
-	 *
-	 *      var a = {}; a.v = a;
-	 *      var b = {}; b.v = b;
-	 *      R.equals(a, b); //=> true
-	 */
-	module.exports = _curry2(function equals(a, b) {
-	  return _equals(a, b, [], []);
-	});
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
-	var _arrayFromIterator = __webpack_require__(39);
-	var _has = __webpack_require__(26);
-	var identical = __webpack_require__(40);
-	var keys = __webpack_require__(25);
-	var type = __webpack_require__(5);
-	
-	module.exports = function _equals(a, b, stackA, stackB) {
-	  if (identical(a, b)) {
-	    return true;
-	  }
-	
-	  if (type(a) !== type(b)) {
-	    return false;
-	  }
-	
-	  if (a == null || b == null) {
-	    return false;
-	  }
-	
-	  if (typeof a.equals === 'function' || typeof b.equals === 'function') {
-	    return typeof a.equals === 'function' && a.equals(b) && typeof b.equals === 'function' && b.equals(a);
-	  }
-	
-	  switch (type(a)) {
-	    case 'Arguments':
-	    case 'Array':
-	    case 'Object':
-	      break;
-	    case 'Boolean':
-	    case 'Number':
-	    case 'String':
-	      if (!((typeof a === 'undefined' ? 'undefined' : _typeof(a)) === (typeof b === 'undefined' ? 'undefined' : _typeof(b)) && identical(a.valueOf(), b.valueOf()))) {
-	        return false;
-	      }
-	      break;
-	    case 'Date':
-	      if (!identical(a.valueOf(), b.valueOf())) {
-	        return false;
-	      }
-	      break;
-	    case 'RegExp':
-	      if (!(a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky && a.unicode === b.unicode)) {
-	        return false;
-	      }
-	      break;
-	    case 'Map':
-	    case 'Set':
-	      if (!_equals(_arrayFromIterator(a.entries()), _arrayFromIterator(b.entries()), stackA, stackB)) {
-	        return false;
-	      }
-	      break;
-	    case 'Int8Array':
-	    case 'Uint8Array':
-	    case 'Uint8ClampedArray':
-	    case 'Int16Array':
-	    case 'Uint16Array':
-	    case 'Int32Array':
-	    case 'Uint32Array':
-	    case 'Float32Array':
-	    case 'Float64Array':
-	      break;
-	    case 'ArrayBuffer':
-	      break;
-	    default:
-	      // Values of other types are only equal if identical.
-	      return false;
-	  }
-	
-	  var keysA = keys(a);
-	  if (keysA.length !== keys(b).length) {
-	    return false;
-	  }
-	
-	  var idx = stackA.length - 1;
-	  while (idx >= 0) {
-	    if (stackA[idx] === a) {
-	      return stackB[idx] === b;
-	    }
-	    idx -= 1;
-	  }
-	
-	  stackA.push(a);
-	  stackB.push(b);
-	  idx = keysA.length - 1;
-	  while (idx >= 0) {
-	    var key = keysA[idx];
-	    if (!(_has(key, b) && _equals(b[key], a[key], stackA, stackB))) {
-	      return false;
-	    }
-	    idx -= 1;
-	  }
-	  stackA.pop();
-	  stackB.pop();
-	  return true;
-	};
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	module.exports = function _arrayFromIterator(iter) {
-	  var list = [];
-	  var next;
-	  while (!(next = iter.next()).done) {
-	    list.push(next.value);
-	  }
-	  return list;
-	};
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry2 = __webpack_require__(18);
-	
-	/**
-	 * Returns true if its arguments are identical, false otherwise. Values are
-	 * identical if they reference the same memory. `NaN` is identical to `NaN`;
-	 * `0` and `-0` are not identical.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.15.0
-	 * @category Relation
-	 * @sig a -> a -> Boolean
-	 * @param {*} a
-	 * @param {*} b
-	 * @return {Boolean}
-	 * @example
-	 *
-	 *      var o = {};
-	 *      R.identical(o, o); //=> true
-	 *      R.identical(1, 1); //=> true
-	 *      R.identical(1, '1'); //=> false
-	 *      R.identical([], []); //=> false
-	 *      R.identical(0, -0); //=> false
-	 *      R.identical(NaN, NaN); //=> true
-	 */
-	module.exports = _curry2(function identical(a, b) {
-	  // SameValue algorithm
-	  if (a === b) {
-	    // Steps 1-5, 7-10
-	    // Steps 6.b-6.e: +0 != -0
-	    return a !== 0 || 1 / a === 1 / b;
-	  } else {
-	    // Step 6.a: NaN == NaN
-	    return a !== a && b !== b;
-	  }
-	});
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var curryN = __webpack_require__(42);
+	var curryN = __webpack_require__(15);
 	
 	// Utility
 	function isFunction(obj) {
@@ -3084,15 +1442,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = flyd;
 
 /***/ },
-/* 42 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _arity = __webpack_require__(43);
-	var _curry1 = __webpack_require__(44);
-	var _curry2 = __webpack_require__(46);
-	var _curryN = __webpack_require__(47);
+	var _arity = __webpack_require__(16);
+	var _curry1 = __webpack_require__(17);
+	var _curry2 = __webpack_require__(19);
+	var _curryN = __webpack_require__(20);
 	
 	/**
 	 * Returns a curried equivalent of the provided function, with the specified
@@ -3144,7 +1502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 43 */
+/* 16 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3202,12 +1560,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 44 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _isPlaceholder = __webpack_require__(45);
+	var _isPlaceholder = __webpack_require__(18);
 	
 	/**
 	 * Optimized internal one-arity curry function.
@@ -3228,7 +1586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 45 */
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3240,13 +1598,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 46 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _curry1 = __webpack_require__(44);
-	var _isPlaceholder = __webpack_require__(45);
+	var _curry1 = __webpack_require__(17);
+	var _isPlaceholder = __webpack_require__(18);
 	
 	/**
 	 * Optimized internal two-arity curry function.
@@ -3276,13 +1634,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 47 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _arity = __webpack_require__(43);
-	var _isPlaceholder = __webpack_require__(45);
+	var _arity = __webpack_require__(16);
+	var _isPlaceholder = __webpack_require__(18);
 	
 	/**
 	 * Internal curryN function.
@@ -3319,6 +1677,1740 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.diff = undefined;
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	exports.prettyAction = prettyAction;
+	exports.prettyActionDetailed = prettyActionDetailed;
+	exports.actionModuleInfo = actionModuleInfo;
+	exports.prettyParams = prettyParams;
+	exports.prettyDiff = prettyDiff;
+	exports.logAction = logAction;
+	exports.displayFromDiff = displayFromDiff;
+	
+	var _deepDiff = __webpack_require__(22);
+	
+	var _deepDiff2 = _interopRequireDefault(_deepDiff);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var diff = exports.diff = _deepDiff2.default.diff;
+	
+	function prettyAction(action) {
+	  var actionInfo = actionModuleInfo(action);
+	  return actionInfo.modulePath.join(' -> ') + ' / ' + actionInfo.lastAction.name + ': ' + prettyParams(actionInfo.lastAction);
+	}
+	
+	function prettyActionDetailed(action) {
+	  var path = [],
+	      nested = action;
+	  while (nested[nested.length - 1] != undefined && nested[nested.length - 1].of != undefined) {
+	    if (nested.length == 0) {
+	      path.push(nested.name);
+	    } else {
+	      path.push(nested.name + ' ' + prettyParams(nested));
+	    }
+	    nested = nested[nested.length - 1];
+	  }
+	  path.push(nested.name);
+	  return path.join(' -> ') + ' : ' + prettyParams(nested);
+	}
+	
+	// deep extract info from an Action: log, modulePath, lastAction
+	function actionModuleInfo(action) {
+	  var modulePath = [],
+	      nested = action,
+	      log = void 0,
+	      logAll = false;
+	  while (nested[nested.length - 1] != undefined && nested[nested.length - 1].of != undefined) {
+	    logAll = logAll || nested._logAll;
+	    modulePath.push(nested._moduleName);
+	    nested = nested[nested.length - 1];
+	  }
+	  log = logAll || nested._log || nested._logAll;
+	  modulePath.push(nested._moduleName);
+	  return {
+	    log: log,
+	    modulePath: modulePath,
+	    lastAction: nested
+	  };
+	}
+	
+	function prettyParams(params) {
+	  var paramString = params.map(function (param) {
+	    if (typeof param === 'function' || (typeof param === 'undefined' ? 'undefined' : _typeof(param)) === 'object') {
+	      if (Array.isArray(param)) {
+	        return 'array';
+	      } else {
+	        return typeof param === 'undefined' ? 'undefined' : _typeof(param);
+	      }
+	    }
+	    return param;
+	  }).join(', ');
+	  return paramString === '' ? 'none' : paramString;
+	}
+	
+	function prettyDiff(diffArray) {
+	  diffArray = diffArray || [];
+	  var logs = [];
+	  diffArray.forEach(function (diff) {
+	    var getType = function getType(diff) {
+	      if (diff.kind == 'N') return 'added';else if (diff.kind == 'D') return 'deleted';else if (diff.kind == 'E') return 'edited';else if (diff.kind == 'A') return 'array';
+	    };
+	
+	    var type = getType(diff);
+	
+	    if (type == 'array') // if an array is modified
+	      logs.push(type + ' ' + diff.path.join('.') + ' : index ' + diff.index + ' ' + getType(diff.item));else logs.push(type + ' ' + diff.path.join('.') + ' : ' + diff.lhs + ' -> ' + diff.rhs);
+	  });
+	  return logs;
+	}
+	
+	function logAction(action) {
+	  console.log('%c' + prettyAction(action), 'color: green');
+	}
+	
+	function displayFromDiff(diffArray) {
+	  prettyDiff(diffArray).forEach(function (log) {
+	    return console.log('%c' + log, 'color: darkblue');
+	  });
+	}
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	/*!
+	 * deep-diff.
+	 * Licensed under the MIT License.
+	 */
+	;(function (root, factory) {
+	  'use strict';
+	
+	  if (true) {
+	    // AMD. Register as an anonymous module.
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	      return factory();
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
+	    // Node. Does not work with strict CommonJS, but
+	    // only CommonJS-like environments that support module.exports,
+	    // like Node.
+	    module.exports = factory();
+	  } else {
+	    // Browser globals (root is window)
+	    root.DeepDiff = factory();
+	  }
+	})(undefined, function (undefined) {
+	  'use strict';
+	
+	  var $scope,
+	      conflict,
+	      conflictResolution = [];
+	  if ((typeof global === 'undefined' ? 'undefined' : _typeof(global)) === 'object' && global) {
+	    $scope = global;
+	  } else if (typeof window !== 'undefined') {
+	    $scope = window;
+	  } else {
+	    $scope = {};
+	  }
+	  conflict = $scope.DeepDiff;
+	  if (conflict) {
+	    conflictResolution.push(function () {
+	      if ('undefined' !== typeof conflict && $scope.DeepDiff === accumulateDiff) {
+	        $scope.DeepDiff = conflict;
+	        conflict = undefined;
+	      }
+	    });
+	  }
+	
+	  // nodejs compatible on server side and in the browser.
+	  function inherits(ctor, superCtor) {
+	    ctor.super_ = superCtor;
+	    ctor.prototype = Object.create(superCtor.prototype, {
+	      constructor: {
+	        value: ctor,
+	        enumerable: false,
+	        writable: true,
+	        configurable: true
+	      }
+	    });
+	  }
+	
+	  function Diff(kind, path) {
+	    Object.defineProperty(this, 'kind', {
+	      value: kind,
+	      enumerable: true
+	    });
+	    if (path && path.length) {
+	      Object.defineProperty(this, 'path', {
+	        value: path,
+	        enumerable: true
+	      });
+	    }
+	  }
+	
+	  function DiffEdit(path, origin, value) {
+	    DiffEdit.super_.call(this, 'E', path);
+	    Object.defineProperty(this, 'lhs', {
+	      value: origin,
+	      enumerable: true
+	    });
+	    Object.defineProperty(this, 'rhs', {
+	      value: value,
+	      enumerable: true
+	    });
+	  }
+	  inherits(DiffEdit, Diff);
+	
+	  function DiffNew(path, value) {
+	    DiffNew.super_.call(this, 'N', path);
+	    Object.defineProperty(this, 'rhs', {
+	      value: value,
+	      enumerable: true
+	    });
+	  }
+	  inherits(DiffNew, Diff);
+	
+	  function DiffDeleted(path, value) {
+	    DiffDeleted.super_.call(this, 'D', path);
+	    Object.defineProperty(this, 'lhs', {
+	      value: value,
+	      enumerable: true
+	    });
+	  }
+	  inherits(DiffDeleted, Diff);
+	
+	  function DiffArray(path, index, item) {
+	    DiffArray.super_.call(this, 'A', path);
+	    Object.defineProperty(this, 'index', {
+	      value: index,
+	      enumerable: true
+	    });
+	    Object.defineProperty(this, 'item', {
+	      value: item,
+	      enumerable: true
+	    });
+	  }
+	  inherits(DiffArray, Diff);
+	
+	  function arrayRemove(arr, from, to) {
+	    var rest = arr.slice((to || from) + 1 || arr.length);
+	    arr.length = from < 0 ? arr.length + from : from;
+	    arr.push.apply(arr, rest);
+	    return arr;
+	  }
+	
+	  function realTypeOf(subject) {
+	    var type = typeof subject === 'undefined' ? 'undefined' : _typeof(subject);
+	    if (type !== 'object') {
+	      return type;
+	    }
+	
+	    if (subject === Math) {
+	      return 'math';
+	    } else if (subject === null) {
+	      return 'null';
+	    } else if (Array.isArray(subject)) {
+	      return 'array';
+	    } else if (Object.prototype.toString.call(subject) === '[object Date]') {
+	      return 'date';
+	    } else if (typeof subject.toString !== 'undefined' && /^\/.*\//.test(subject.toString())) {
+	      return 'regexp';
+	    }
+	    return 'object';
+	  }
+	
+	  function deepDiff(lhs, rhs, changes, prefilter, path, key, stack) {
+	    path = path || [];
+	    var currentPath = path.slice(0);
+	    if (typeof key !== 'undefined') {
+	      if (prefilter) {
+	        if (typeof prefilter === 'function' && prefilter(currentPath, key)) {
+	          return;
+	        } else if ((typeof prefilter === 'undefined' ? 'undefined' : _typeof(prefilter)) === 'object') {
+	          if (prefilter.prefilter && prefilter.prefilter(currentPath, key)) {
+	            return;
+	          }
+	          if (prefilter.normalize) {
+	            var alt = prefilter.normalize(currentPath, key, lhs, rhs);
+	            if (alt) {
+	              lhs = alt[0];
+	              rhs = alt[1];
+	            }
+	          }
+	        }
+	      }
+	      currentPath.push(key);
+	    }
+	
+	    // Use string comparison for regexes
+	    if (realTypeOf(lhs) === 'regexp' && realTypeOf(rhs) === 'regexp') {
+	      lhs = lhs.toString();
+	      rhs = rhs.toString();
+	    }
+	
+	    var ltype = typeof lhs === 'undefined' ? 'undefined' : _typeof(lhs);
+	    var rtype = typeof rhs === 'undefined' ? 'undefined' : _typeof(rhs);
+	    if (ltype === 'undefined') {
+	      if (rtype !== 'undefined') {
+	        changes(new DiffNew(currentPath, rhs));
+	      }
+	    } else if (rtype === 'undefined') {
+	      changes(new DiffDeleted(currentPath, lhs));
+	    } else if (realTypeOf(lhs) !== realTypeOf(rhs)) {
+	      changes(new DiffEdit(currentPath, lhs, rhs));
+	    } else if (Object.prototype.toString.call(lhs) === '[object Date]' && Object.prototype.toString.call(rhs) === '[object Date]' && lhs - rhs !== 0) {
+	      changes(new DiffEdit(currentPath, lhs, rhs));
+	    } else if (ltype === 'object' && lhs !== null && rhs !== null) {
+	      stack = stack || [];
+	      if (stack.indexOf(lhs) < 0) {
+	        stack.push(lhs);
+	        if (Array.isArray(lhs)) {
+	          var i,
+	              len = lhs.length;
+	          for (i = 0; i < lhs.length; i++) {
+	            if (i >= rhs.length) {
+	              changes(new DiffArray(currentPath, i, new DiffDeleted(undefined, lhs[i])));
+	            } else {
+	              deepDiff(lhs[i], rhs[i], changes, prefilter, currentPath, i, stack);
+	            }
+	          }
+	          while (i < rhs.length) {
+	            changes(new DiffArray(currentPath, i, new DiffNew(undefined, rhs[i++])));
+	          }
+	        } else {
+	          var akeys = Object.keys(lhs);
+	          var pkeys = Object.keys(rhs);
+	          akeys.forEach(function (k, i) {
+	            var other = pkeys.indexOf(k);
+	            if (other >= 0) {
+	              deepDiff(lhs[k], rhs[k], changes, prefilter, currentPath, k, stack);
+	              pkeys = arrayRemove(pkeys, other);
+	            } else {
+	              deepDiff(lhs[k], undefined, changes, prefilter, currentPath, k, stack);
+	            }
+	          });
+	          pkeys.forEach(function (k) {
+	            deepDiff(undefined, rhs[k], changes, prefilter, currentPath, k, stack);
+	          });
+	        }
+	        stack.length = stack.length - 1;
+	      }
+	    } else if (lhs !== rhs) {
+	      if (!(ltype === 'number' && isNaN(lhs) && isNaN(rhs))) {
+	        changes(new DiffEdit(currentPath, lhs, rhs));
+	      }
+	    }
+	  }
+	
+	  function accumulateDiff(lhs, rhs, prefilter, accum) {
+	    accum = accum || [];
+	    deepDiff(lhs, rhs, function (diff) {
+	      if (diff) {
+	        accum.push(diff);
+	      }
+	    }, prefilter);
+	    return accum.length ? accum : undefined;
+	  }
+	
+	  function applyArrayChange(arr, index, change) {
+	    if (change.path && change.path.length) {
+	      var it = arr[index],
+	          i,
+	          u = change.path.length - 1;
+	      for (i = 0; i < u; i++) {
+	        it = it[change.path[i]];
+	      }
+	      switch (change.kind) {
+	        case 'A':
+	          applyArrayChange(it[change.path[i]], change.index, change.item);
+	          break;
+	        case 'D':
+	          delete it[change.path[i]];
+	          break;
+	        case 'E':
+	        case 'N':
+	          it[change.path[i]] = change.rhs;
+	          break;
+	      }
+	    } else {
+	      switch (change.kind) {
+	        case 'A':
+	          applyArrayChange(arr[index], change.index, change.item);
+	          break;
+	        case 'D':
+	          arr = arrayRemove(arr, index);
+	          break;
+	        case 'E':
+	        case 'N':
+	          arr[index] = change.rhs;
+	          break;
+	      }
+	    }
+	    return arr;
+	  }
+	
+	  function applyChange(target, source, change) {
+	    if (target && source && change && change.kind) {
+	      var it = target,
+	          i = -1,
+	          last = change.path ? change.path.length - 1 : 0;
+	      while (++i < last) {
+	        if (typeof it[change.path[i]] === 'undefined') {
+	          it[change.path[i]] = typeof change.path[i] === 'number' ? [] : {};
+	        }
+	        it = it[change.path[i]];
+	      }
+	      switch (change.kind) {
+	        case 'A':
+	          applyArrayChange(change.path ? it[change.path[i]] : it, change.index, change.item);
+	          break;
+	        case 'D':
+	          delete it[change.path[i]];
+	          break;
+	        case 'E':
+	        case 'N':
+	          it[change.path[i]] = change.rhs;
+	          break;
+	      }
+	    }
+	  }
+	
+	  function revertArrayChange(arr, index, change) {
+	    if (change.path && change.path.length) {
+	      // the structure of the object at the index has changed...
+	      var it = arr[index],
+	          i,
+	          u = change.path.length - 1;
+	      for (i = 0; i < u; i++) {
+	        it = it[change.path[i]];
+	      }
+	      switch (change.kind) {
+	        case 'A':
+	          revertArrayChange(it[change.path[i]], change.index, change.item);
+	          break;
+	        case 'D':
+	          it[change.path[i]] = change.lhs;
+	          break;
+	        case 'E':
+	          it[change.path[i]] = change.lhs;
+	          break;
+	        case 'N':
+	          delete it[change.path[i]];
+	          break;
+	      }
+	    } else {
+	      // the array item is different...
+	      switch (change.kind) {
+	        case 'A':
+	          revertArrayChange(arr[index], change.index, change.item);
+	          break;
+	        case 'D':
+	          arr[index] = change.lhs;
+	          break;
+	        case 'E':
+	          arr[index] = change.lhs;
+	          break;
+	        case 'N':
+	          arr = arrayRemove(arr, index);
+	          break;
+	      }
+	    }
+	    return arr;
+	  }
+	
+	  function revertChange(target, source, change) {
+	    if (target && source && change && change.kind) {
+	      var it = target,
+	          i,
+	          u;
+	      u = change.path.length - 1;
+	      for (i = 0; i < u; i++) {
+	        if (typeof it[change.path[i]] === 'undefined') {
+	          it[change.path[i]] = {};
+	        }
+	        it = it[change.path[i]];
+	      }
+	      switch (change.kind) {
+	        case 'A':
+	          // Array was modified...
+	          // it will be an array...
+	          revertArrayChange(it[change.path[i]], change.index, change.item);
+	          break;
+	        case 'D':
+	          // Item was deleted...
+	          it[change.path[i]] = change.lhs;
+	          break;
+	        case 'E':
+	          // Item was edited...
+	          it[change.path[i]] = change.lhs;
+	          break;
+	        case 'N':
+	          // Item is new...
+	          delete it[change.path[i]];
+	          break;
+	      }
+	    }
+	  }
+	
+	  function applyDiff(target, source, filter) {
+	    if (target && source) {
+	      var onChange = function onChange(change) {
+	        if (!filter || filter(target, source, change)) {
+	          applyChange(target, source, change);
+	        }
+	      };
+	      deepDiff(target, source, onChange);
+	    }
+	  }
+	
+	  Object.defineProperties(accumulateDiff, {
+	
+	    diff: {
+	      value: accumulateDiff,
+	      enumerable: true
+	    },
+	    observableDiff: {
+	      value: deepDiff,
+	      enumerable: true
+	    },
+	    applyDiff: {
+	      value: applyDiff,
+	      enumerable: true
+	    },
+	    applyChange: {
+	      value: applyChange,
+	      enumerable: true
+	    },
+	    revertChange: {
+	      value: revertChange,
+	      enumerable: true
+	    },
+	    isConflict: {
+	      value: function value() {
+	        return 'undefined' !== typeof conflict;
+	      },
+	      enumerable: true
+	    },
+	    noConflict: {
+	      value: function value() {
+	        if (conflictResolution) {
+	          conflictResolution.forEach(function (it) {
+	            it();
+	          });
+	          conflictResolution = null;
+	        }
+	        return accumulateDiff;
+	      },
+	      enumerable: true
+	    }
+	  });
+	
+	  return accumulateDiff;
+	});
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	var _flyd = __webpack_require__(14);
+	
+	var _flyd2 = _interopRequireDefault(_flyd);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var R = {
+	  mapObjIndexed: __webpack_require__(24),
+	  clone: __webpack_require__(2),
+	  map: __webpack_require__(34),
+	  merge: __webpack_require__(43),
+	  curryN: __webpack_require__(41),
+	  equals: __webpack_require__(44)
+	};
+	
+	var connectInterface = function connectInterface(md, name, model, connections) {
+	  return md.interfaces[name] ? createContext(md, connections).interfaces[name](model) : {};
+	};
+	
+	var mergeModels = function mergeModels(mds) {
+	  var obj = {};
+	  for (var key in mds) {
+	    obj[key] = mds[key].root ? mds[key].root.init(_extends({ key: key }, mds[key])) : mds[key].init(_extends({ key: key }, mds[key]));
+	  }
+	  return obj;
+	};
+	
+	/* Merge child interfaces, flatten
+	  childs : Array[Object]
+	  interfaceName : String
+	  scope : String // use scope if use this function uses two or more times in an interface
+	*/
+	var mergeChilds = function mergeChilds(childs, md) {
+	  var scope = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+	  var interfaceName = arguments[3];
+	  var connections = arguments[4];
+	
+	  var objs = {};
+	  R.mapObjIndexed(function (model, idx) {
+	    R.mapObjIndexed(function (obj, name) {
+	      objs[scope + idx + '_' + name] = obj;
+	    }, connectInterface(md, interfaceName, model, connections(+idx)));
+	  }, childs);
+	  return objs;
+	};
+	
+	var mergeChild = function mergeChild(model, md, scope, interfaceName, connections) {
+	  var objs = {};
+	  R.mapObjIndexed(function (obj, name) {
+	    objs[scope + '_' + name] = obj;
+	  }, connectInterface(md, interfaceName, model, connections));
+	  return objs;
+	};
+	
+	function addModuleInfo(mDef, obj) {
+	  obj._moduleName = mDef.name;
+	  obj._log = mDef.log;
+	  obj._logAll = mDef.logAll;
+	  return obj;
+	}
+	
+	// Composition for Fractal core, (mDefinition, connections = {}) -> ContextualizedModule
+	var createContext = function createContext(mDefinition) {
+	  var connections = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	
+	  var mDef = R.clone(mDefinition);
+	  var ctx = {
+	    action$: _flyd2.default.stream(),
+	    task$: _flyd2.default.stream()
+	  };
+	  // append the outputs in the context
+	  for (var name in mDef.outputNames) {
+	    ctx[mDef.outputNames[name]] = _flyd2.default.stream();
+	  }
+	
+	  // connection with the context
+	
+	  var _loop = function _loop(_name) {
+	    if (!!ctx[_name]) {
+	      if (_name === 'action$') {
+	        _flyd2.default.on(function (d) {
+	          return connections[_name](addModuleInfo(mDef, d));
+	        }, ctx[_name]);
+	      } else {
+	        _flyd2.default.on(connections[_name], ctx[_name]);
+	      }
+	    }
+	  };
+	
+	  for (var _name in connections) {
+	    _loop(_name);
+	  }
+	  // contextualize inputs
+	  var inputs = R.map(function (i) {
+	    return R.curryN(i.length, function () {
+	      // wrapper function for tasks
+	      var tasks = i.apply(undefined, arguments);
+	      if (tasks != undefined) {
+	        if (tasks instanceof Array && tasks.of == undefined && !(typeof tasks[0] == 'string' && tasks[1] && _typeof(tasks[1].of) == 'object')) {
+	          // verify that is not a task in the form [String, TaskAction]
+	          // multiple action-task syntax
+	          tasks.forEach(function (t) {
+	            if (R.equals(t.of, mDef.Action)) {
+	              ctx.action$(t);
+	            } else {
+	              ctx.task$(t);
+	            }
+	          });
+	        } else if (R.equals(tasks.of, mDef.Action)) {
+	          // single action syntax for an action
+	          ctx.action$(tasks);
+	        } else if (tasks instanceof Array) {
+	          // single action syntax for a task
+	          ctx.task$(tasks);
+	        }
+	      } else {
+	        // none sense return
+	        // ctx.task$('undefined') // DEBUG
+	      }
+	    })(ctx, mDef.Action);
+	  }, mDef.inputs);
+	  ctx._md = mDef.load(ctx, inputs, mDef.Action) || {};
+	  // space for dynamic modules
+	  ctx._dynamicMd = [];
+	
+	  // connect task$
+	  connectTasks(ctx._md);
+	
+	  function connectTasks(mds) {
+	    for (var _name2 in mds) {
+	      if (mds[_name2].mDef) {
+	        _flyd2.default.on(function (task) {
+	          return ctx.task$(addModuleInfo(mDef, task));
+	        }, mds[_name2].ctx.task$);
+	      } else {
+	        // connect categorized modules
+	        for (var subName in mds[_name2]) {
+	          _flyd2.default.on(function (task) {
+	            return ctx.task$(addModuleInfo(mDef, task));
+	          }, mds[_name2][subName].ctx.task$);
+	        }
+	      }
+	    }
+	  }
+	
+	  var md = function md(mds) {
+	    // connect task$
+	    connectTasks(mds);
+	    ctx._md = R.merge(ctx._md, mds);
+	  };
+	  setTimeout(function () {
+	    return mDef.loadAfter(ctx, inputs, mDef.Action, md);
+	  }, 0);
+	  // contextualize interfaces
+	  mDef.interfaces = R.map(function (i) {
+	    return R.curryN(3, i)(ctx)(inputs);
+	  }, mDef.interfaces);
+	  return _extends({}, mDef, {
+	    ctx: ctx,
+	    inputs: inputs
+	  });
+	};
+	
+	// select a set of _md and map to a list of view interfaces
+	var mergeChildList = function mergeChildList(ctx, interfaceName, rootModel, childNames) {
+	  var f = arguments.length <= 4 || arguments[4] === undefined ? function (x) {
+	    return x;
+	  } : arguments[4];
+	  return R.map(function (name) {
+	    return f(ctx._md[name].interfaces[interfaceName](rootModel[name]));
+	  }, childNames);
+	};
+	
+	var mapObjToArray = function mapObjToArray(fn, obj) {
+	  var arr = [];
+	  for (var key in obj) {
+	    arr.push(fn(obj[key], key));
+	  }return arr;
+	};
+	// TODO: implement funtion that takes [list] -> ( (key, value) -> ({key, value}) ) -> {[key]: value}
+	// Useful for optional styles
+	
+	var setDynamicMds = function setDynamicMds(ctxArray, ctx) {};
+	
+	exports.default = {
+	  createContext: createContext,
+	  mergeModels: mergeModels,
+	  mergeChild: mergeChild,
+	  mergeChilds: mergeChilds,
+	  mergeChildList: mergeChildList,
+	  connectInterface: connectInterface,
+	  addModuleInfo: addModuleInfo,
+	  mapObjToArray: mapObjToArray,
+	  setDynamicMds: setDynamicMds
+	};
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry2 = __webpack_require__(25);
+	var _reduce = __webpack_require__(26);
+	var keys = __webpack_require__(32);
+	
+	/**
+	 * Like `mapObj`, but passes additional arguments to the predicate function. The
+	 * predicate function is passed three arguments: *(value, key, obj)*.
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.9.0
+	 * @category Object
+	 * @sig (v, k, {k: v} -> v) -> {k: v} -> {k: v}
+	 * @param {Function} fn A function called for each property in `obj`. Its return value will
+	 *        become a new property on the return object.
+	 * @param {Object} obj The object to iterate over.
+	 * @return {Object} A new object with the same keys as `obj` and values that are the result
+	 *         of running each property through `fn`.
+	 * @example
+	 *
+	 *      var values = { x: 1, y: 2, z: 3 };
+	 *      var prependKeyAndDouble = (num, key, obj) => key + (num * 2);
+	 *
+	 *      R.mapObjIndexed(prependKeyAndDouble, values); //=> { x: 'x2', y: 'y4', z: 'z6' }
+	 */
+	module.exports = _curry2(function mapObjIndexed(fn, obj) {
+	  return _reduce(function (acc, key) {
+	    acc[key] = fn(obj[key], key, obj);
+	    return acc;
+	  }, {}, keys(obj));
+	});
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry1 = __webpack_require__(6);
+	
+	/**
+	 * Optimized internal two-arity curry function.
+	 *
+	 * @private
+	 * @category Function
+	 * @param {Function} fn The function to curry.
+	 * @return {Function} The curried function.
+	 */
+	module.exports = function _curry2(fn) {
+	  return function f2(a, b) {
+	    var n = arguments.length;
+	    if (n === 0) {
+	      return f2;
+	    } else if (n === 1 && a != null && a['@@functional/placeholder'] === true) {
+	      return f2;
+	    } else if (n === 1) {
+	      return _curry1(function (b) {
+	        return fn(a, b);
+	      });
+	    } else if (n === 2 && a != null && a['@@functional/placeholder'] === true && b != null && b['@@functional/placeholder'] === true) {
+	      return f2;
+	    } else if (n === 2 && a != null && a['@@functional/placeholder'] === true) {
+	      return _curry1(function (a) {
+	        return fn(a, b);
+	      });
+	    } else if (n === 2 && b != null && b['@@functional/placeholder'] === true) {
+	      return _curry1(function (b) {
+	        return fn(a, b);
+	      });
+	    } else {
+	      return fn(a, b);
+	    }
+	  };
+	};
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _xwrap = __webpack_require__(27);
+	var bind = __webpack_require__(28);
+	var isArrayLike = __webpack_require__(30);
+	
+	module.exports = function () {
+	  function _arrayReduce(xf, acc, list) {
+	    var idx = 0,
+	        len = list.length;
+	    while (idx < len) {
+	      acc = xf['@@transducer/step'](acc, list[idx]);
+	      if (acc && acc['@@transducer/reduced']) {
+	        acc = acc['@@transducer/value'];
+	        break;
+	      }
+	      idx += 1;
+	    }
+	    return xf['@@transducer/result'](acc);
+	  }
+	
+	  function _iterableReduce(xf, acc, iter) {
+	    var step = iter.next();
+	    while (!step.done) {
+	      acc = xf['@@transducer/step'](acc, step.value);
+	      if (acc && acc['@@transducer/reduced']) {
+	        acc = acc['@@transducer/value'];
+	        break;
+	      }
+	      step = iter.next();
+	    }
+	    return xf['@@transducer/result'](acc);
+	  }
+	
+	  function _methodReduce(xf, acc, obj) {
+	    return xf['@@transducer/result'](obj.reduce(bind(xf['@@transducer/step'], xf), acc));
+	  }
+	
+	  var symIterator = typeof Symbol !== 'undefined' ? Symbol.iterator : '@@iterator';
+	  return function _reduce(fn, acc, list) {
+	    if (typeof fn === 'function') {
+	      fn = _xwrap(fn);
+	    }
+	    if (isArrayLike(list)) {
+	      return _arrayReduce(fn, acc, list);
+	    }
+	    if (typeof list.reduce === 'function') {
+	      return _methodReduce(fn, acc, list);
+	    }
+	    if (list[symIterator] != null) {
+	      return _iterableReduce(fn, acc, list[symIterator]());
+	    }
+	    if (typeof list.next === 'function') {
+	      return _iterableReduce(fn, acc, list);
+	    }
+	    throw new TypeError('reduce: list must be array or iterable');
+	  };
+	}();
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function () {
+	  function XWrap(fn) {
+	    this.f = fn;
+	  }
+	  XWrap.prototype['@@transducer/init'] = function () {
+	    throw new Error('init not implemented on XWrap');
+	  };
+	  XWrap.prototype['@@transducer/result'] = function (acc) {
+	    return acc;
+	  };
+	  XWrap.prototype['@@transducer/step'] = function (acc, x) {
+	    return this.f(acc, x);
+	  };
+	
+	  return function _xwrap(fn) {
+	    return new XWrap(fn);
+	  };
+	}();
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _arity = __webpack_require__(29);
+	var _curry2 = __webpack_require__(25);
+	
+	/**
+	 * Creates a function that is bound to a context.
+	 * Note: `R.bind` does not provide the additional argument-binding capabilities of
+	 * [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.6.0
+	 * @category Function
+	 * @category Object
+	 * @see R.partial
+	 * @sig (* -> *) -> {*} -> (* -> *)
+	 * @param {Function} fn The function to bind to context
+	 * @param {Object} thisObj The context to bind `fn` to
+	 * @return {Function} A function that will execute in the context of `thisObj`.
+	 */
+	module.exports = _curry2(function bind(fn, thisObj) {
+	  return _arity(fn.length, function () {
+	    return fn.apply(thisObj, arguments);
+	  });
+	});
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function _arity(n, fn) {
+	  // jshint unused:vars
+	  switch (n) {
+	    case 0:
+	      return function () {
+	        return fn.apply(this, arguments);
+	      };
+	    case 1:
+	      return function (a0) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 2:
+	      return function (a0, a1) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 3:
+	      return function (a0, a1, a2) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 4:
+	      return function (a0, a1, a2, a3) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 5:
+	      return function (a0, a1, a2, a3, a4) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 6:
+	      return function (a0, a1, a2, a3, a4, a5) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 7:
+	      return function (a0, a1, a2, a3, a4, a5, a6) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 8:
+	      return function (a0, a1, a2, a3, a4, a5, a6, a7) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 9:
+	      return function (a0, a1, a2, a3, a4, a5, a6, a7, a8) {
+	        return fn.apply(this, arguments);
+	      };
+	    case 10:
+	      return function (a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
+	        return fn.apply(this, arguments);
+	      };
+	    default:
+	      throw new Error('First argument to _arity must be a non-negative integer no greater than ten');
+	  }
+	};
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	var _curry1 = __webpack_require__(6);
+	var _isArray = __webpack_require__(31);
+	
+	/**
+	 * Tests whether or not an object is similar to an array.
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.5.0
+	 * @category Type
+	 * @category List
+	 * @sig * -> Boolean
+	 * @param {*} x The object to test.
+	 * @return {Boolean} `true` if `x` has a numeric length property and extreme indices defined; `false` otherwise.
+	 * @example
+	 *
+	 *      R.isArrayLike([]); //=> true
+	 *      R.isArrayLike(true); //=> false
+	 *      R.isArrayLike({}); //=> false
+	 *      R.isArrayLike({length: 10}); //=> false
+	 *      R.isArrayLike({0: 'zero', 9: 'nine', length: 10}); //=> true
+	 */
+	module.exports = _curry1(function isArrayLike(x) {
+	  if (_isArray(x)) {
+	    return true;
+	  }
+	  if (!x) {
+	    return false;
+	  }
+	  if ((typeof x === 'undefined' ? 'undefined' : _typeof(x)) !== 'object') {
+	    return false;
+	  }
+	  if (x instanceof String) {
+	    return false;
+	  }
+	  if (x.nodeType === 1) {
+	    return !!x.length;
+	  }
+	  if (x.length === 0) {
+	    return true;
+	  }
+	  if (x.length > 0) {
+	    return x.hasOwnProperty(0) && x.hasOwnProperty(x.length - 1);
+	  }
+	  return false;
+	});
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/**
+	 * Tests whether or not an object is an array.
+	 *
+	 * @private
+	 * @param {*} val The object to test.
+	 * @return {Boolean} `true` if `val` is an array, `false` otherwise.
+	 * @example
+	 *
+	 *      _isArray([]); //=> true
+	 *      _isArray(null); //=> false
+	 *      _isArray({}); //=> false
+	 */
+	module.exports = Array.isArray || function _isArray(val) {
+	  return val != null && val.length >= 0 && Object.prototype.toString.call(val) === '[object Array]';
+	};
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry1 = __webpack_require__(6);
+	var _has = __webpack_require__(33);
+	
+	/**
+	 * Returns a list containing the names of all the enumerable own
+	 * properties of the supplied object.
+	 * Note that the order of the output array is not guaranteed to be
+	 * consistent across different JS platforms.
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.1.0
+	 * @category Object
+	 * @sig {k: v} -> [k]
+	 * @param {Object} obj The object to extract properties from
+	 * @return {Array} An array of the object's own properties.
+	 * @example
+	 *
+	 *      R.keys({a: 1, b: 2, c: 3}); //=> ['a', 'b', 'c']
+	 */
+	module.exports = function () {
+	  // cover IE < 9 keys issues
+	  var hasEnumBug = !{ toString: null }.propertyIsEnumerable('toString');
+	  var nonEnumerableProps = ['constructor', 'valueOf', 'isPrototypeOf', 'toString', 'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+	
+	  var contains = function contains(list, item) {
+	    var idx = 0;
+	    while (idx < list.length) {
+	      if (list[idx] === item) {
+	        return true;
+	      }
+	      idx += 1;
+	    }
+	    return false;
+	  };
+	
+	  return typeof Object.keys === 'function' ? _curry1(function keys(obj) {
+	    return Object(obj) !== obj ? [] : Object.keys(obj);
+	  }) : _curry1(function keys(obj) {
+	    if (Object(obj) !== obj) {
+	      return [];
+	    }
+	    var prop,
+	        ks = [],
+	        nIdx;
+	    for (prop in obj) {
+	      if (_has(prop, obj)) {
+	        ks[ks.length] = prop;
+	      }
+	    }
+	    if (hasEnumBug) {
+	      nIdx = nonEnumerableProps.length - 1;
+	      while (nIdx >= 0) {
+	        prop = nonEnumerableProps[nIdx];
+	        if (_has(prop, obj) && !contains(ks, prop)) {
+	          ks[ks.length] = prop;
+	        }
+	        nIdx -= 1;
+	      }
+	    }
+	    return ks;
+	  });
+	}();
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = function _has(prop, obj) {
+	  return Object.prototype.hasOwnProperty.call(obj, prop);
+	};
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry2 = __webpack_require__(25);
+	var _dispatchable = __webpack_require__(35);
+	var _map = __webpack_require__(38);
+	var _reduce = __webpack_require__(26);
+	var _xmap = __webpack_require__(39);
+	var curryN = __webpack_require__(41);
+	var keys = __webpack_require__(32);
+	
+	/**
+	 * Returns a new list, constructed by applying the supplied function to every element of the
+	 * supplied list.
+	 *
+	 * Note: `R.map` does not skip deleted or unassigned indices (sparse arrays), unlike the
+	 * native `Array.prototype.map` method. For more details on this behavior, see:
+	 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map#Description
+	 *
+	 * Dispatches to the `map` method of the second argument, if present.
+	 *
+	 * Acts as a transducer if a transformer is given in list position.
+	 * @see R.transduce
+	 *
+	 * Map treats also treats functions as functors and will compose them together.
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.1.0
+	 * @category List
+	 * @sig Functor f => (a -> b) -> f a -> f b
+	 * @param {Function} fn The function to be called on every element of the input `list`.
+	 * @param {Array} list The list to be iterated over.
+	 * @return {Array} The new list.
+	 * @example
+	 *
+	 *      var double = x => x * 2;
+	 *
+	 *      R.map(double, [1, 2, 3]); //=> [2, 4, 6]
+	 *
+	 *      R.map(double, {x: 1, y: 2, z: 3}); //=> {x: 2, y: 4, z: 6}
+	 */
+	module.exports = _curry2(_dispatchable('map', _xmap, function map(fn, functor) {
+	  switch (Object.prototype.toString.call(functor)) {
+	    case '[object Function]':
+	      return curryN(functor.length, function () {
+	        return fn.call(this, functor.apply(this, arguments));
+	      });
+	    case '[object Object]':
+	      return _reduce(function (acc, key) {
+	        acc[key] = fn(functor[key]);
+	        return acc;
+	      }, {}, keys(functor));
+	    default:
+	      return _map(fn, functor);
+	  }
+	}));
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _isArray = __webpack_require__(31);
+	var _isTransformer = __webpack_require__(36);
+	var _slice = __webpack_require__(37);
+	
+	/**
+	 * Returns a function that dispatches with different strategies based on the
+	 * object in list position (last argument). If it is an array, executes [fn].
+	 * Otherwise, if it has a  function with [methodname], it will execute that
+	 * function (functor case). Otherwise, if it is a transformer, uses transducer
+	 * [xf] to return a new transformer (transducer case). Otherwise, it will
+	 * default to executing [fn].
+	 *
+	 * @private
+	 * @param {String} methodname property to check for a custom implementation
+	 * @param {Function} xf transducer to initialize if object is transformer
+	 * @param {Function} fn default ramda implementation
+	 * @return {Function} A function that dispatches on object in list position
+	 */
+	module.exports = function _dispatchable(methodname, xf, fn) {
+	  return function () {
+	    var length = arguments.length;
+	    if (length === 0) {
+	      return fn();
+	    }
+	    var obj = arguments[length - 1];
+	    if (!_isArray(obj)) {
+	      var args = _slice(arguments, 0, length - 1);
+	      if (typeof obj[methodname] === 'function') {
+	        return obj[methodname].apply(obj, args);
+	      }
+	      if (_isTransformer(obj)) {
+	        var transducer = xf.apply(null, args);
+	        return transducer(obj);
+	      }
+	    }
+	    return fn.apply(this, arguments);
+	  };
+	};
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function _isTransformer(obj) {
+	  return typeof obj['@@transducer/step'] === 'function';
+	};
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	/**
+	 * An optimized, private array `slice` implementation.
+	 *
+	 * @private
+	 * @param {Arguments|Array} args The array or arguments object to consider.
+	 * @param {Number} [from=0] The array index to slice from, inclusive.
+	 * @param {Number} [to=args.length] The array index to slice to, exclusive.
+	 * @return {Array} A new, sliced array.
+	 * @example
+	 *
+	 *      _slice([1, 2, 3, 4, 5], 1, 3); //=> [2, 3]
+	 *
+	 *      var firstThreeArgs = function(a, b, c, d) {
+	 *        return _slice(arguments, 0, 3);
+	 *      };
+	 *      firstThreeArgs(1, 2, 3, 4); //=> [1, 2, 3]
+	 */
+	module.exports = function _slice(args, from, to) {
+	  switch (arguments.length) {
+	    case 1:
+	      return _slice(args, 0, args.length);
+	    case 2:
+	      return _slice(args, from, args.length);
+	    default:
+	      var list = [];
+	      var idx = 0;
+	      var len = Math.max(0, Math.min(args.length, to) - from);
+	      while (idx < len) {
+	        list[idx] = args[from + idx];
+	        idx += 1;
+	      }
+	      return list;
+	  }
+	};
+
+/***/ },
+/* 38 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = function _map(fn, functor) {
+	  var idx = 0;
+	  var len = functor.length;
+	  var result = Array(len);
+	  while (idx < len) {
+	    result[idx] = fn(functor[idx]);
+	    idx += 1;
+	  }
+	  return result;
+	};
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry2 = __webpack_require__(25);
+	var _xfBase = __webpack_require__(40);
+	
+	module.exports = function () {
+	  function XMap(f, xf) {
+	    this.xf = xf;
+	    this.f = f;
+	  }
+	  XMap.prototype['@@transducer/init'] = _xfBase.init;
+	  XMap.prototype['@@transducer/result'] = _xfBase.result;
+	  XMap.prototype['@@transducer/step'] = function (result, input) {
+	    return this.xf['@@transducer/step'](result, this.f(input));
+	  };
+	
+	  return _curry2(function _xmap(f, xf) {
+	    return new XMap(f, xf);
+	  });
+	}();
+
+/***/ },
+/* 40 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = {
+	  init: function init() {
+	    return this.xf['@@transducer/init']();
+	  },
+	  result: function result(_result) {
+	    return this.xf['@@transducer/result'](_result);
+	  }
+	};
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _arity = __webpack_require__(29);
+	var _curry1 = __webpack_require__(6);
+	var _curry2 = __webpack_require__(25);
+	var _curryN = __webpack_require__(42);
+	
+	/**
+	 * Returns a curried equivalent of the provided function, with the
+	 * specified arity. The curried function has two unusual capabilities.
+	 * First, its arguments needn't be provided one at a time. If `g` is
+	 * `R.curryN(3, f)`, the following are equivalent:
+	 *
+	 *   - `g(1)(2)(3)`
+	 *   - `g(1)(2, 3)`
+	 *   - `g(1, 2)(3)`
+	 *   - `g(1, 2, 3)`
+	 *
+	 * Secondly, the special placeholder value `R.__` may be used to specify
+	 * "gaps", allowing partial application of any combination of arguments,
+	 * regardless of their positions. If `g` is as above and `_` is `R.__`,
+	 * the following are equivalent:
+	 *
+	 *   - `g(1, 2, 3)`
+	 *   - `g(_, 2, 3)(1)`
+	 *   - `g(_, _, 3)(1)(2)`
+	 *   - `g(_, _, 3)(1, 2)`
+	 *   - `g(_, 2)(1)(3)`
+	 *   - `g(_, 2)(1, 3)`
+	 *   - `g(_, 2)(_, 3)(1)`
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.5.0
+	 * @category Function
+	 * @sig Number -> (* -> a) -> (* -> a)
+	 * @param {Number} length The arity for the returned function.
+	 * @param {Function} fn The function to curry.
+	 * @return {Function} A new, curried function.
+	 * @see R.curry
+	 * @example
+	 *
+	 *      var sumArgs = (...args) => R.sum(args);
+	 *
+	 *      var curriedAddFourNumbers = R.curryN(4, sumArgs);
+	 *      var f = curriedAddFourNumbers(1, 2);
+	 *      var g = f(3);
+	 *      g(4); //=> 10
+	 */
+	module.exports = _curry2(function curryN(length, fn) {
+	  if (length === 1) {
+	    return _curry1(fn);
+	  }
+	  return _arity(length, _curryN(length, [], fn));
+	});
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _arity = __webpack_require__(29);
+	
+	/**
+	 * Internal curryN function.
+	 *
+	 * @private
+	 * @category Function
+	 * @param {Number} length The arity of the curried function.
+	 * @return {array} An array of arguments received thus far.
+	 * @param {Function} fn The function to curry.
+	 */
+	module.exports = function _curryN(length, received, fn) {
+	  return function () {
+	    var combined = [];
+	    var argsIdx = 0;
+	    var left = length;
+	    var combinedIdx = 0;
+	    while (combinedIdx < received.length || argsIdx < arguments.length) {
+	      var result;
+	      if (combinedIdx < received.length && (received[combinedIdx] == null || received[combinedIdx]['@@functional/placeholder'] !== true || argsIdx >= arguments.length)) {
+	        result = received[combinedIdx];
+	      } else {
+	        result = arguments[argsIdx];
+	        argsIdx += 1;
+	      }
+	      combined[combinedIdx] = result;
+	      if (result == null || result['@@functional/placeholder'] !== true) {
+	        left -= 1;
+	      }
+	      combinedIdx += 1;
+	    }
+	    return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
+	  };
+	};
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry2 = __webpack_require__(25);
+	var keys = __webpack_require__(32);
+	
+	/**
+	 * Create a new object with the own properties of `a`
+	 * merged with the own properties of object `b`.
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.1.0
+	 * @category Object
+	 * @sig {k: v} -> {k: v} -> {k: v}
+	 * @param {Object} a
+	 * @param {Object} b
+	 * @return {Object}
+	 * @example
+	 *
+	 *      R.merge({ 'name': 'fred', 'age': 10 }, { 'age': 40 });
+	 *      //=> { 'name': 'fred', 'age': 40 }
+	 *
+	 *      var resetToDefault = R.merge(R.__, {x: 0});
+	 *      resetToDefault({x: 5, y: 2}); //=> {x: 0, y: 2}
+	 */
+	module.exports = _curry2(function merge(a, b) {
+	  var result = {};
+	  var ks = keys(a);
+	  var idx = 0;
+	  while (idx < ks.length) {
+	    result[ks[idx]] = a[ks[idx]];
+	    idx += 1;
+	  }
+	  ks = keys(b);
+	  idx = 0;
+	  while (idx < ks.length) {
+	    result[ks[idx]] = b[ks[idx]];
+	    idx += 1;
+	  }
+	  return result;
+	});
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry2 = __webpack_require__(25);
+	var _equals = __webpack_require__(45);
+	
+	/**
+	 * Returns `true` if its arguments are equivalent, `false` otherwise.
+	 * Dispatches to an `equals` method if present. Handles cyclical data
+	 * structures.
+	 *
+	 * Dispatches to the `equals` method of both arguments, if present.
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.15.0
+	 * @category Relation
+	 * @sig a -> b -> Boolean
+	 * @param {*} a
+	 * @param {*} b
+	 * @return {Boolean}
+	 * @example
+	 *
+	 *      R.equals(1, 1); //=> true
+	 *      R.equals(1, '1'); //=> false
+	 *      R.equals([1, 2, 3], [1, 2, 3]); //=> true
+	 *
+	 *      var a = {}; a.v = a;
+	 *      var b = {}; b.v = b;
+	 *      R.equals(a, b); //=> true
+	 */
+	module.exports = _curry2(function equals(a, b) {
+	  return _equals(a, b, [], []);
+	});
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
+	var _arrayFromIterator = __webpack_require__(46);
+	var _has = __webpack_require__(33);
+	var identical = __webpack_require__(47);
+	var keys = __webpack_require__(32);
+	var type = __webpack_require__(5);
+	
+	module.exports = function _equals(a, b, stackA, stackB) {
+	  if (identical(a, b)) {
+	    return true;
+	  }
+	
+	  if (type(a) !== type(b)) {
+	    return false;
+	  }
+	
+	  if (a == null || b == null) {
+	    return false;
+	  }
+	
+	  if (typeof a.equals === 'function' || typeof b.equals === 'function') {
+	    return typeof a.equals === 'function' && a.equals(b) && typeof b.equals === 'function' && b.equals(a);
+	  }
+	
+	  switch (type(a)) {
+	    case 'Arguments':
+	    case 'Array':
+	    case 'Object':
+	      break;
+	    case 'Boolean':
+	    case 'Number':
+	    case 'String':
+	      if (!((typeof a === 'undefined' ? 'undefined' : _typeof(a)) === (typeof b === 'undefined' ? 'undefined' : _typeof(b)) && identical(a.valueOf(), b.valueOf()))) {
+	        return false;
+	      }
+	      break;
+	    case 'Date':
+	      if (!identical(a.valueOf(), b.valueOf())) {
+	        return false;
+	      }
+	      break;
+	    case 'RegExp':
+	      if (!(a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky && a.unicode === b.unicode)) {
+	        return false;
+	      }
+	      break;
+	    case 'Map':
+	    case 'Set':
+	      if (!_equals(_arrayFromIterator(a.entries()), _arrayFromIterator(b.entries()), stackA, stackB)) {
+	        return false;
+	      }
+	      break;
+	    case 'Int8Array':
+	    case 'Uint8Array':
+	    case 'Uint8ClampedArray':
+	    case 'Int16Array':
+	    case 'Uint16Array':
+	    case 'Int32Array':
+	    case 'Uint32Array':
+	    case 'Float32Array':
+	    case 'Float64Array':
+	      break;
+	    case 'ArrayBuffer':
+	      break;
+	    default:
+	      // Values of other types are only equal if identical.
+	      return false;
+	  }
+	
+	  var keysA = keys(a);
+	  if (keysA.length !== keys(b).length) {
+	    return false;
+	  }
+	
+	  var idx = stackA.length - 1;
+	  while (idx >= 0) {
+	    if (stackA[idx] === a) {
+	      return stackB[idx] === b;
+	    }
+	    idx -= 1;
+	  }
+	
+	  stackA.push(a);
+	  stackB.push(b);
+	  idx = keysA.length - 1;
+	  while (idx >= 0) {
+	    var key = keysA[idx];
+	    if (!(_has(key, b) && _equals(b[key], a[key], stackA, stackB))) {
+	      return false;
+	    }
+	    idx -= 1;
+	  }
+	  stackA.pop();
+	  stackB.pop();
+	  return true;
+	};
+
+/***/ },
+/* 46 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	module.exports = function _arrayFromIterator(iter) {
+	  var list = [];
+	  var next;
+	  while (!(next = iter.next()).done) {
+	    list.push(next.value);
+	  }
+	  return list;
+	};
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry2 = __webpack_require__(25);
+	
+	/**
+	 * Returns true if its arguments are identical, false otherwise. Values are
+	 * identical if they reference the same memory. `NaN` is identical to `NaN`;
+	 * `0` and `-0` are not identical.
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.15.0
+	 * @category Relation
+	 * @sig a -> a -> Boolean
+	 * @param {*} a
+	 * @param {*} b
+	 * @return {Boolean}
+	 * @example
+	 *
+	 *      var o = {};
+	 *      R.identical(o, o); //=> true
+	 *      R.identical(1, 1); //=> true
+	 *      R.identical(1, '1'); //=> false
+	 *      R.identical([], []); //=> false
+	 *      R.identical(0, -0); //=> false
+	 *      R.identical(NaN, NaN); //=> true
+	 */
+	module.exports = _curry2(function identical(a, b) {
+	  // SameValue algorithm
+	  if (a === b) {
+	    // Steps 1-5, 7-10
+	    // Steps 6.b-6.e: +0 != -0
+	    return a !== 0 || 1 / a === 1 / b;
+	  } else {
+	    // Step 6.a: NaN == NaN
+	    return a !== a && b !== b;
+	  }
+	});
+
+/***/ },
 /* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3340,12 +3432,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  ifElse: __webpack_require__(56),
 	  update: __webpack_require__(58),
 	  append: __webpack_require__(61),
-	  mapObjIndexed: __webpack_require__(17)
+	  mapObjIndexed: __webpack_require__(24)
 	};
 	var h = __webpack_require__(62);
-	var F = _extends({}, __webpack_require__(1), __webpack_require__(16));
+	var F = _extends({}, __webpack_require__(1), __webpack_require__(23));
 	
-	var _require = __webpack_require__(14);
+	var _require = __webpack_require__(21);
 	
 	var logAction = _require.logAction;
 	var displayFromDiff = _require.displayFromDiff;
@@ -3674,7 +3766,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 	
-	var _curry2 = __webpack_require__(18);
+	var _curry2 = __webpack_require__(25);
 	
 	/**
 	 * Creates a new object by recursively evolving a shallow copy of `object`, according to the
@@ -3802,7 +3894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	var _curry2 = __webpack_require__(18);
+	var _curry2 = __webpack_require__(25);
 	
 	/**
 	 * Adds two numbers. Equivalent to `a + b` but curried.
@@ -3832,7 +3924,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	var _curry3 = __webpack_require__(57);
-	var curryN = __webpack_require__(34);
+	var curryN = __webpack_require__(41);
 	
 	/**
 	 * Creates a function that will process either the `onTrue` or the `onFalse` function depending
@@ -3872,7 +3964,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	var _curry1 = __webpack_require__(6);
-	var _curry2 = __webpack_require__(18);
+	var _curry2 = __webpack_require__(25);
 	
 	/**
 	 * Optimized internal three-arity curry function.
@@ -4060,7 +4152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	var _concat = __webpack_require__(60);
-	var _curry2 = __webpack_require__(18);
+	var _curry2 = __webpack_require__(25);
 	
 	/**
 	 * Returns a new list containing the contents of the given list, followed by the given
@@ -4167,7 +4259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	var _arity = __webpack_require__(22);
+	var _arity = __webpack_require__(29);
 	var _pipe = __webpack_require__(66);
 	var reduce = __webpack_require__(67);
 	var tail = __webpack_require__(68);
@@ -4218,7 +4310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	var _curry3 = __webpack_require__(57);
-	var _reduce = __webpack_require__(19);
+	var _reduce = __webpack_require__(26);
 	
 	/**
 	 * Returns a single item by iterating through the list, successively calling the iterator
@@ -4298,8 +4390,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	var _isArray = __webpack_require__(24);
-	var _slice = __webpack_require__(30);
+	var _isArray = __webpack_require__(31);
+	var _slice = __webpack_require__(37);
 	
 	/**
 	 * Similar to hasMethod, this checks whether a function has a [methodname]
@@ -4366,7 +4458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	var _curry1 = __webpack_require__(6);
-	var _slice = __webpack_require__(30);
+	var _slice = __webpack_require__(37);
 	var curry = __webpack_require__(72);
 	
 	/**
@@ -4404,7 +4496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 	
 	var _curry1 = __webpack_require__(6);
-	var curryN = __webpack_require__(34);
+	var curryN = __webpack_require__(41);
 	
 	/**
 	 * Returns a curried equivalent of the provided function. The curried
@@ -4460,89 +4552,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
-	/*const R = require('ramda')
-	const h = require('snabbdom/h')*/
-	var F = _extends({}, __webpack_require__(1).default, __webpack_require__(16).default);
-	
-	var _require$default = __webpack_require__(14).default;
-	
-	var logAction = _require$default.logAction;
-	var displayFromDiff = _require$default.displayFromDiff;
-	var diff = _require$default.diff;
-	
-	// TODO a more elegant form of do that?
-	
-	var log = function log(child) {
-	
-	  // merge child interfaces
-	  var interfaces = {};
-	
-	  var _loop = function _loop(name) {
-	    interfaces[name] = function (ctx, i, m) {
-	      return ctx._md.child.interfaces[name](m);
-	    };
-	  };
-	
-	  for (var name in child.interfaces) {
-	    _loop(name);
-	  }
-	
-	  return F.def({
-	    name: child.name,
-	    init: child.init,
-	    inputs: _extends({
-	      childActionLOGER1234: function childActionLOGER1234(ctx, Action, action) {
-	        return Action.ChildActionLOGER1234(action);
-	      }
-	    }, child.mDef.inputs),
-	    outputNames: child.outputNames,
-	    load: function load(ctx, i, Action) {
-	      var connections = {};
-	      child.outputNames.forEach(function (conn) {
-	        return connections[conn] = ctx[conn];
-	      });
-	      return {
-	        child: F.createContext(child, _extends({
-	          action$: i.childActionLOGER1234
-	        }, connections))
-	      };
-	    },
-	    loadAfter: child.mDef.loadAfter,
-	    Action: _extends({
-	      ChildActionLOGER1234: [Array]
-	    }, child.mDef.Action),
-	    update: _extends({}, child.mDef.update, {
-	      ChildActionLOGER1234: function ChildActionLOGER1234(action, m) {
-	        var newModel = child.update(action, m);
-	        logAction(action);
-	        displayFromDiff(diff(m, newModel));
-	        console.log(newModel);
-	        return newModel;
-	      }
-	
-	    }),
-	    interfaces: interfaces
-	  });
-	};
-	
-	exports.default = log;
-
-/***/ },
-/* 74 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
 	exports.default = service;
 	// abstractions for a service
 	var F = {
-	  data: __webpack_require__(75)
+	  data: __webpack_require__(74)
 	};
 	var R = {
 	  curry: __webpack_require__(72)
@@ -4664,7 +4677,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4728,7 +4741,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4739,7 +4752,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var F = _extends({}, __webpack_require__(1).default, __webpack_require__(16).default);
+	var F = _extends({}, __webpack_require__(1).default, __webpack_require__(23).default);
 	var h = __webpack_require__(62);
 	
 	exports.default = F.def({
@@ -4757,7 +4770,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4799,7 +4812,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4835,7 +4848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4843,20 +4856,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var Type = __webpack_require__(7);
-	var data = __webpack_require__(75);
+	
+	var _unionType = __webpack_require__(7);
+	
+	var _unionType2 = _interopRequireDefault(_unionType);
+	
+	var _data = __webpack_require__(74);
+	
+	var _data2 = _interopRequireDefault(_data);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	var R = {
 	  T: __webpack_require__(49)
 	};
 	
 	exports.default = {
-	  types: Type({
+	  types: (0, _unionType2.default)({
 	    fetch: [Object]
 	  }),
 	  task: function task() {
 	    var taskFn = this.types.caseOn({
 	      fetch: function fetch(obj) {
-	        return data.fetch(obj);
+	        return _data2.default.fetch(obj);
 	      }
 	    });
 	
@@ -4872,7 +4894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4916,7 +4938,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4926,11 +4948,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = view;
 	
-	var flyd = __webpack_require__(41);
+	var flyd = __webpack_require__(14);
 	var h = __webpack_require__(62);
 	
 	// Common snabbdom patch function (convention over configuration)
-	var patch = __webpack_require__(82).init([__webpack_require__(83), __webpack_require__(84), __webpack_require__(85), __webpack_require__(86), __webpack_require__(87)]);
+	var patch = __webpack_require__(81).init([__webpack_require__(82), __webpack_require__(83), __webpack_require__(84), __webpack_require__(85), __webpack_require__(86)]);
 	
 	function view(selector) {
 	  var patchfn = arguments.length <= 1 || arguments[1] === undefined ? patch : arguments[1];
@@ -4959,7 +4981,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// jshint newcap: false
@@ -5224,7 +5246,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { init: init };
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5246,7 +5268,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateClass, update: updateClass };
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5288,7 +5310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateAttrs, update: updateAttrs };
 
 /***/ },
-/* 85 */
+/* 84 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5312,7 +5334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateProps, update: updateProps };
 
 /***/ },
-/* 86 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5367,7 +5389,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateEventListeners, update: updateEventListeners };
 
 /***/ },
-/* 87 */
+/* 86 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5451,7 +5473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle };
 
 /***/ },
-/* 88 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5460,7 +5482,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	exports.default = event;
-	var flyd = __webpack_require__(41);
+	var flyd = __webpack_require__(14);
 	
 	function event(cb) {
 	  return {
@@ -5478,7 +5500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 89 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5488,7 +5510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = listenable;
 	// WORKING
-	var flyd = __webpack_require__(41);
+	var flyd = __webpack_require__(14);
 	
 	// l should implement removeAllListeners and on functions
 	function listenable(l) {
@@ -5557,7 +5579,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 90 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5567,7 +5589,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = load;
 	
-	var flyd = __webpack_require__(41);
+	var flyd = __webpack_require__(14);
 	
 	function load() {
 	  return {
@@ -5583,7 +5605,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 91 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5593,9 +5615,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = time;
 	var R = {
-	  mapObjIndexed: __webpack_require__(17)
+	  mapObjIndexed: __webpack_require__(24)
 	};
-	var flyd = __webpack_require__(41);
+	var flyd = __webpack_require__(14);
 	
 	//// time driver module ----
 	var stateNames = ['pending', 'running', 'paused'];
@@ -5683,7 +5705,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 92 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5692,7 +5714,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	exports.default = localStorage;
-	var flyd = __webpack_require__(41);
+	var flyd = __webpack_require__(14);
 	
 	function localStorage(name) {
 	  var listener$ = void 0;
@@ -5716,7 +5738,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 93 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5725,9 +5747,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	exports.default = screenInfoDriver;
-	var flyd = __webpack_require__(41);
+	var flyd = __webpack_require__(14);
 	
-	var _require = __webpack_require__(94);
+	var _require = __webpack_require__(93);
 	
 	var screenInfo = _require.screenInfo;
 	
@@ -5772,7 +5794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 94 */
+/* 93 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5813,7 +5835,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 95 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5826,7 +5848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// A set of css useful function helpers
 	
-	var FreeStyle = __webpack_require__(96);
+	var FreeStyle = __webpack_require__(95);
 	
 	function r(styleObj) {
 	
@@ -5889,7 +5911,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 96 */
+/* 95 */
 /***/ function(module, exports) {
 
 	'use strict';
