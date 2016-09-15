@@ -78,10 +78,14 @@
 
 ## v0.1.1 (Incomming...)
 
+- Fix broken build v0.1.0
+
+## v0.1.2 (Incomming...)
+
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.1.2 (Incomming, short term ...)
+## v0.1.3 (Incomming, short term ...)
 
 - Router relased (work in progress)
 

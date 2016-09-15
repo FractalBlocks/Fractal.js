@@ -63,30 +63,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	exports.default = _extends({}, __webpack_require__(1).default, __webpack_require__(13).default, {
-	  h: __webpack_require__(62).default,
-	  flyd: __webpack_require__(14).default,
+	  h: __webpack_require__(62),
+	  flyd: __webpack_require__(14),
 	  timetravel: __webpack_require__(48).default,
 	  // router: require('./router').default,
-	  service: __webpack_require__(73).default,
-	  noChildren: __webpack_require__(75).default,
+	  service: __webpack_require__(71).default,
+	  noChildren: __webpack_require__(74).default,
 	  tasks: {
-	    data: __webpack_require__(76).default,
-	    value: __webpack_require__(77).default,
-	    fetch: __webpack_require__(78).default,
-	    emitter: __webpack_require__(79).default
+	    data: __webpack_require__(75).default,
+	    value: __webpack_require__(76).default,
+	    fetch: __webpack_require__(77).default,
+	    emitter: __webpack_require__(78).default
 	  },
 	  drivers: {
-	    view: __webpack_require__(80).default,
-	    event: __webpack_require__(87).default,
-	    listenable: __webpack_require__(88).default,
-	    load: __webpack_require__(89).default,
-	    time: __webpack_require__(90).default, // NEEDS REVIEW!! (maybe depreecated.default)
-	    localStorage: __webpack_require__(91).default,
-	    screenInfo: __webpack_require__(92).default
+	    view: __webpack_require__(79).default,
+	    event: __webpack_require__(86).default,
+	    listenable: __webpack_require__(87).default,
+	    load: __webpack_require__(88).default,
+	    time: __webpack_require__(89).default, // NEEDS REVIEW!! (maybe depreecated.default)
+	    localStorage: __webpack_require__(90).default,
+	    screenInfo: __webpack_require__(91).default
 	  }
 	}, __webpack_require__(23).default, {
-	  data: __webpack_require__(74).default,
-	  style: __webpack_require__(94).default
+	  data: __webpack_require__(72).default,
+	  style: __webpack_require__(93).default
 	});
 
 /***/ },
@@ -659,7 +659,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var R = {
 	  pipe: __webpack_require__(65),
-	  flip: __webpack_require__(71),
 	  equals: __webpack_require__(44)
 	};
 	
@@ -703,8 +702,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else {
 	          console.log('%c Fractal is initializing your app.', 'color: purple; font-size: 14px');
 	          console.log('%c Model computed ...', 'color: purple; font-size: 14px');
-	          console.log('%c Connecting machines ...', 'color: purple; font-size: 14px');
-	          console.log('%c Done, have a nice day :)', 'color: purple; font-size: 14px');
+	          console.log('%c Connecting machines to external world ...', 'color: purple; font-size: 14px');
+	          console.log('%c Done. Have a nice day!! :)', 'color: purple; font-size: 14px');
 	        }
 	        console.log(newModel);
 	      }
@@ -4457,108 +4456,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
-	var _curry1 = __webpack_require__(6);
-	var _slice = __webpack_require__(37);
-	var curry = __webpack_require__(72);
-	
-	/**
-	 * Returns a new function much like the supplied one, except that the first two arguments'
-	 * order is reversed.
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category Function
-	 * @sig (a -> b -> c -> ... -> z) -> (b -> a -> c -> ... -> z)
-	 * @param {Function} fn The function to invoke with its first two parameters reversed.
-	 * @return {*} The result of invoking `fn` with its first two parameters' order reversed.
-	 * @example
-	 *
-	 *      var mergeThree = (a, b, c) => [].concat(a, b, c);
-	 *
-	 *      mergeThree(1, 2, 3); //=> [1, 2, 3]
-	 *
-	 *      R.flip(mergeThree)(1, 2, 3); //=> [2, 1, 3]
-	 */
-	module.exports = _curry1(function flip(fn) {
-	  return curry(function (a, b) {
-	    var args = _slice(arguments);
-	    args[0] = b;
-	    args[1] = a;
-	    return fn.apply(this, args);
-	  });
-	});
-
-/***/ },
-/* 72 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _curry1 = __webpack_require__(6);
-	var curryN = __webpack_require__(41);
-	
-	/**
-	 * Returns a curried equivalent of the provided function. The curried
-	 * function has two unusual capabilities. First, its arguments needn't
-	 * be provided one at a time. If `f` is a ternary function and `g` is
-	 * `R.curry(f)`, the following are equivalent:
-	 *
-	 *   - `g(1)(2)(3)`
-	 *   - `g(1)(2, 3)`
-	 *   - `g(1, 2)(3)`
-	 *   - `g(1, 2, 3)`
-	 *
-	 * Secondly, the special placeholder value `R.__` may be used to specify
-	 * "gaps", allowing partial application of any combination of arguments,
-	 * regardless of their positions. If `g` is as above and `_` is `R.__`,
-	 * the following are equivalent:
-	 *
-	 *   - `g(1, 2, 3)`
-	 *   - `g(_, 2, 3)(1)`
-	 *   - `g(_, _, 3)(1)(2)`
-	 *   - `g(_, _, 3)(1, 2)`
-	 *   - `g(_, 2)(1)(3)`
-	 *   - `g(_, 2)(1, 3)`
-	 *   - `g(_, 2)(_, 3)(1)`
-	 *
-	 * @func
-	 * @memberOf R
-	 * @since v0.1.0
-	 * @category Function
-	 * @sig (* -> a) -> (* -> a)
-	 * @param {Function} fn The function to curry.
-	 * @return {Function} A new, curried function.
-	 * @see R.curryN
-	 * @example
-	 *
-	 *      var addFourNumbers = (a, b, c, d) => a + b + c + d;
-	 *
-	 *      var curriedAddFourNumbers = R.curry(addFourNumbers);
-	 *      var f = curriedAddFourNumbers(1, 2);
-	 *      var g = f(3);
-	 *      g(4); //=> 10
-	 */
-	module.exports = _curry1(function curry(fn) {
-	  return curryN(fn.length, fn);
-	});
-
-/***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = service;
 	// abstractions for a service
 	var F = {
-	  data: __webpack_require__(74)
+	  data: __webpack_require__(72)
 	};
 	var R = {
-	  curry: __webpack_require__(72)
+	  curry: __webpack_require__(73)
 	};
 	
 	// serverName, store, events, init, connect
@@ -4677,7 +4584,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 74 */
+/* 72 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -4741,7 +4648,61 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 75 */
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _curry1 = __webpack_require__(6);
+	var curryN = __webpack_require__(41);
+	
+	/**
+	 * Returns a curried equivalent of the provided function. The curried
+	 * function has two unusual capabilities. First, its arguments needn't
+	 * be provided one at a time. If `f` is a ternary function and `g` is
+	 * `R.curry(f)`, the following are equivalent:
+	 *
+	 *   - `g(1)(2)(3)`
+	 *   - `g(1)(2, 3)`
+	 *   - `g(1, 2)(3)`
+	 *   - `g(1, 2, 3)`
+	 *
+	 * Secondly, the special placeholder value `R.__` may be used to specify
+	 * "gaps", allowing partial application of any combination of arguments,
+	 * regardless of their positions. If `g` is as above and `_` is `R.__`,
+	 * the following are equivalent:
+	 *
+	 *   - `g(1, 2, 3)`
+	 *   - `g(_, 2, 3)(1)`
+	 *   - `g(_, _, 3)(1)(2)`
+	 *   - `g(_, _, 3)(1, 2)`
+	 *   - `g(_, 2)(1)(3)`
+	 *   - `g(_, 2)(1, 3)`
+	 *   - `g(_, 2)(_, 3)(1)`
+	 *
+	 * @func
+	 * @memberOf R
+	 * @since v0.1.0
+	 * @category Function
+	 * @sig (* -> a) -> (* -> a)
+	 * @param {Function} fn The function to curry.
+	 * @return {Function} A new, curried function.
+	 * @see R.curryN
+	 * @example
+	 *
+	 *      var addFourNumbers = (a, b, c, d) => a + b + c + d;
+	 *
+	 *      var curriedAddFourNumbers = R.curry(addFourNumbers);
+	 *      var f = curriedAddFourNumbers(1, 2);
+	 *      var g = f(3);
+	 *      g(4); //=> 10
+	 */
+	module.exports = _curry1(function curry(fn) {
+	  return curryN(fn.length, fn);
+	});
+
+/***/ },
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4770,7 +4731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4812,7 +4773,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4848,7 +4809,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4861,7 +4822,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _unionType2 = _interopRequireDefault(_unionType);
 	
-	var _data = __webpack_require__(74);
+	var _data = __webpack_require__(72);
 	
 	var _data2 = _interopRequireDefault(_data);
 	
@@ -4894,7 +4855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4938,7 +4899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4952,7 +4913,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var h = __webpack_require__(62);
 	
 	// Common snabbdom patch function (convention over configuration)
-	var patch = __webpack_require__(81).init([__webpack_require__(82), __webpack_require__(83), __webpack_require__(84), __webpack_require__(85), __webpack_require__(86)]);
+	var patch = __webpack_require__(80).init([__webpack_require__(81), __webpack_require__(82), __webpack_require__(83), __webpack_require__(84), __webpack_require__(85)]);
 	
 	function view(selector) {
 	  var patchfn = arguments.length <= 1 || arguments[1] === undefined ? patch : arguments[1];
@@ -4981,7 +4942,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// jshint newcap: false
@@ -5246,7 +5207,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { init: init };
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5268,7 +5229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateClass, update: updateClass };
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5310,7 +5271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateAttrs, update: updateAttrs };
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -5334,7 +5295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateProps, update: updateProps };
 
 /***/ },
-/* 85 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5389,7 +5350,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateEventListeners, update: updateEventListeners };
 
 /***/ },
-/* 86 */
+/* 85 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5473,7 +5434,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle };
 
 /***/ },
-/* 87 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5500,7 +5461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 88 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5579,7 +5540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 89 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5605,7 +5566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 90 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5705,7 +5666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 91 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5738,7 +5699,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 92 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5749,7 +5710,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = screenInfoDriver;
 	var flyd = __webpack_require__(14);
 	
-	var _require = __webpack_require__(93);
+	var _require = __webpack_require__(92);
 	
 	var screenInfo = _require.screenInfo;
 	
@@ -5794,7 +5755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 93 */
+/* 92 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -5835,7 +5796,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 94 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5848,7 +5809,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	// A set of css useful function helpers
 	
-	var FreeStyle = __webpack_require__(95);
+	var FreeStyle = __webpack_require__(94);
 	
 	function r(styleObj) {
 	
@@ -5911,7 +5872,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 95 */
+/* 94 */
 /***/ function(module, exports) {
 
 	'use strict';

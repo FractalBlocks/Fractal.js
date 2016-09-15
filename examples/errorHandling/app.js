@@ -1,6 +1,8 @@
 import R from 'ramda'
-import h from 'snabbdom/h'
+// import F from '../../dist/fractal'
 import F from '../../lib'
+const h = F.h
+
 
 let childs = {
   submodule: require('./submodule').default,
