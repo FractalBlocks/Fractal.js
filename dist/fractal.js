@@ -86,7 +86,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}, __webpack_require__(25).default, {
 	  data: __webpack_require__(74).default,
-	  style: __webpack_require__(2).default.helpers
+	  style: __webpack_require__(2).default
 	});
 
 /***/ },
@@ -120,7 +120,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  mDef.logAll = mDef.hasOwnProperty('logAll') ? mDef.logAll : false;
 	
 	  if (mDef.styles) {
-	    mDef.styleInstance = _style2.default.createStyle(mDef.name);
+	    mDef.styleInstance = _style2.default.createStyle(_style2.default.styles, mDef.name);
 	    mDef.styles = _style2.default.rs(mDef.styleInstance, mDef.styles);
 	    mDef.dispose = function () {
 	      mDef.styleInstance.Style.remove(mDef.styleInstance.Style);
@@ -188,19 +188,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	// the div element for injecting styles
 	var styles = document.getElementById('F-app-styles');
 	
-	function createStylesContainer(target) {
+	function createStylesContainer(target, id) {
 	  var styles = document.createElement('div');
-	  styles.id = 'F-app-styles';
+	  styles.id = id;
 	  target.appendChild(styles);
 	  return styles;
 	}
 	
 	if (!styles) {
-	  styles = createStylesContainer(document.head);
+	  styles = createStylesContainer(document.head, 'F-app-styles');
 	}
 	
-	function createModuleStylesContainer(name) {
-	  var scope = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+	function createModuleStylesContainer(styles, name) {
+	  var scope = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
 	
 	  var container = document.createElement('div');
 	  if (document.getElementById('fractalModuleStyles-' + scope + name)) {
@@ -211,12 +211,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return container;
 	}
 	
-	function createStyle(name) {
-	  var scope = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+	function createStyle(styles, name) {
+	  var scope = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
 	
 	  return {
 	    Style: FreeStyle.create(),
-	    container: createModuleStylesContainer(name, scope)
+	    container: createModuleStylesContainer(styles, name, scope)
 	  };
 	}
 	
@@ -276,13 +276,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	exports.default = {
+	  styles: styles,
 	  r: r,
 	  rs: rs,
 	  createStyle: createStyle,
-	  helpers: {
-	    absoluteCenter: absoluteCenter,
-	    noSelectable: noSelectable
-	  }
+	  createStylesContainer: createStylesContainer,
+	  createModuleStylesContainer: createModuleStylesContainer,
+	  hasBaseObject: hasBaseObject,
+	  // helpers
+	  absoluteCenter: absoluteCenter,
+	  noSelectable: noSelectable
 	};
 
 /***/ },

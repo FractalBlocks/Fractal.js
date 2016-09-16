@@ -1,61 +1,38 @@
 # Changes
 
-## v0.0.7
+## v0.5.0 (Incomming, medium term ...)
 
-- Add chat example
-- Add service to core
-- Minor bug fixes
-- Add Value Task
-- Add a way to change socket in socketioTask and socketioDriver
-- Engine exposes drivers and tasks
-- Improved chat example
+- Introduce TypeScript to repo (planned, evaluate)
 
-## v0.0.9-8
+## v0.2.7 (Incomming, short term ...)
 
-- Working in new examples and documentation
-- Improved services
+- Router relased (work in progress)
 
-## v0.0.10
+## v0.2.4 (Incomming...)
 
-- Add Router module
-- Add free-style to core and some utilities
-- Fixed playground errors
+- serviceTest module (drafted, work in progress)
+- ...
 
-## v0.0.11
+## v0.2.1
 
-- Bug fixes and optimizations
+- Style helpers exposed in F.style and removed side effects from some functions
 
-## v0.0.12
+## v0.2.0
 
-- Specific tasks and optimizations
+- Styles are disposed when hot-swap modules
+- Styles are part of the module definition object (BREAKING)
+- Update examples
 
-## v0.0.13
+## v0.1.1
 
-- Queue optional for services
+- Fix broken build v0.1.0
 
-## v0.0.14
+## v0.1.0
 
-- Css utils has a absoluteCenter props with flexbox
-- DEPRECATED use of F.css, use F.style instead
-- flyd is usable as F.flyd dependency
-
-## v0.0.15
-
-- Error exceptions DEPRECATED in favor of future error$ stream implementation
-- Services are automerged in engine definition (F.run)
-- Added chatWithService example of using automerged services
-
-## v0.0.16
-
-- Add emitter task handler
-- Add listenable driver
-- Deprecated socketio task handler
-- Deprecated socketio driver
-
-## v0.0.17
-
-- Fix bug with services that not exposes tasks or drivers
-- Added starter tutorial (TODO)
+- Implement granular log option for modules
+- Deleted DEPRECATED methods
+- Fix broken v0.0.18, and add es6 modules to Fractal (no more module.exports, require used for dynamic loading and use with .default), refactoring the whole library
+- Update examples and DEPRECATE REMOVED log
 
 ## v0.0.18
 
@@ -69,32 +46,59 @@
 - Deleted DEPRECATED fetch driver
 - Improve docs and readme
 
-## v0.1.0
+## v0.0.17
 
-- Implement granular log option for modules
-- Deleted DEPRECATED methods
-- Fix broken v0.0.18, and add es6 modules to Fractal (no more module.exports, require used for dynamic loading and use with .default), refactoring the whole library
-- Update examples and DEPRECATE REMOVED log
+- Fix bug with services that not exposes tasks or drivers
+- Added starter tutorial (TODO)
 
-## v0.1.1
+## v0.0.16
 
-- Fix broken build v0.1.0
+- Add emitter task handler
+- Add listenable driver
+- Deprecated socketio task handler
+- Deprecated socketio driver
 
-## v0.2.0
+## v0.0.15
 
-- Styles are disposed when hot-swap modules
-- Styles are part of the module definition object (BREAKING)
-- Update examples
+- Error exceptions DEPRECATED in favor of future error$ stream implementation
+- Services are automerged in engine definition (F.run)
+- Added chatWithService example of using automerged services
 
-## v0.2.4 (Incomming...)
+## v0.0.14
 
-- serviceTest module (drafted, work in progress)
-- ...
+- Css utils has a absoluteCenter props with flexbox
+- DEPRECATED use of F.css, use F.style instead
+- flyd is usable as F.flyd dependency
 
-## v0.2.7 (Incomming, short term ...)
+## v0.0.13
 
-- Router relased (work in progress)
+- Queue optional for services
 
-## v0.5.0 (Incomming, medium term ...)
+## v0.0.12
 
-- Introduce TypeScript to repo (planned, evaluate)
+- Specific tasks and optimizations
+
+## v0.0.11
+
+- Bug fixes and optimizations
+
+## v0.0.10
+
+- Add Router module
+- Add free-style to core and some utilities
+- Fixed playground errors
+
+## v0.0.9-8
+
+- Working in new examples and documentation
+- Improved services
+
+## v0.0.7
+
+- Add chat example
+- Add service to core
+- Minor bug fixes
+- Add Value Task
+- Add a way to change socket in socketioTask and socketioDriver
+- Engine exposes drivers and tasks
+- Improved chat example
