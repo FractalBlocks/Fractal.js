@@ -1,14 +1,12 @@
 import R from 'ramda'
 import h from 'snabbdom/h'
 import F from '../../lib'
-// import F from '../../dist/fractal'
-
 
 const sendValueTask = F.tasks.value.types.send
 const emitTask = F.tasks.emitter.types.emit
 
 
-export default F.def({
+let moduleDef = F.def({
   name: 'Chat',
   init: ({key}) => ({
     key,
@@ -98,6 +96,15 @@ export default F.def({
     }),
   },
 })
+
+export default moduleDef
+
+if (module.hot) {
+  module.hot.dispose(function() {
+    moduleDef.dispose()
+  })
+}
+
 
 let styles = {
   title: {

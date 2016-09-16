@@ -76,19 +76,25 @@
 - Fix broken v0.0.18, and add es6 modules to Fractal (no more module.exports, require used for dynamic loading and use with .default), refactoring the whole library
 - Update examples and DEPRECATE REMOVED log
 
-## v0.1.1 (Incomming...)
+## v0.1.1
 
 - Fix broken build v0.1.0
 
-## v0.1.2 (Incomming...)
+## v0.2.0
+
+- Styles are disposed when hot-swap modules
+- Styles are part of the module definition object (BREAKING)
+- Update examples
+
+## v0.2.4 (Incomming...)
 
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.1.3 (Incomming, short term ...)
+## v0.2.7 (Incomming, short term ...)
 
 - Router relased (work in progress)
 
-## v0.2.0 (Incomming, medium term ...)
+## v0.5.0 (Incomming, medium term ...)
 
 - Introduce TypeScript to repo (planned, evaluate)

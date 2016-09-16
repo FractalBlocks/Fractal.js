@@ -1,6 +1,6 @@
 import '../styles.css'
-import F from '../../dist/fractal'
-// import F from '../../lib'
+// import F from '../../dist/fractal'
+import F from '../../lib'
 
 
 let engine = F.run({
