@@ -1475,7 +1475,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    // connect tasks handlers to interfaces
 	    _flyd2.default.on(function (t) {
-	      var task = _helpers2.default.addModuleInfo(t);
+	      var task = _helpers2.default.addModuleInfo(moduleDef, t);
 	      if (engineDef.tasks[task[0]]) {
 	        engineDef.tasks[task[0]].run(task[1]);
 	      } else if (engineDef.log && task._log || engineDef.logAll) {

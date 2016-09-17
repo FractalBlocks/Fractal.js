@@ -8,10 +8,14 @@
 
 - Router relased (work in progress)
 
-## v0.2.4 (Incomming...)
+## v0.2.6 (Incomming...)
 
 - serviceTest module (drafted, work in progress)
 - ...
+
+## v0.2.4
+
+- Fix bug with actions and addModuleInfo helper
 
 ## v0.2.3
 
