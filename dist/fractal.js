@@ -99,8 +99,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
 	var _style = __webpack_require__(2);
 	
 	var _style2 = _interopRequireDefault(_style);
@@ -127,10 +125,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    mDef.styleInstance = _style2.default.createStyle(_style2.default.styles, mDef.name);
 	  }
 	  if (mDef.animations) {
-	    ns.animations = _style2.default.registerAnimations(mDef.styleInstance.Style, mDef.animations);
+	    ns.animations = _style2.default.registerAnimations(mDef.name, mDef.styleInstance, mDef.animations);
 	  }
 	  if (mDef.styles) {
-	    mDef.styles = _style2.default.rs(mDef.styleInstance, _typeof(mDef.styles === 'function') ? mDef.styles(ns) : mDef.styles);
+	    mDef.styles = _style2.default.rs(mDef.name, mDef.styleInstance, typeof mDef.styles === 'function' ? mDef.styles(ns) : mDef.styles);
 	    mDef.dispose = function () {
 	      mDef.styleInstance.Style.remove(mDef.styleInstance.Style);
 	      mDef.styleInstance.container.remove();
@@ -223,14 +221,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	function createStyle(styles, name) {
 	  var scope = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
 	
+	  var namespace = '';
 	  return {
-	    Style: FreeStyle.create(),
-	    container: createModuleStylesContainer(styles, name, scope)
+	    Style: FreeStyle.create(function (s) {
+	      return '-' + namespace + '--' + FreeStyle.stringHash(s);
+	    }),
+	    container: createModuleStylesContainer(styles, name, scope),
+	    setNamespace: function setNamespace(ns) {
+	      return namespace = ns;
+	    }
 	  };
 	}
 	
-	function r(Style, styleObj) {
-	  var classHash = Style.registerStyle(styleObj);
+	function r(styleInstance, styleName, styleObj) {
+	  styleInstance.setNamespace(styleName);
+	  var classHash = styleInstance.Style.registerStyle(styleObj);
 	  return classHash;
 	}
 	
@@ -243,17 +248,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return false;
 	}
 	
-	function rs(styleInstance, stylesObj) {
-	  function rs_func(stylesObj) {
+	function rs(moduleName, styleInstance, stylesObj) {
+	  function rs_func(styleName, stylesObj) {
 	    if (!hasBaseObject(stylesObj)) {
-	      return r(styleInstance.Style, stylesObj);
+	      return r(styleInstance, styleName, stylesObj);
 	    }
 	    var classObj = {};
 	    for (var key in stylesObj) {
 	      if (hasBaseObject(stylesObj[key])) {
-	        classObj[key] = rs_func(stylesObj[key]);
+	        classObj[key] = rs_func(styleName + '-' + key, stylesObj[key]);
 	      } else if (stylesObj[key] != null && _typeof(stylesObj[key]) === 'object') {
-	        classObj[key] = r(styleInstance.Style, stylesObj[key]);
+	        classObj[key] = r(styleInstance, styleName, stylesObj[key]);
 	      } else {
 	        // function
 	        classObj[key] = stylesObj[key];
@@ -262,17 +267,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return classObj;
 	  }
 	
-	  var classObj = rs_func(stylesObj);
+	  var classObj = rs_func(moduleName, stylesObj);
 	
 	  styleInstance.Style.inject(styleInstance.container);
 	
 	  return classObj;
 	}
 	
-	function registerAnimations(Style, animationsObj) {
+	function registerAnimations(moduleName, styleInstance, animationsObj) {
 	  var animations = {};
 	  for (var key in animationsObj) {
-	    animations[key] = Style.registerKeyframes(animationsObj[key]);
+	    styleInstance.setNamespace(moduleName + '-' + key);
+	    animations[key] = styleInstance.Style.registerKeyframes(animationsObj[key]);
 	  }
 	  return animations;
 	}
@@ -5473,12 +5479,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	var Type = __webpack_require__(4);
 	var R = {
 	  T: __webpack_require__(51)
 	};
 	
-	module.exports = {
+	exports.default = {
 	  types: Type({
 	    emit: [String, R.T, R.T]
 	  }),

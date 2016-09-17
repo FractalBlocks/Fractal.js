@@ -13,6 +13,12 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
+## v0.2.3
+
+- Fix bug with styles when passing an object
+- Fix broken data-task
+- Add namespace to style hashes
+
 ## v0.2.2
 
 - Module definition can use animations
