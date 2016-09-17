@@ -1,6 +1,6 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
-const F = require('../../lib/')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
 
 const childs = {
   about: require('./about'),
@@ -10,7 +10,7 @@ const childs = {
 // mailbox taht shows the complexity of constructing a mailbox, compare with the standard mailbox example that uses the router
 
 
-module.exports =  F.def({
+export default F.def({
   init: () => ({
     tabName: 'inbox',
     connected: false,

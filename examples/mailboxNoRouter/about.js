@@ -1,10 +1,9 @@
-const R = require('ramda')
-const h = require('snabbdom/h')
+import R from 'ramda'
+import h from 'snabbdom/h'
+import F from '../../lib'
 
-const F = require('../../lib/')
 
-
-module.exports = F.def({
+export default F.def({
   init: ({key}) => ({key}),
   inputs: {},
   actions: {},

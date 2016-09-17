@@ -13,6 +13,12 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
+## v0.2.2
+
+- Module definition can use animations
+- Implement example of css animations
+- Update mailboxNoRouter example
+
 ## v0.2.1
 
 - Style helpers exposed in F.style and removed side effects from some functions

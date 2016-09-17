@@ -99,6 +99,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	
 	var _style = __webpack_require__(2);
 	
 	var _style2 = _interopRequireDefault(_style);
@@ -119,9 +121,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  mDef.log = mDef.hasOwnProperty('log') ? mDef.log : false;
 	  mDef.logAll = mDef.hasOwnProperty('logAll') ? mDef.logAll : false;
 	
+	  // 'ns' is the namespace for keyFrames and may be other stuff
+	  var ns = { animation: {} };
 	  if (mDef.styles) {
 	    mDef.styleInstance = _style2.default.createStyle(_style2.default.styles, mDef.name);
-	    mDef.styles = _style2.default.rs(mDef.styleInstance, mDef.styles);
+	  }
+	  if (mDef.animations) {
+	    ns.animations = _style2.default.registerAnimations(mDef.styleInstance.Style, mDef.animations);
+	  }
+	  if (mDef.styles) {
+	    mDef.styles = _style2.default.rs(mDef.styleInstance, _typeof(mDef.styles === 'function') ? mDef.styles(ns) : mDef.styles);
 	    mDef.dispose = function () {
 	      mDef.styleInstance.Style.remove(mDef.styleInstance.Style);
 	      mDef.styleInstance.container.remove();
@@ -260,6 +269,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return classObj;
 	}
 	
+	function registerAnimations(Style, animationsObj) {
+	  var animations = {};
+	  for (var key in animationsObj) {
+	    animations[key] = Style.registerKeyframes(animationsObj[key]);
+	  }
+	  return animations;
+	}
+	
 	var noSelectable = {
 	  '-webkit-touch-callout': 'none', /* iOS Safari */
 	  '-webkit-user-select': 'none', /* Chrome/Safari/Opera */
@@ -279,6 +296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  styles: styles,
 	  r: r,
 	  rs: rs,
+	  registerAnimations: registerAnimations,
 	  createStyle: createStyle,
 	  createStylesContainer: createStylesContainer,
 	  createModuleStylesContainer: createModuleStylesContainer,

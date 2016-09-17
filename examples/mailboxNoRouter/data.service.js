@@ -2,12 +2,12 @@
 /*
   this module contains all data fetching and inyecting logic
 */
-const F = require('../../lib')
+import F from '../../lib'
 
 
 let serverName = 'http://localhost:4000'
 
-module.exports = F.service({
+export default F.service({
   serverName,
   queue: true,
   store: {
