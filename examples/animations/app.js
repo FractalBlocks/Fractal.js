@@ -23,13 +23,6 @@ let moduleDef = F.def({
       '75%': { left: '10px', top: '100px' },
       to: { left: '10px', top: '10px' },
     },
-    box: {
-      from: { left: '10px', top: '10px' },
-      '25%': { left: '200px', top: '10px' },
-      '50%': { left: '200px', top: '100px' },
-      '75%': { left: '10px', top: '100px' },
-      to: { left: '10px', top: '10px' },
-    },
   },
   styles: ns => ({
     base: {
