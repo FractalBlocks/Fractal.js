@@ -1,6 +1,6 @@
 # Architecture
 
-Fractal is a fully featured framework to make frontend apps using a simple and powerfull architecture. Is based on functional programming and other aproaches that simplifies UI development. Also may be used in other contexts, note that Fractal.js is an implementation of the Fractal architecture for the web platform, but its designed to be language agnostic.
+Fractal is a fully featured framework to make frontend apps using a simple and powerful architecture. Is based on functional programming and other aproaches that simplifies UI development. Also may be used in other contexts, note that Fractal.js is an implementation of the Fractal architecture for the web platform, but its designed to be language agnostic.
 
 Fractal is an unidirectional user interface architeture that is fractal:
 
@@ -21,6 +21,7 @@ If you want to learn more about foundations see:
 - A nice repo and discuss in [functional-frontend-architecture](https://github.com/paldepind/functional-frontend-architecture) by [Simon Friss Vindum](https://github.com/paldepind)
 - [Controlling Time and Space: understanding the many formulations of FRP](https://www.youtube.com/watch?v=Agu6jipKfYw) talk by Evan Czaplicki
 - An article on why Fractal.js is [implemented in Typescript](http://staltz.com/all-js-libraries-should-be-authored-in-typescript.html) (This is a work in progress) (TODO-DOCS)
+- [CSS in JS](https://vimeo.com/116209150) talk by Christopher Chedeau. [Slides here](https://speakerdeck.com/vjeux/react-css-in-js)
 
 ## Modules
 
