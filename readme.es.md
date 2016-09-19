@@ -1,4 +1,4 @@
-# Fractal.js
+<img src="https://github.com/fractalPlatform/Fractal.js/blob/master/assets/textlogo.png" width="520px">
 
 Construye tus ideas tan simple como sea posible. Fractal.js es un framework intuitivo para construir aplicaciones y contenido interactivo.
 
