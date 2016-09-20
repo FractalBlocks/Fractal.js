@@ -1,21 +1,21 @@
 # Architecture
 
-Fractal is a fully featured framework to make frontend apps using a simple and powerful architecture. Is based on functional programming and other aproaches that simplifies UI development. Also may be used in other contexts, note that Fractal.js is an implementation of the Fractal architecture for the web platform, but its designed to be language agnostic.
+Fractal is a fully featured framework to make frontend apps using a simple and powerful architecture. It is based on the functional programming paradigm and other aproaches that simplify UI development. It may also be used in other contexts, note that Fractal.js is the implementation of the Fractal architecture for the web platform, but its designed to be language agnostic.
 
-Fractal is an unidirectional user interface architeture that is fractal:
+Fractal is an unidirectional user interface architeture that is fractal (autosimilar):
 
 > A unidirectional architecture is said to be fractal if subcomponents are structured in the same way as the whole is.
 > -[ Andre Staltz](http://staltz.com/unidirectional-user-interface-architectures.html)
 
-Fractal modules are based on the [Model View Update architecture](http://staltz.com/unidirectional-user-interface-architectures.html#elm). This means that each module are mostly structured in this way.
+Fractal modules are based on the [Model View Update architecture](http://staltz.com/unidirectional-user-interface-architectures.html#elm). This means that each module is mostly structured in this way.
 
-Fractal offer a complete architecture with useful patterns and conventions that allows you center in usability, design and bussines logic instead of architecture. In the next drawing you can see the whole overview.
+Fractal offers a complete architecture with useful patterns and conventions that allows you center in usability, design and business logic instead of architecture. In the following drawing you can see the whole overview.
 
 (TODO: diagram of the architecture)
 
-All the app logic are into main module and are hierachicaly structured and composed following the MVU pattern.
+All the application logic is contained into a main module and is hierachicaly structured and composed following the MVU pattern.
 
-If you want to learn more about foundations see:
+If you want to learn more about Fractal's main foundations check out:
 
 - An awesome article called [Unidirectional user interface architectures](http://staltz.com/unidirectional-user-interface-architectures.html) by [Andre Staltz](http://staltz.com/)
 - A nice repo and discuss in [functional-frontend-architecture](https://github.com/paldepind/functional-frontend-architecture) by [Simon Friss Vindum](https://github.com/paldepind)
@@ -25,9 +25,9 @@ If you want to learn more about foundations see:
 
 ## Modules
 
-A module is a set of your app functionality that is related to a topic. Modules are computing units and have 3 parts:
+Modules are computing units that can have any size and be composed on many other modules (thus, fractal). Each module has three parts:
 
-- Model -> All module state is in one data structure called model. This is defined by the `init` function.
+- Model -> All module state follows the structure (or schema) of what we call "model". The model is defined by the `init` function.
 - Processing -> Is the way in which the application transform data and react to events. Here live two types of functions:
   - Inputs -> Are used to react to events. This functions transform data and return a list of Action and/or Task structures (or one) with the transformed data, this list is dispatched to the corresponding Action Updates and Task Handlers by Fractal.
   - Actions -> Are functions that transform or modify specific parts of the model. An Action has three parts: a name, data related to it and one transform function (also called update in Model View Update pattern). Think in Actions like things triggered for doing certain modifications to the model and therefore all interfaces (also functions) are recomputed including the view.
