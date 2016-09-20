@@ -4,7 +4,6 @@ const h = F.h
 
 
 let moduleDef = F.def({
-  log: true,
   name: 'Submodule1',
   init: ({key}) => ({
     key,
@@ -25,8 +24,12 @@ let moduleDef = F.def({
     base: {},
     counter: {
       display: 'inline-block',
-      fontSize: '16px',
-      margin: '10px',
+      fontSize: '18px',
+      padding: '5px',
+      backgroundColor: 'grey',
+      borderRadius: '5px',
+      color: 'white',
+      margin: '4px',
     },
   },
 })
