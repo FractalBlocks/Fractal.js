@@ -4,14 +4,26 @@
 
 - Introduce TypeScript to repo (planned, evaluate)
 
-## v0.2.7 (Incomming, short term ...)
+## v0.2.9 (Incomming, short term ...)
 
 - Router relased (work in progress)
 
-## v0.2.6 (Incomming...)
+## v0.2.8 (Incomming ...)
 
 - serviceTest module (drafted, work in progress)
 - ...
+
+## v0.3.0 - beta 1 (Incomming ...)
+
+- Rename helpers.js by composition.js
+- Rename `createContext` for `merge` (BREAKING)
+- Add `mergeAll` function to composition helpers: (childs, (name, mDef) -> connections) -> contextualizedChilds
+- Add `modules` and `scopedModules` options for module definitions via `merge`, `mergeAll` and `mergeModels`
+- Fix timetravel core module
+- Add _childAction
+- Add _childActionScoped (TODO)
+- Add _dynamicChildAction (TODO)
+- Add dynamic module handling (OPTIMIZATION) (TODO)
 
 ## v0.2.4
 

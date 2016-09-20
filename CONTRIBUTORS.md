@@ -10,4 +10,4 @@ The staff is composed by:
 
 Special thanks to:
 
-You :)
+- [Miguel Diaz](https://github.com/gato-omega)
