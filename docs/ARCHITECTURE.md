@@ -11,7 +11,7 @@ Fractal modules are based on the [Model View Update architecture](http://staltz.
 
 Fractal offers a complete architecture with useful patterns and conventions that allows you center in usability, design and business logic instead of architecture. In the following drawing you can see the whole overview.
 
-<img src="https://github.com/fractalPlatform/Fractal.js/tree/master/assets/achitecture.png">
+<img src="https://github.com/fractalPlatform/Fractal.js/blob/master/assets/architecture.png">
 
 All the application logic is contained into a main module and is hierachicaly structured and composed following the MVU pattern.
 
