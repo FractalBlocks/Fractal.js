@@ -35,36 +35,36 @@ export default F.def({
     MessageReceived: [[Object], (msgObj, m) => R.evolve({messages: R.append(msgObj)}, m)],
   },
   interfaces: {
-    view: (ctx, i, m) => h('div',{class:{[ctx.styles.base]:true}}, [
-      h('div', {class:{[ctx.styles.title]:true}}, [
+    view: ({styles}, i, m) => h('div',{class:{[styles.base]:true}}, [
+      h('div', {class:{[styles.title]:true}}, [
         'FractalChat',
-        h('div', {class:{[ctx.styles.connection.base]:true,[ctx.styles.connection.connected]:(m.connected)?true:false}/*,style: styles.connection.c(m.connected)*/}),
+        h('div', {class:{[styles.connection.base]:true,[styles.connection.connected]:(m.connected)?true:false}/*,style: styles.connection.c(m.connected)*/}),
       ]),
-      h('div', {class:{[ctx.styles.mainContainer]:true}}, [
-        h('div', {class:{[ctx.styles.row]:true}}, [
-          h('label', {class:{[ctx.styles.label]:true}}, 'Server: '),
+      h('div', {class:{[styles.mainContainer]:true}}, [
+        h('div', {class:{[styles.row]:true}}, [
+          h('label', {class:{[styles.label]:true}}, 'Server: '),
           h('input', {
-            class:{[ctx.styles.input]:true},
+            class:{[styles.input]:true},
             props: {value: m.server},
             on: {change: (ev) => i.textChange('server', ev.target.value)}
           }),
           h('button', {on: {click: () => i.connectServer(m.server)}}, 'Connect to server ...'),
         ]),
-        h('div', {class:{[ctx.styles.row]:true}}, [
-          h('label', {class:{[ctx.styles.label]:true}}, 'Username: '),
-          h('input', {class:{[ctx.styles.input]:true}, on: {change: (ev) => i.textChange('username', ev.target.value)}}),
+        h('div', {class:{[styles.row]:true}}, [
+          h('label', {class:{[styles.label]:true}}, 'Username: '),
+          h('input', {class:{[styles.input]:true}, on: {change: (ev) => i.textChange('username', ev.target.value)}}),
         ]),
-        h('div', {class:{[ctx.styles.messageContainer]:true}},
+        h('div', {class:{[styles.messageContainer]:true}},
           m.messages.map(
-            msgObj => (msgObj.sender == '@@owner') ? h('div', {class:{[ctx.styles.messageSended]:true}}, [
+            msgObj => (msgObj.sender == '@@owner') ? h('div', {class:{[styles.messageSended]:true}}, [
               h('span', 'You :  ' + msgObj.content),
-            ]) : h('div', {class:{[ctx.styles.messageReceived]:true}}, [
+            ]) : h('div', {class:{[styles.messageReceived]:true}}, [
               h('span', msgObj.sender + ' :  ' + msgObj.content),
             ])
           )
         ),
         h('input', {
-          class:{[ctx.styles.inputLarge]:true},
+          class:{[styles.inputLarge]:true},
           props: {
             value: m.text,
           },
