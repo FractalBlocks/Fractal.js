@@ -1,6 +1,6 @@
 import R from 'ramda'
-import h from 'snabbdom/h'
 import F from '../../lib'
+const h = F.h
 
 const sendValueTask = F.tasks.value.types.send
 const emitTask = F.tasks.emitter.types.emit

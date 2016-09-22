@@ -1,6 +1,7 @@
 // socket.io server for mailbox
 
 'use strict'
+
 let server = require('http').Server(function() {}),
   io = require('socket.io')(server)
 
