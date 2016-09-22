@@ -7,7 +7,7 @@ const emitTask = F.tasks.emitter.types.emit
 
 
 export default F.def({
-  name: 'Chat',
+  name: 'ChatWithService',
   init: ({key}) => ({
     key,
     server: 'http://localhost:4000',
@@ -35,36 +35,36 @@ export default F.def({
     MessageReceived: [[Object], (msgObj, m) => R.evolve({messages: R.append(msgObj)}, m)],
   },
   interfaces: {
-    view: (ctx, i, m) => h('div', [
-      h('div', {style: styles.title}, [
+    view: ({styles}, i, m) => h('div',{class:{[styles.base]:true}}, [
+      h('div', {class:{[styles.title]:true}}, [
         'FractalChat',
-        h('div', {style: styles.connection.c(m.connected)}),
+        h('div', {class:{[styles.connection.base]:true,[styles.connection.connected]:(m.connected)?true:false}/*,style: styles.connection.c(m.connected)*/}),
       ]),
-      h('div', {style: styles.mainContainer}, [
-        h('div', {style: styles.row}, [
-          h('label', {style: styles.label}, 'Server: '),
+      h('div', {class:{[styles.mainContainer]:true}}, [
+        h('div', {class:{[styles.row]:true}}, [
+          h('label', {class:{[styles.label]:true}}, 'Server: '),
           h('input', {
-            style: styles.input,
+            class:{[styles.input]:true},
             props: {value: m.server},
             on: {change: (ev) => i.textChange('server', ev.target.value)}
           }),
           h('button', {on: {click: () => i.connectServer(m.server)}}, 'Connect to server ...'),
         ]),
-        h('div', {style: styles.row}, [
-          h('label', {style: styles.label}, 'Username: '),
-          h('input', {style: styles.input, on: {change: (ev) => i.textChange('username', ev.target.value)}}),
+        h('div', {class:{[styles.row]:true}}, [
+          h('label', {class:{[styles.label]:true}}, 'Username: '),
+          h('input', {class:{[styles.input]:true}, on: {change: (ev) => i.textChange('username', ev.target.value)}}),
         ]),
-        h('div', {style: styles.messageContainer},
+        h('div', {class:{[styles.messageContainer]:true}},
           m.messages.map(
-            msgObj => (msgObj.sender == '@@owner') ? h('div', {style: styles.messageSended}, [
+            msgObj => (msgObj.sender == '@@owner') ? h('div', {class:{[styles.messageSended]:true}}, [
               h('span', 'You :  ' + msgObj.content),
-            ]) : h('div', {style: styles.messageReceived}, [
+            ]) : h('div', {class:{[styles.messageReceived]:true}}, [
               h('span', msgObj.sender + ' :  ' + msgObj.content),
             ])
           )
         ),
         h('input', {
-          style: styles.inputLarge,
+          class:{[styles.inputLarge]:true},
           props: {
             value: m.text,
           },
@@ -88,58 +88,62 @@ export default F.def({
       messages: i.receiveMessage,
     }),
   },
-})
-
-let styles = {
-  title: {
-    ...F.style.noSelectable,
-    cursor: 'pointer',
-    fontFamily: 'cursive',
-    fontSize: '28px',
-    fontWeight: 'bold',
-    color: 'purple',
-    marginLeft: '10px',
-  },
-  row: {
-    margin: '10px',
-  },
-  label: {
-    margin: '5px',
-  },
-  input: {
-    margin: '5px',
-  },
-  inputLarge: {
-    margin: '5px',
-    width: '360px',
-  },
-  mainContainer: {
-    margin: '15px',
-  },
-  messageContainer: {
-    margin: '25px',
-    width: '400px',
-  },
-  messageSended: {
-    textAlign: 'end',
-  },
-  messageReceived: {
-    textAlign: 'start',
-  },
-  connection: {
+  styles:{
     base: {
-      width: '20px',
-      height: '20px',
-      marginLeft: '20px',
-      borderRadius: '10px',
-      backgroundColor: 'red',
-      display: 'inline-block',
+      width: '100%',
+      height: '100%',
+      position: 'relative',
     },
-    connected: {
-      backgroundColor: 'green',
+    title: {
+      ...F.style.noSelectable,
+      cursor: 'pointer',
+      fontFamily: 'cursive',
+      fontSize: '28px',
+      fontWeight: 'bold',
+      color: 'purple',
+      marginLeft: '10px',
     },
-    c: function(connected) {
-      return R.merge(this.base, (connected) ? this.connected : {})
+    row: {
+      margin: '10px',
     },
-  },
-}
+    label: {
+      margin: '5px',
+    },
+    input: {
+      margin: '5px',
+    },
+    inputLarge: {
+      margin: '5px',
+      width: '360px',
+    },
+    mainContainer: {
+      margin: '15px',
+    },
+    messageContainer: {
+      margin: '25px',
+      width: '400px',
+    },
+    messageSended: {
+      textAlign: 'end',
+    },
+    messageReceived: {
+      textAlign: 'start',
+    },
+    connection: {
+      base: {
+        width: '20px',
+        height: '20px',
+        marginLeft: '20px',
+        borderRadius: '10px',
+        backgroundColor: 'red',
+        display: 'inline-block',
+      },
+      connected: {
+        backgroundColor: 'green',
+      },
+      c: function(connected) {
+        return R.merge(this.base, (connected) ? this.connected : {})
+      },
+    },
+  }
+})

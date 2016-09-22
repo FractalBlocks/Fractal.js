@@ -1,3 +1,5 @@
+'use strict'
+
 // TODO: evaluate testing
 let hostname = 'localhost'
 let port = 8080

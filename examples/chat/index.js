@@ -8,7 +8,8 @@ const serverName = 'http://localhost:4000'
 let socket = io(serverName, {})
 
 let engine = F.run({
-  root: F.log(require('./chat').default),
+  logAll: true,
+  root: require('./chat').default,
   tasks: {
     value: F.tasks.value.task(onValue),
     socket: F.tasks.emitter.task(socket),

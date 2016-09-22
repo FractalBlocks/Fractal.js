@@ -6,7 +6,8 @@ socketService.connect()
 
 
 let engine = F.run({
-  root: F.log(require('./chat').default),
+  logAll:true,
+  root: require('./chat').default,
   services: {
     socketService,
   },
