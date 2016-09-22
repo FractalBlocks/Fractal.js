@@ -173,10 +173,13 @@ This is a list of interfaces, to begin we recomend see the View interface in det
 - [View](https://github.com/fractalPlatform/Fractal.js/tree/master/docs/interfaces/view.md)
 - ... (TODO-DOCS)
 
+### Logging Modules
+
+(TODO-DOCS)
+
 ## Tasks
 
 (TODO)
-
 
 ## Composing
 

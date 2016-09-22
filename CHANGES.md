@@ -15,10 +15,8 @@
 
 ## v0.3.0-beta.1 (Incomming ...)
 
-- Add _dynamicChildAction (TODO)
-- Add dynamic module handling (OPTIMIZATION) (TODO)
 
-## v0.3.0-beta.0 (Incomming ...)
+## v0.3.0-beta.0
 
 - Rename helpers.js by composition.js
 - Rename `createContext` for `merge` (BREAKING)
@@ -27,6 +25,9 @@
 - Fix timetravel core module
 - Add _childAction
 - Add _childActionScoped
+- Add _dynamicChildAction
+- Add dynamic module handling
+- Update errorHandling module
 
 ## v0.2.4
 

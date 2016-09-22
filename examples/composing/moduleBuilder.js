@@ -1,13 +1,14 @@
+// Example of a prametrized module (a module builder)
+
 import R from 'ramda'
-import F from '../../../lib'
+import F from '../../lib'
 const h = F.h
 
 
-let moduleDef = F.def({
+export default ({color, hasRemove}) => F.def({
   name: 'Submodule0',
   init: ({key, count = 0, hasRemove = false}) => ({
     key,
-    hasRemove,
     count,
   }),
   outputNames: ['remove$'],
@@ -20,7 +21,7 @@ let moduleDef = F.def({
       h('div', {class: {[styles.counter]: true}}, m.count),
       h('button', {on: { click: i._action('Inc') }}, 'Inc'),
       h('button', {on: { click: i._action('Dec') }}, 'Dec'),
-      h('div', {class: {[styles.removeButton.base]: true, [styles.removeButton.hasRemove]: m.hasRemove}, on: { click: remove$ }}, 'X'),
+      h('div', {class: {[styles.removeButton.base]: true, [styles.removeButton.hasRemove]: hasRemove}, on: { click: remove$ }}, 'X'),
     ]),
   },
   styles: {
@@ -31,7 +32,7 @@ let moduleDef = F.def({
     counter: {
       fontSize: '18px',
       padding: '5px',
-      backgroundColor: 'grey',
+      backgroundColor: color,
       borderRadius: '5px',
       color: 'white',
       margin: '4px',
@@ -46,11 +47,3 @@ let moduleDef = F.def({
     }
   },
 })
-
-export default moduleDef
-
-if (module.hot) {
-  module.hot.dispose(function() {
-    moduleDef.dispose()
-  })
-}

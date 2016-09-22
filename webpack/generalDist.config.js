@@ -72,7 +72,6 @@ module.exports = {
       } : false,
       template: './' + path + '/' + option + '/index.html',
     }),
-    new webpack.HotModuleReplacementPlugin(),
     new CleanPlugin(['./' + path + '/' + option + '/dist']),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({

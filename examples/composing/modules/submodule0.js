@@ -5,25 +5,30 @@ const h = F.h
 
 let moduleDef = F.def({
   name: 'Submodule0',
-  init: ({key}) => ({
+  init: ({key, count = 0, hasRemove = false}) => ({
     key,
-    count: 0,
+    hasRemove,
+    count,
   }),
+  outputNames: ['remove$'],
   actions: {
     Inc: [[], m => R.evolve({count: R.inc}, m)],
     Dec: [[], m => R.evolve({count: R.dec}, m)],
   },
   interfaces: {
-    view: ({styles}, i, m) => h('div', {key: m.key, class: {[styles.base]: true}}, [
+    view: ({styles, remove$}, i, m) => h('div', {key: m.key, class: {[styles.base]: true}}, [
       h('div', {class: {[styles.counter]: true}}, m.count),
       h('button', {on: { click: i._action('Inc') }}, 'Inc'),
       h('button', {on: { click: i._action('Dec') }}, 'Dec'),
+      h('div', {class: {[styles.removeButton.base]: true, [styles.removeButton.hasRemove]: m.hasRemove}, on: { click: remove$ }}, 'X'),
     ]),
   },
   styles: {
-    base: {},
+    base: {
+      display: 'flex',
+      alignItems: 'center',
+    },
     counter: {
-      display: 'inline-block',
       fontSize: '18px',
       padding: '5px',
       backgroundColor: 'purple',
@@ -31,6 +36,14 @@ let moduleDef = F.def({
       color: 'white',
       margin: '4px',
     },
+    removeButton: {
+      base: {
+        display: 'none',
+      },
+      hasRemove: {
+        display: 'block',
+      },
+    }
   },
 })
 

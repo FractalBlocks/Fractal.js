@@ -1,4 +1,5 @@
 var webpack = require('webpack')
+let CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -35,5 +36,12 @@ module.exports = {
         },
         mangle: false
     }),
+    new CompressionPlugin({
+      asset: "{file}.gz",
+      algorithm: "gzip",
+      regExp: new RegExp("\.(js|html|css|svg)$"),
+      threshold: 10240,
+      minRatio: 0.8,
+    })
   ],
 }
