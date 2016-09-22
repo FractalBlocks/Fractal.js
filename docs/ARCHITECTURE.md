@@ -11,7 +11,7 @@ Fractal modules are based on the [Model View Update architecture](http://staltz.
 
 Fractal offers a complete architecture with useful patterns and conventions that allows you center in usability, design and business logic instead of architecture. In the following drawing you can see the whole overview.
 
-(TODO: diagram of the architecture)
+<img src="https://github.com/fractalPlatform/Fractal.js/blob/master/assets/architecture.png">
 
 All the application logic is contained into a main module and is hierachicaly structured and composed following the MVU pattern.
 
@@ -28,7 +28,7 @@ If you want to learn more about Fractal's main foundations check out:
 
 Modules are computing units that can have any size and be composed on many other modules (thus, fractal). Each module has three parts:
 
-- Model -> All module state follows the structure (or schema) of what we call "model". The model is defined by the `init` function.
+- Model ->  A type defining the structure of state data. The model is defined by the `init` function.
 - Processing -> Is the way in which the application transform data and react to events. Here live two types of functions:
   - Inputs -> Are used to react to events. This functions transform data and return a list of Action and/or Task structures (or one) with the transformed data, this list is dispatched to the corresponding Action Updates and Task Handlers by Fractal.
   - Actions -> Are functions that transform or modify specific parts of the model. An Action has three parts: a name, data related to it and one transform function (also called update in Model View Update pattern). Think in Actions like things triggered for doing certain modifications to the model and therefore all interfaces (also functions) are recomputed including the view.

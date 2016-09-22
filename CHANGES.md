@@ -13,7 +13,12 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.3.0 - beta 1 (Incomming ...)
+## v0.3.0-beta.1 (Incomming ...)
+
+- Add _dynamicChildAction (TODO)
+- Add dynamic module handling (OPTIMIZATION) (TODO)
+
+## v0.3.0-beta.0 (Incomming ...)
 
 - Rename helpers.js by composition.js
 - Rename `createContext` for `merge` (BREAKING)
@@ -21,9 +26,7 @@
 - Add `modules` and `scopedModules` options for module definitions via `merge`, `mergeAll` and `mergeModels`
 - Fix timetravel core module
 - Add _childAction
-- Add _childActionScoped (TODO)
-- Add _dynamicChildAction (TODO)
-- Add dynamic module handling (OPTIMIZATION) (TODO)
+- Add _childActionScoped
 
 ## v0.2.4
 
