@@ -22,14 +22,24 @@ let moduleDef = F.def({
     formMds: modules,
     buildedMds: buildedModules,
   },
-  dynamicModules: {
+  dynamicModules: {  // inserted at runtime
     dynamic0Md: modules.submodule0,
     dynamic1Md: modules.submodule1,
     dynamic2Md: modules.submodule2,
     buildedDynamicMd0: buildedDynamicMds.submodule0,
     buildedDynamicMd1: buildedDynamicMds.submodule0,
     buildedDynamicMd2: buildedDynamicMds.submodule0,
-  }, // inserted at runtime
+  },
+  // TODO: complete example, with a pair of connected modules
+  load: (ctx, i, Action) => ({  // inserted with connections
+    // individually
+    connectedModule: F.merge(modules.submodule0, {
+      action$: i._childAction('connectedModule', modules.submodule0.update),
+      remove$: i.someAction,
+    }),
+    // together, with mergeAll there is not necesary to connect action$ to inputs
+    connectedGroup: F.mergeAll(modules, i, 'connectedGroup', (md, name) => ({someConnection$: i.someInput})),
+  }),
   init: ({key}) => ({
     key,
     isActive: false,
@@ -39,6 +49,8 @@ let moduleDef = F.def({
     buildedDynamicMd0: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
     buildedDynamicMd1: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
     buildedDynamicMd2: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
+    connectedModule: modules.submodule0.init({key: 'connectedModule', count: -123}),
+    connectedGroup: F.mergeModels(modules),
   }),
   actions: {
     Toggle: [[], R.evolve({isActive: R.not})],
@@ -105,6 +117,14 @@ let moduleDef = F.def({
             childView => h('div', {class: {[styles.dynamicModules.item]: true}}, [childView])
           , m),
         ]))
+      ),
+      // connected module
+      _md.connectedModule.interfaces.view(m.connectedModule),
+      // connected group
+      h('div', {class: {[styles.childView.base]: true}},
+        F.mergeGroup('connectedGroup', _md, 'view',
+          childView => h('div', {class: {[styles.childView.item]: true}}, [childView])
+        , m),
       ),
     ]),
   },
