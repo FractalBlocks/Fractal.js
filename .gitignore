@@ -1,6 +1,6 @@
 # Project specific stuff
 webpack-stats.json
-dist
+dist/
 
 # npm stuff
 node_modules/

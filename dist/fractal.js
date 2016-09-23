@@ -72,19 +72,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  data: __webpack_require__(75).default,
 	  style: __webpack_require__(2).default,
 	  tasks: {
-	    data: __webpack_require__(78).default,
-	    value: __webpack_require__(79).default,
-	    fetch: __webpack_require__(80).default,
-	    emitter: __webpack_require__(81).default
+	    view: __webpack_require__(78).default,
+	    data: __webpack_require__(79).default,
+	    value: __webpack_require__(80).default,
+	    emitter: __webpack_require__(81).default,
+	    fetch: __webpack_require__(82).default
 	  },
 	  drivers: {
-	    view: __webpack_require__(82).default,
-	    event: __webpack_require__(89).default,
-	    listenable: __webpack_require__(90).default,
-	    load: __webpack_require__(91).default,
-	    time: __webpack_require__(92).default, // NEEDS REVIEW!! (maybe depreecated.default)
-	    localStorage: __webpack_require__(93).default,
-	    screenInfo: __webpack_require__(94).default
+	    view: __webpack_require__(83).default,
+	    event: __webpack_require__(90).default,
+	    listenable: __webpack_require__(91).default,
+	    load: __webpack_require__(92).default,
+	    time: __webpack_require__(93).default, // NEEDS REVIEW!! (maybe depreecated.default)
+	    localStorage: __webpack_require__(94).default,
+	    screenInfo: __webpack_require__(95).default
 	  }
 	});
 
@@ -341,7 +342,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (hasBaseObject(stylesObj[key])) {
 	        classObj[key] = rs_func(styleName + '-' + key, stylesObj[key]);
 	      } else if (stylesObj[key] != null && _typeof(stylesObj[key]) === 'object') {
-	        classObj[key] = r(styleInstance, styleName, stylesObj[key]);
+	        classObj[key] = r(styleInstance, styleName + '-' + key, stylesObj[key]);
 	      } else {
 	        // function
 	        classObj[key] = stylesObj[key];
@@ -1408,7 +1409,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // wrapper function for tasks
 	      var tasks = i.apply(undefined, arguments);
 	      if (tasks != undefined) {
-	        if (tasks instanceof Array && tasks.of == undefined && !(typeof tasks[0] == 'string' && tasks[1] && _typeof(tasks[1].of) == 'object')) {
+	        if (tasks instanceof Array && tasks.of == undefined && typeof tasks[0] !== 'string' && !tasks[1] && _typeof(tasks[1].of) !== 'object') {
 	          // verify that is not a task in the form [String, TaskAction]
 	          // multiple action-task syntax
 	          tasks.forEach(function (t) {
@@ -5657,11 +5658,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = {
 	  types: Type({
-	    emit: [String, R.T, R.T]
+	    setFocused: [String, R.T, R.T]
 	  }),
-	  task: function task(emitData) {
+	  task: function task(rootSelector) {
 	    var taskFn = this.types.caseOn({
-	      emit: function emit(key, value, _ref) {
+	      setFocused: function setFocused(elementSelector, focused, _ref) {
 	        var _ref$success = _ref.success;
 	        var success = _ref$success === undefined ? function () {
 	          return 0;
@@ -5671,7 +5672,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return 0;
 	        } : _ref$error;
 	
-	        emitData(key, value, { success: success, error: error });
+	        var elements = document.querySelectorAll(rootSelector + ' ' + elementSelector);
+	        if (elements.length === 1) {
+	          if (focused) {
+	            elements[0].focus();
+	          } else {
+	            elements[0].blur();
+	          }
+	          return success();
+	        }
+	        error('No element selected at: ' + rootSelector + ' ' + elementSelector);
 	      }
 	    });
 	
@@ -5702,12 +5712,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = {
 	  types: Type({
-	    send: [String]
+	    emit: [String, R.T, R.T]
 	  }),
-	  task: function task(sendValue) {
+	  task: function task(emitData) {
 	    var taskFn = this.types.caseOn({
-	      send: function send(value) {
-	        sendValue(value);
+	      emit: function emit(key, value, _ref) {
+	        var _ref$success = _ref.success;
+	        var success = _ref$success === undefined ? function () {
+	          return 0;
+	        } : _ref$success;
+	        var _ref$error = _ref.error;
+	        var error = _ref$error === undefined ? function () {
+	          return 0;
+	        } : _ref$error;
+	
+	        emitData(key, value, { success: success, error: error });
 	      }
 	    });
 	
@@ -5731,37 +5750,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	
-	var _unionType = __webpack_require__(4);
-	
-	var _unionType2 = _interopRequireDefault(_unionType);
-	
-	var _data = __webpack_require__(75);
-	
-	var _data2 = _interopRequireDefault(_data);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
+	var Type = __webpack_require__(4);
 	var R = {
 	  T: __webpack_require__(53)
 	};
 	
 	exports.default = {
-	  types: (0, _unionType2.default)({
-	    fetch: [Object]
+	  types: Type({
+	    send: [String]
 	  }),
-	  task: function task() {
+	  task: function task(sendValue) {
 	    var taskFn = this.types.caseOn({
-	      fetch: function fetch(obj) {
-	        return _data2.default.fetch(obj);
+	      send: function send(value) {
+	        sendValue(value);
 	      }
 	    });
 	
 	    // task runner
 	    return {
-	      run: function run(obj) {
+	      run: function run(task) {
 	        // perform side effect
-	        return taskFn(obj, '');
+	        taskFn(task, '');
 	      },
 	      get: {}
 	    };
@@ -5821,13 +5830,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _unionType = __webpack_require__(4);
+	
+	var _unionType2 = _interopRequireDefault(_unionType);
+	
+	var _data = __webpack_require__(75);
+	
+	var _data2 = _interopRequireDefault(_data);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var R = {
+	  T: __webpack_require__(53)
+	};
+	
+	exports.default = {
+	  types: (0, _unionType2.default)({
+	    fetch: [Object]
+	  }),
+	  task: function task() {
+	    var taskFn = this.types.caseOn({
+	      fetch: function fetch(obj) {
+	        return _data2.default.fetch(obj);
+	      }
+	    });
+	
+	    // task runner
+	    return {
+	      run: function run(obj) {
+	        // perform side effect
+	        return taskFn(obj, '');
+	      },
+	      get: {}
+	    };
+	  }
+	};
+
+/***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.default = view;
 	
 	var flyd = __webpack_require__(11);
 	var h = __webpack_require__(65);
 	
 	// Common snabbdom patch function (convention over configuration)
-	var patch = __webpack_require__(83).init([__webpack_require__(84), __webpack_require__(85), __webpack_require__(86), __webpack_require__(87), __webpack_require__(88)]);
+	var patch = __webpack_require__(84).init([__webpack_require__(85), __webpack_require__(86), __webpack_require__(87), __webpack_require__(88), __webpack_require__(89)]);
 	
 	function view(selector) {
 	  var patchfn = arguments.length <= 1 || arguments[1] === undefined ? patch : arguments[1];
@@ -5856,7 +5911,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 83 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// jshint newcap: false
@@ -6121,7 +6176,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { init: init };
 
 /***/ },
-/* 84 */
+/* 85 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6143,7 +6198,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateClass, update: updateClass };
 
 /***/ },
-/* 85 */
+/* 86 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6185,7 +6240,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateAttrs, update: updateAttrs };
 
 /***/ },
-/* 86 */
+/* 87 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6209,7 +6264,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateProps, update: updateProps };
 
 /***/ },
-/* 87 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6264,7 +6319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateEventListeners, update: updateEventListeners };
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6348,7 +6403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle };
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6375,7 +6430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6454,7 +6509,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 91 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6480,7 +6535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 92 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6580,7 +6635,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 93 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6613,7 +6668,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6624,7 +6679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = screenInfoDriver;
 	var flyd = __webpack_require__(11);
 	
-	var _require = __webpack_require__(95);
+	var _require = __webpack_require__(96);
 	
 	var screenInfo = _require.screenInfo;
 	
@@ -6669,7 +6724,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports) {
 
 	'use strict';

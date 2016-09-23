@@ -4,17 +4,24 @@
 
 - Introduce TypeScript to repo (planned, evaluate)
 
-## v0.2.9 (Incomming, short term ...)
+## NO-VERSION (Incomming, short term ...)
 
 - Router relased (work in progress)
 
-## v0.2.8 (Incomming ...)
+## NO-VERSION (Incomming ...)
 
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.3.0-beta.1 (Incomming ...)
+## v0.3.0-beta.2 (Incomming ...)
 
+- ...
+
+## v0.3.0-beta.1
+
+- Add view task to core
+- Fix styleName for classes (don't shows last key in prior version)
+- Fix bug related to lists returned by inputs
 
 ## v0.3.0-beta.0
 
