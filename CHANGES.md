@@ -13,9 +13,11 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.3.0-beta.2 (Incomming ...)
+## v0.3.0-beta.3 (Incomming ...)
 
-- ...
+- Add file task
+- Add file task example
+- Change '-' with '_' in namespaces for class hashes
 
 ## v0.3.0-beta.1
 

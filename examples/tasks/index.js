@@ -8,6 +8,7 @@ let engine = F.run({
   root: require('./app').default,
   tasks: {
     view: F.tasks.view.task('#app'),
+    file: F.tasks.file.task(),
   },
   drivers: {
     view: F.drivers.view('#app'),
