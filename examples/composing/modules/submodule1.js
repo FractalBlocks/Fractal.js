@@ -4,7 +4,7 @@ const h = F.h
 
 
 let moduleDef = F.def({
-  name: 'Submodule0',
+  name: 'Submodule1',
   init: ({key, count = 0, hasRemove = false}) => ({
     key,
     hasRemove,
