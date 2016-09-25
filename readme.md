@@ -43,6 +43,7 @@ The examples you can run are:
 - counterAndList
 - chat
 - mailboxNoRouter
+- tasks
 
 Open a command window into `Fractal.js` folder and run:
 

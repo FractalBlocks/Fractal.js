@@ -11,6 +11,7 @@ const readFileTask = F.tasks.file.types.read
 // TODO: add an example of fetch task
 // TODO: add examles of data, emitter and value tasks
 
+// TODO: put this function in view helpers
 let getRelativePosition = (element, ev) => ({
   x: ev.pageX - element.offsetLeft,
   y: ev.pageY - element.offsetTop,
