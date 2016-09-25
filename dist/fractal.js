@@ -1303,8 +1303,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	var _flyd = __webpack_require__(11);
@@ -1381,6 +1379,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	    task$: _flyd2.default.stream(),
 	    styles: !!mDef.styles ? mDef.styles : {}
 	  };
+	  ctx.dispatch$ = function (tasks) {
+	    if (tasks != undefined && tasks instanceof Array) {
+	      if (tasks.of == undefined && typeof tasks[0] !== 'string') {
+	        // verify that is not a task in the form [String, TaskAction]
+	        // multiple action-task syntax
+	        tasks.forEach(function (t) {
+	          if (R.equals(t.of, mDef.Action)) {
+	            ctx.action$(t);
+	          } else {
+	            ctx.task$(t);
+	          }
+	        });
+	      } else if (R.equals(tasks.of, mDef.Action)) {
+	        // single action syntax for an action
+	        ctx.action$(tasks);
+	      } else if (tasks instanceof Array) {
+	        // single action syntax for a task
+	        ctx.task$(tasks);
+	      }
+	    } else {
+	      // none sense return
+	      // ctx.task$('undefined') // DEBUG
+	    }
+	  };
 	  // append the outputs in the context
 	  for (var name in mDef.outputNames) {
 	    ctx[mDef.outputNames[name]] = _flyd2.default.stream();
@@ -1409,28 +1431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return R.curryN(i.length, function () {
 	      // wrapper function for tasks
 	      var tasks = i.apply(undefined, arguments);
-	      if (tasks != undefined) {
-	        if (tasks instanceof Array && tasks.of == undefined && typeof tasks[0] !== 'string' && !tasks[1] && _typeof(tasks[1].of) !== 'object') {
-	          // verify that is not a task in the form [String, TaskAction]
-	          // multiple action-task syntax
-	          tasks.forEach(function (t) {
-	            if (R.equals(t.of, mDef.Action)) {
-	              ctx.action$(t);
-	            } else {
-	              ctx.task$(t);
-	            }
-	          });
-	        } else if (R.equals(tasks.of, mDef.Action)) {
-	          // single action syntax for an action
-	          ctx.action$(tasks);
-	        } else if (tasks instanceof Array) {
-	          // single action syntax for a task
-	          ctx.task$(tasks);
-	        }
-	      } else {
-	        // none sense return
-	        // ctx.task$('undefined') // DEBUG
-	      }
+	      ctx.dispatch$(tasks);
 	    })(ctx, mDef.Action);
 	  }, mDef.inputs);
 	  ctx._md = mDef.load(ctx, inputs, mDef.Action) || {};
@@ -5659,7 +5660,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = {
 	  types: Type({
-	    setFocused: [String, R.T, R.T]
+	    setFocused: [String, R.T, R.T],
+	    addWindowListener: [String, R.T],
+	    removeWindowListener: [String, R.T]
 	  }),
 	  task: function task(rootSelector) {
 	    var taskFn = this.types.caseOn({
@@ -5683,6 +5686,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return success();
 	        }
 	        error('No element selected at: ' + rootSelector + ' ' + elementSelector);
+	      },
+	      addWindowListener: function addWindowListener(eventName, subsfn) {
+	        window.addEventListener(eventName, subsfn);
+	      },
+	      removeWindowListener: function removeWindowListener(eventName, subsfn) {
+	        window.removeEventListener(eventName, subsfn);
 	      }
 	    });
 	

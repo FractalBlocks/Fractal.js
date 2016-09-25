@@ -13,9 +13,16 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.3.0-beta.4 (Incomming ...)
+## v0.3.1-beta.1 (Incomming ...)
 
 - ...
+
+## v0.3.1-beta.0
+
+- Implement async ctx.dispatch$ method for the same functionality as syncronous
+- Add addWindowListener and removeWindowListener method to view task
+- Add WindowListener task example with a drag and drop interface
+- Fix `merge` bug related to detection of an mixed array of tasks and actions
 
 ## v0.3.0-beta.3
 

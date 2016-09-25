@@ -12,6 +12,9 @@ let {blocks} = require('./modulos')
 
 let blocksM = blocks('blocks')
 
+
+// TODO: update this example, take things from WindowListener task example
+
 module.exports = F.def({
   init: ({key}) => ({
     key,

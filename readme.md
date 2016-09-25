@@ -74,10 +74,11 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
-- Implement pouchdb integration example
-- Document granular log option for modules
+- Document granular log option for modules (@MissyM)
+- Implement _error task and attach it by default, this can be done all app error handling (@carloslfu)
 - Implement and document serviceTest (FEATURE)
-- Implement _error task and attach it by default, this can be done all app error handling
+- Implement on demand large app loading example (@carloslfu)
+- Implement pouchdb integration example (@carloslfu)
 - Implement register of modules definitions and dispose them when dispose engine (MEMORY)
 - Implement a way to attach disposables to module definitions
 - Implement names for all the modules and examples
