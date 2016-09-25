@@ -22,7 +22,7 @@ If you want to learn more about Fractal's main foundations check out:
 - [Controlling Time and Space: understanding the many formulations of FRP](https://www.youtube.com/watch?v=Agu6jipKfYw) talk by Evan Czaplicki
 - An article on why Fractal.js is [implemented in Typescript](http://staltz.com/all-js-libraries-should-be-authored-in-typescript.html) (This is a work in progress) (TODO-DOCS)
 - [CSS in JS](https://vimeo.com/116209150) talk by Christopher Chedeau. [Slides here](https://speakerdeck.com/vjeux/react-css-in-js)
-- Virtual DOM approach [https://medium.com/@yelouafi/react-less-virtual-dom-with-snabbdom-functions-everywhere-53b672cb2fe3#.nfir9w2fb
+- [Virtual DOM approach](https://medium.com/@yelouafi/react-less-virtual-dom-with-snabbdom-functions-everywhere-53b672cb2fe3#.nfir9w2fb)
 
 ## Modules
 

@@ -76,16 +76,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    data: __webpack_require__(79).default,
 	    value: __webpack_require__(80).default,
 	    emitter: __webpack_require__(81).default,
-	    fetch: __webpack_require__(82).default
+	    fetch: __webpack_require__(82).default,
+	    file: __webpack_require__(83).default
 	  },
 	  drivers: {
-	    view: __webpack_require__(83).default,
-	    event: __webpack_require__(90).default,
-	    listenable: __webpack_require__(91).default,
-	    load: __webpack_require__(92).default,
-	    time: __webpack_require__(93).default, // NEEDS REVIEW!! (maybe depreecated.default)
-	    localStorage: __webpack_require__(94).default,
-	    screenInfo: __webpack_require__(95).default
+	    view: __webpack_require__(84).default,
+	    event: __webpack_require__(91).default,
+	    listenable: __webpack_require__(92).default,
+	    load: __webpack_require__(93).default,
+	    time: __webpack_require__(94).default, // NEEDS REVIEW!! (maybe depreecated.default)
+	    localStorage: __webpack_require__(95).default,
+	    screenInfo: __webpack_require__(96).default
 	  }
 	});
 
@@ -294,7 +295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var scope = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
 	
 	  var container = document.createElement('div');
-	  if (document.getElementById('fractalModuleStyles-' + scope + name)) {
+	  if (document.getElementById('fractalModuleStyles_' + scope + name)) {
 	    console.warn('WARNING!!! there are a duplicated module definition name!!: ' + scope + name);
 	  }
 	  container.id = scope + name;
@@ -308,7 +309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var namespace = '';
 	  return {
 	    Style: FreeStyle.create(function (s) {
-	      return '-' + namespace + '--' + FreeStyle.stringHash(s);
+	      return '_' + namespace + '__' + FreeStyle.stringHash(s);
 	    }),
 	    container: createModuleStylesContainer(styles, name, scope),
 	    setNamespace: function setNamespace(ns) {
@@ -340,9 +341,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var classObj = {};
 	    for (var key in stylesObj) {
 	      if (hasBaseObject(stylesObj[key])) {
-	        classObj[key] = rs_func(styleName + '-' + key, stylesObj[key]);
+	        classObj[key] = rs_func(styleName + '_' + key, stylesObj[key]);
 	      } else if (stylesObj[key] != null && _typeof(stylesObj[key]) === 'object') {
-	        classObj[key] = r(styleInstance, styleName + '-' + key, stylesObj[key]);
+	        classObj[key] = r(styleInstance, styleName + '_' + key, stylesObj[key]);
 	      } else {
 	        // function
 	        classObj[key] = stylesObj[key];
@@ -5876,13 +5877,66 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var Type = __webpack_require__(4);
+	var R = {
+	  T: __webpack_require__(53)
+	};
+	
+	exports.default = {
+	  types: Type({
+	    read: [R.T, R.T]
+	  }),
+	  task: function task() {
+	    var taskFn = this.types.caseOn({
+	      read: function read(file, _ref) {
+	        var _ref$success = _ref.success;
+	        var success = _ref$success === undefined ? function () {
+	          return 0;
+	        } : _ref$success;
+	        var _ref$error = _ref.error;
+	        var error = _ref$error === undefined ? function () {
+	          return 0;
+	        } : _ref$error;
+	
+	        var reader = new FileReader();
+	        reader.onload = function (ev) {
+	          var contents = ev.target.result;
+	          success(contents);
+	        };
+	        reader.onerror = function () {
+	          return error('Error reading ' + file);
+	        };
+	        reader.readAsText(file);
+	      }
+	    });
+	
+	    // task runner
+	    return {
+	      run: function run(task) {
+	        // perform side effect
+	        taskFn(task, '');
+	      },
+	      get: {}
+	    };
+	  }
+	};
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.default = view;
 	
 	var flyd = __webpack_require__(11);
 	var h = __webpack_require__(65);
 	
 	// Common snabbdom patch function (convention over configuration)
-	var patch = __webpack_require__(84).init([__webpack_require__(85), __webpack_require__(86), __webpack_require__(87), __webpack_require__(88), __webpack_require__(89)]);
+	var patch = __webpack_require__(85).init([__webpack_require__(86), __webpack_require__(87), __webpack_require__(88), __webpack_require__(89), __webpack_require__(90)]);
 	
 	function view(selector) {
 	  var patchfn = arguments.length <= 1 || arguments[1] === undefined ? patch : arguments[1];
@@ -5911,7 +5965,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 84 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// jshint newcap: false
@@ -6176,7 +6230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { init: init };
 
 /***/ },
-/* 85 */
+/* 86 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6198,7 +6252,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateClass, update: updateClass };
 
 /***/ },
-/* 86 */
+/* 87 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6240,7 +6294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateAttrs, update: updateAttrs };
 
 /***/ },
-/* 87 */
+/* 88 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6264,7 +6318,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateProps, update: updateProps };
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6319,7 +6373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateEventListeners, update: updateEventListeners };
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -6403,7 +6457,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = { create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle };
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6430,7 +6484,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 91 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6509,7 +6563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 92 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6535,7 +6589,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 93 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6635,7 +6689,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6668,7 +6722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6679,7 +6733,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = screenInfoDriver;
 	var flyd = __webpack_require__(11);
 	
-	var _require = __webpack_require__(96);
+	var _require = __webpack_require__(97);
 	
 	var screenInfo = _require.screenInfo;
 	
@@ -6724,7 +6778,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports) {
 
 	'use strict';

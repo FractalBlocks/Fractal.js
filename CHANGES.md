@@ -13,7 +13,11 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.3.0-beta.3 (Incomming ...)
+## v0.3.0-beta.4 (Incomming ...)
+
+- ...
+
+## v0.3.0-beta.3
 
 - Add file task
 - Add file task example
