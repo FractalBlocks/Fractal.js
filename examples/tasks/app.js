@@ -55,7 +55,7 @@ let moduleDef = F.def({
       let stopDragging = () => {
         ctx.dispatch$([
           ['view', removeWindowListenerTask('mousemove', listener)],
-          ['view', removeWindowListenerTask('mousemove', stopDragging)],
+          ['view', removeWindowListenerTask('mouseup', stopDragging)],
           Action.EndDragging(name),
         ])
       }
