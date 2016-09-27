@@ -28,15 +28,15 @@ If you want to learn more about Fractal's main foundations check out:
 
 Modules are computing units that can have any size and be composed on many other modules (thus, fractal). Each module has three parts:
 
-- State ->  An object whose structure stores _data_. The state is initialized by the `init` function.
+- State ->  An object whose structure stores _data_. The state is initialized by the `init` function. Initial state should be meaningful beacuse models all the state, think in initial state like a typed model (we call initial states Models).
 
 - Processing -> Is the way in which the application transforms data and reacts to events. Here we have two types of functions:
   - Inputs -> Are used to react to events. These functions transform data and return a list of Action and/or Task structures with the transformed data, this list is dispatched to the corresponding Action Updates and Task Handlers by Fractal.
   - Actions -> Are functions that modify the state. An Action has three parts: a name, data related to it and a `transform` function (also called `update` in Model View Update pattern). Think of Actions as the callbacks for those events which actually modify the state and that can trigger a recurrent recomputation througout the unidirectional architecture.
 
 - Communications -> Interaction with the "outside world". Here we have again, two types of functions:
-  - Interfaces -> Are functions that depend on the state, there are many types of interfaces (e.g. Views). Every state change causes a recomputation of all interfaces. The result of an interface recomputation is passed to its parent module, eventually propagated to the main module, which passes this to a interface-specific Driver (_suggestion: Adapter?_)  (e.g. View Driver). Drivers interact with the outside world and perform side effects (_suggestion: cause side effects_). Inputs may also be subscribed to events that occur in the interface context; for example, a View interface can be subscribed to an Input (e.g. a button click event). Interfaces are designed for continuous communication with the outside world, via model updates or event subscriptions. The key here is that interfaces are recomputed on each state change (done by an Action) and sends data and Input subscriptions to the outside world. Those Inputs are triggered by events from the outside world, note that the initiative are taken out of the module.
-  - Tasks -> Are data structures (_question: so they are functions or objects?_) that have attached a name and some data. When dispatched, Task Handlers run specific tasks and perform (_suggesttion: cause_) a side effect using this data. Tasks are designed for discrete communication with the outside world. The key here is that the module takes the initiative, and may have incoming data in response to the Task via asynchronous callbacks.
+  - Interfaces -> Are functions that depend on the state, there are many types of interfaces (e.g. Views). Every state change causes a recomputation of all interfaces. The result of an interface recomputation is passed to its parent module, eventually propagated to the main module, which passes this to a interface-specific Driver (e.g. View Driver). Drivers interact with the outside world and cause side effects. Inputs may also be subscribed to events that occur in the interface context; for example, a View interface can be subscribed to an Input (e.g. a button click event). Interfaces are designed for continuous communication with the outside world, via state updates or event subscriptions. The key here is that interfaces are recomputed on each state change (done by an Action) and sends data and Input subscriptions to the outside world. Those Inputs are triggered by events from the outside world, note that the initiative are taken out of the module.
+  - Tasks -> Are functions that returns a task object. Task object have attached a name and some data. When dispatched, Task Handlers run specific tasks and perform cause a side effect using this data. Tasks are designed for discrete communication with the outside world. The key here is that the module takes the initiative, and may have incoming data in response to the Task via asynchronous callbacks.
 
 For each module there should be a module definition. Implementation is described in the following lines:
 
@@ -138,7 +138,7 @@ There are an input called _action created by default for easy subscription to an
 
 ### Actions
 
-An Action is the unique way to modify the model. An Action are a function that receives some data and the actual model (state) and returns the new model. This mean that is a tranform function, also is pure, in the same way as all app functions in Fractal.
+An Action is the unique way to modify the state. An Action are a function that receives some data and the actual state and returns the new state. This mean that is a tranform function, also is pure, in the same way as all app functions in Fractal.
 
 Description of Actions should be an object with the Action name as key and an array with the input data types and the transform function (A.K.A. update), see next lines (Note that by convention Actions should be in upper camelcase) :
 
@@ -163,7 +163,7 @@ let myModule = F.def({
   },
 ```
 
-In order to be more declarative Fractal use [Ramda](http://ramdajs.com/) functions to build Actions updates.
+In order to be more declarative we use [Ramda](http://ramdajs.com/) functions to build Actions updates.
 
 ### Interfaces
 
@@ -188,7 +188,7 @@ Composing is done by the MVU pattern. You can nest modules infinitely in theory,
 
 In a nutsell MVU composing means that each part of the child module is merged into their related parent part, the following ilustrates this point:
 
-- Child **model** is merged into parent **model**
+- Child **state** is merged into parent **state**
 - Child **inputs** is merged into parent **inputs**
 - Child **actions** is merged into parent **actions**
 - Child **interfaces** is merged into parent **interfaces**
@@ -221,20 +221,20 @@ Use the Router for binding your data with components, and Router should have all
 
 ## Interaction Patterns
 
-- feature adding: model(data + state) -> logic -> interface
+- feature adding: state(data + state) -> logic -> interface
 - debugging code
 - code navigation
 - composing
 - UI interaction
 
-## Module Patterns model - logic - interface
+## Module Patterns state - logic - interface
 
 - sequential
 - router
 - string handling (i18n)
 - animations
 
-## Composition Patterns for: modules and model
+## Composition Patterns for: modules and state
 
 - simple: a -> a
 - router: (arr:[a, b, c], num) -> arr[num]

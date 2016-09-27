@@ -15,7 +15,9 @@
 
 ## v0.3.1-beta.1 (Incomming ...)
 
-- ...
+- Model is renamed in favor of state, Model is only the initial state
+- Update examples (replace `m` with `s`) (TODO)
+- Update core (replace `model` with `state`)
 
 ## v0.3.1-beta.0
 
