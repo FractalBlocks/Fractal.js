@@ -28,19 +28,20 @@ If you want to learn more about Fractal's main foundations check out:
 
 Modules are computing units that can have any size and be composed on many other modules (thus, fractal). Each module has three parts:
 
-- Model ->  A type defining the structure of state data. The model is defined by the `init` function.
-- Processing -> Is the way in which the application transform data and react to events. Here live two types of functions:
-  - Inputs -> Are used to react to events. This functions transform data and return a list of Action and/or Task structures (or one) with the transformed data, this list is dispatched to the corresponding Action Updates and Task Handlers by Fractal.
-  - Actions -> Are functions that transform or modify specific parts of the model. An Action has three parts: a name, data related to it and one transform function (also called update in Model View Update pattern). Think in Actions like things triggered for doing certain modifications to the model and therefore all interfaces (also functions) are recomputed including the view.
-- Comunications -> Interaction with external world. Here live two types of functions:
-  - Interfaces -> Are functions that depends on the model, there are many types of interfaces (e.g. view). Each change on the model, causes a recompute of all interfaces. The result of an interface recompute is passed to the parent module, then it is propagated to main module, which pass this to a Driver related to this specific type of interface (e.g. View Driver). Drivers interact with external world and perform side effects, it also can subscribe Inputs to events that occurs in the interface context, for example a View interface can subscribe an Input to the click event over a button. Interfaces are designed for continuous communication with external world, via model updates or event subscriptions. The key here is that interfaces are recomputed on each model change (done by an Action) and sends data and Input subscriptions to external world. That Inputs are triggered by events from the external world, note that the initiative are taken out of the module.
-  - Tasks -> Are data structures that have attached a name and some data. When dispatched, Task Handlers runs an especific task an perform a side effect using this data. Tasks are designed for discrete communication with external world. The key here is that the module takes the initiative, and may have incoming data in response to the Task via callbacks and those are asyncronous.
+- State ->  An object whose structure stores _data_. The state is initialized by the `init` function.
 
-For each module should be a module definition. Implementation is described in the following lines.
+- Processing -> Is the way in which the application transforms data and reacts to events. Here we have two types of functions:
+  - Inputs -> Are used to react to events. These functions transform data and return a list of Action and/or Task structures with the transformed data, this list is dispatched to the corresponding Action Updates and Task Handlers by Fractal.
+  - Actions -> Are functions that modify the state. An Action has three parts: a name, data related to it and a `transform` function (also called `update` in Model View Update pattern). Think of Actions as the callbacks for those events which actually modify the state and that can trigger a recurrent recomputation througout the unidirectional architecture.
 
+- Communications -> Interaction with the "outside world". Here we have again, two types of functions:
+  - Interfaces -> Are functions that depend on the state, there are many types of interfaces (e.g. Views). Every state change causes a recomputation of all interfaces. The result of an interface recomputation is passed to its parent module, eventually propagated to the main module, which passes this to a interface-specific Driver (_suggestion: Adapter?_)  (e.g. View Driver). Drivers interact with the outside world and perform side effects (_suggestion: cause side effects_). Inputs may also be subscribed to events that occur in the interface context; for example, a View interface can be subscribed to an Input (e.g. a button click event). Interfaces are designed for continuous communication with the outside world, via model updates or event subscriptions. The key here is that interfaces are recomputed on each state change (done by an Action) and sends data and Input subscriptions to the outside world. Those Inputs are triggered by events from the outside world, note that the initiative are taken out of the module.
+  - Tasks -> Are data structures (_question: so they are functions or objects?_) that have attached a name and some data. When dispatched, Task Handlers run specific tasks and perform (_suggesttion: cause_) a side effect using this data. Tasks are designed for discrete communication with the outside world. The key here is that the module takes the initiative, and may have incoming data in response to the Task via asynchronous callbacks.
+
+For each module there should be a module definition. Implementation is described in the following lines:
 
 ```javascript
-// The `def` function is responsible to convert definition objects into module objects
+// The `def` function is responsible for converting definition objects into module objects
 let myModule = F.def({
   name: 'ModuleName',
   init,
@@ -50,11 +51,11 @@ let myModule = F.def({
 })
 ```
 
-Module objects are similar to definition objects. `F.def` function makes some validations and prepare the definition object to be executed by Fractal core or merged in another module. Note that modules should have a name in upper camelcase.
+Module objects are similar to definition objects. The `F.def` function performs validations and prepare the definition object to be executed by Fractal core or to be merged into another module. Note that modules should have a name in upper camelcase.
 
-### Model
+### State
 
-The model contains all the module state and only can be changed by an Action update. The `init` function is responsible to return the initial model. There are a part of the model called `key`, this one identifies the module and should be unique for the same level of hierarchy (modules that are childs of the same parent).
+The state contains all the module state and only can be changed by an Action update. The `init` function is responsible for returning the initial state as a plain JavaScript object. The state must contain a `key` which identifies the module and should be unique among its hierarchical siblings across the module composition tree.
 
 ```javascript
 let myModule = F.def({
@@ -73,7 +74,7 @@ let myModule = F.def({
 
 ### Inputs
 
-Inputs are the way interfaces dispatch actions or tasks. This means inputs are subscribed by interfaces to any external event, and in react to this event the input process the data and dispatch actions or tasks.
+Inputs are the way interfaces dispatch Actions or Tasks. This means Inputs are subscribed by interfaces to any external event, and in react to this event the input process the data and dispatch actions or tasks.
 
 Inputs are described into an object, and have a function that behaves like expected.
 
