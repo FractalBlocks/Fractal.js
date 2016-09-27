@@ -82,7 +82,7 @@ let moduleDef = F.def({
   interfaces: {
     view: ({styles, _md}, i, m) => h('div', {key: m.key, class: {[styles.base]: true}}, [
       h('div', {class: {[styles.task.base]: true}}, [
-        'View: ',
+        'View - setFocused: ',
         h('button', {
           class: {[styles.task.button]: true},
           on: { click: () => i.setFocused('.target-input', true) },
