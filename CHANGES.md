@@ -13,11 +13,18 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.3.1-beta.1 (Incomming ...)
+## v0.3.2-beta.0 (Incomming ...)
+
+- ...
+- Update examples (replace `m` with `s`) (TODO)
+
+## v0.3.1-beta.1
 
 - Model is renamed in favor of state, Model is only the initial state
-- Update examples (replace `m` with `s`) (TODO)
 - Update core (replace `model` with `state`)
+- Add test file in utils
+- Add `logVal` function to test helpers
+- Fix connectInterface bug
 
 ## v0.3.1-beta.0
 
