@@ -75,6 +75,8 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
+- Implement CSS helpers for code reuse across objects (deep merge)
+- Implement a way to reattach tasks, drivers and services (@carloslfu)
 - Document granular log option for modules (@MissyM)
 - Implement _error task and attach it by default, this can be done all app error handling (@carloslfu)
 - Implement and document serviceTest (FEATURE)
