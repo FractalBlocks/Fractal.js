@@ -3,8 +3,8 @@ import F from '../../lib'
 const h = F.h
 
 import modules from './modules'
-import buildedModules from './buildedModules'
-import buildedDynamicMds from './dynamicModules'
+import builtModules from './builtModules'
+import builtDynamicMds from './dynamicModules'
 
 
 let moduleDef = F.def({
@@ -13,22 +13,22 @@ let moduleDef = F.def({
   // inserted to model directly
   modules: {
     ...modules,
-    m0: buildedModules.submodule0,
-    m1: buildedModules.submodule1,
-    m2: buildedModules.submodule2,
+    m0: builtModules.submodule0,
+    m1: builtModules.submodule1,
+    m2: builtModules.submodule2,
   },
   groupedModules: { // inserted into model via keys (e.g. contact form modules)
     childMds: modules,
     formMds: modules,
-    buildedMds: buildedModules,
+    builtMds: builtModules,
   },
   dynamicModules: {  // inserted at runtime
     dynamic0Md: modules.submodule0,
     dynamic1Md: modules.submodule1,
     dynamic2Md: modules.submodule2,
-    buildedDynamicMd0: buildedDynamicMds.submodule0,
-    buildedDynamicMd1: buildedDynamicMds.submodule0,
-    buildedDynamicMd2: buildedDynamicMds.submodule0,
+    builtDynamicMd0: builtDynamicMds.submodule0,
+    builtDynamicMd1: builtDynamicMds.submodule0,
+    builtDynamicMd2: builtDynamicMds.submodule0,
   },
   // TODO: complete example, with a pair of connected modules
   load: (ctx, i, Action) => ({  // inserted with connections
@@ -46,9 +46,9 @@ let moduleDef = F.def({
     dynamic0Md: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count, hasRemove: true})),
     dynamic1Md: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count, hasRemove: true})),
     dynamic2Md: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count, hasRemove: true})),
-    buildedDynamicMd0: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
-    buildedDynamicMd1: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
-    buildedDynamicMd2: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
+    builtDynamicMd0: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
+    builtDynamicMd1: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
+    builtDynamicMd2: [100, 23, 2].map((count, idx) => modules.submodule0.init({key: idx, count})),
     connectedModule: modules.submodule0.init({key: 'connectedModule', count: -123}),
     connectedGroup: F.mergeModels(modules),
   }),
@@ -86,7 +86,7 @@ let moduleDef = F.def({
         , m),
       ),
       h('div', {class: {[styles.childView.base]: true}},
-        F.mergeGroup('buildedMds', _md, 'view',
+        F.mergeGroup('builtMds', _md, 'view',
           childView => h('div', {class: {[styles.childView.item]: true}}, [childView])
         , m),
       ),
@@ -105,7 +105,7 @@ let moduleDef = F.def({
         ]))
       ),
       h('div', {class: {[styles.dynamicModules.base]: true}},
-        ['buildedDynamicMd0', 'buildedDynamicMd1', 'buildedDynamicMd2'].map(name => h('div', {class: {[styles.dynamicModules.subcontainer]: true}}, [
+        ['builtDynamicMd0', 'builtDynamicMd1', 'builtDynamicMd2'].map(name => h('div', {class: {[styles.dynamicModules.subcontainer]: true}}, [
           h('div', {class: {[styles.dynamicModules.subcontainerName]: true}}, [
             h('button', {
               class: {[styles.dynamicModules.addButton]: true},
