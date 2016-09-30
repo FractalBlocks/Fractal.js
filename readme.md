@@ -107,7 +107,7 @@ What maybe great for this repo:
 - Implement a test suite
 - Implement examples of test suite
 - Evaluate usage of Fractal for backend and nano-micro services approach
-- Explore porting Fractal to Haskell, good starting point [Threepenny-gui] (https://wiki.haskell.org/Threepenny-gui) and [Haste Language](http://haste-lang.org/)
+- Explore porting Fractal to Haskell, makes sense build a DSL. A good starting point [Threepenny-gui] (https://wiki.haskell.org/Threepenny-gui) and [Haste Language](http://haste-lang.org/)
 - Document integration of manifest.json for webapps
 - Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
