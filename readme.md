@@ -83,6 +83,7 @@ What are missing for this repo:
 - Implement and document serviceTest (FEATURE)
 - Implement on demand large app loading example (@carloslfu)
 - Implement pouchdb integration example (@carloslfu)
+- Implement the Router inspired on [react-router](https://github.com/ReactTraining/react-router) (STARTED - @carloslfu)
 - Implement register of modules definitions and dispose them when dispose engine (MEMORY)
 - Implement a way to attach disposables to module definitions
 - Implement names for all the modules and examples
@@ -100,11 +101,14 @@ What are missing for this repo:
 
 What maybe great for this repo:
 
-- Evaluate usage of Fractal for backend and nano-micro services approach
 - Evaluate converting project into a monorepo using Lernajs
-- Document integration of manifest.json for webapps
 - Implement a way to load workers
 - Implement a way to load service workers
+- Implement a test suite
+- Implement examples of test suite
+- Evaluate usage of Fractal for backend and nano-micro services approach
+- Explore porting Fractal to Haskell, good starting point [Threepenny-gui] (https://wiki.haskell.org/Threepenny-gui) and [Haste Language](http://haste-lang.org/)
+- Document integration of manifest.json for webapps
 - Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
 - Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal.js
@@ -112,10 +116,6 @@ What maybe great for this repo:
 - Implement an i18n middleware example
 - Implement examples and document the service pattern
 - Implement fractalMail example using an IMAP and XMPP client, with OAuth 2.0
-- Implement the Router inspired on react-router
-- Implement debugging tools for service (log...) FEATURE
-- Implement a test suite
-- Implement examples of test suite
 - Improve and update examples, are very outdated (PARTIAL IMPLEMENTED)
 - Implement and document server side routing example
 - screenInfo as a Global listener(middleware) // maybe deprecated?
