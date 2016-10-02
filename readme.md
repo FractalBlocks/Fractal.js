@@ -96,6 +96,7 @@ What are missing for this repo:
 - Improve the quickstart.
 - Reference tutorials whe done.
 - Implement the whole library in Typescript (EVALUATE INCREMENTAL)
+- Build Fractal logo in Haskell Diagrams and include source code (ELEGANT + FANCY)
 
 ## Ideas
 
