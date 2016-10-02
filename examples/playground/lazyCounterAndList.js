@@ -72,10 +72,10 @@ export default F.def({
   load: (ctx, i, Action) => {
     i.fetchImage(undefined)
     return { // static modules (Note that thay cannot be static child of itself - Infinite recursion)
-      counterGroup: F.createContext(counterGroup, {action$: i.counterGroup}),
-      counter0: F.createContext(counter, {action$: i.counter0Action}),
-      counter1: F.createContext(counter, {action$: i.counter1Action}),
-      imageSet: F.createContext(imageSet, {action$: i.imageSetAction}),
+      counterGroup: F.merge(counterGroup, {action$: i.counterGroup}),
+      counter0: F.merge(counter, {action$: i.counter0Action}),
+      counter1: F.merge(counter, {action$: i.counter1Action}),
+      imageSet: F.merge(imageSet, {action$: i.imageSetAction}),
     }
   },
   actions: {
@@ -166,7 +166,7 @@ export default F.def({
         h('div', {style: {'padding': '10px 10px 10px 20px', 'background-color': 'white'}},
           R.addIndex(R.map)((child, idx) => {
             let a = 0
-            return F.createContext(counterAndList, {action$: i.childAction(+idx), task$: ctx.task$, remove$: () => i.remove(+idx)}).interfaces.view(child)
+            return F.merge(counterAndList, {action$: i.childAction(+idx), task$: ctx.task$, remove$: () => i.remove(+idx)}).interfaces.view(child)
           }, m.childs)
         ),
       ])

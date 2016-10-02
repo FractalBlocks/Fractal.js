@@ -18,7 +18,7 @@ export default F.def({
   },
   load: (ctx, i, Action) => {
     return {
-      counter0: F.createContext(counter0, {action$: i.childAction}),
+      counter0: F.merge(counter0, {action$: i.childAction}),
     }
   },
   loadAfter: (ctx, i, Action, md) => {
@@ -30,23 +30,18 @@ export default F.def({
       }
       ctx.action$(Action.ChargeModule(mds))
       md({
-        counter1: F.createContext(mds.counter1, {action$: i.childAction}),
-        counter2: F.createContext(mds.counter2, {action$: i.childAction}),
+        counter1: F.merge(mds.counter1, {action$: i.childAction}),
+        counter2: F.merge(mds.counter2, {action$: i.childAction}),
       })
     }), 5000)
   },
-  Action: {
-    ChangeModule: [String],
-    ChildAction: [Array],
-    ChargeModule: [Object],
-  },
-  update: {
-    ChangeModule: (name, m) => R.evolve({moduleName: R.always(name)}, m),
-    ChildAction: (a, m) => R.evolve({[m.moduleName]: m._md[m.moduleName].update(a)}, m),
-    ChargeModule: (mds, m) => R.pipe(
+  actions: {
+    ChangeModule: [[String], (name, m) => R.evolve({moduleName: R.always(name)}, m)],
+    ChildAction: [[Array], (a, m) => R.evolve({[m.moduleName]: m._md[m.moduleName].update(a)}, m)],
+    ChargeModule: [[Object], (mds, m) => R.pipe(
       R.assoc('_md', mds),
       R.merge(R.mapObjIndexed((md, name) => md.init({key: name}), mds)),
-    )(m)
+    )(m)],
   },
   interfaces: {
     view: (ctx, i, m) => { // context, Action and m
