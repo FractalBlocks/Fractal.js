@@ -15,7 +15,9 @@
 
 ## v0.3.2-beta.0 (Incomming ...)
 
-- ...
+- Change queue option of servicer by isQueued
+- Document how to use dyamic modules. Is not for dynamic lists, for that use one module with list-items logic. Use dynamic modules only when have a tree like list-items-submodules (TODO)
+- Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
 ## v0.3.1-beta.1
