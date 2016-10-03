@@ -1,16 +1,16 @@
 {
   "name": "fractal-js",
-  "version": "v0.3.0-beta.3",
+  "version": "v0.3.1-beta.1",
   "description": "An intuitive framework for building applications and interactive content",
   "main": "dist/fractal.js",
   "scripts": {
-    "compile": "set NODE_ENV=production && webpack --config webpack/dist.config.js --progress",
-    "compile-dev": "set NODE_ENV=production && webpack --config webpack/dist-dev.config.js --progress",
-    "compile-server": "set NODE_ENV=production && webpack --config webpack/webpack-server.config.js --progress",
+    "compile": "cross-env NODE_ENV=production webpack --config webpack/dist.config.js --progress",
+    "compile-dev": "cross-env NODE_ENV=production webpack --config webpack/dist-dev.config.js --progress",
+    "compile-server": "cross-env NODE_ENV=production webpack --config webpack/webpack-server.config.js --progress",
     "lint": "eslint .",
     "test-dev": "webpack-dev-server --config webpack/test-dev.config.js --progress",
-    "general": "set NODE_ENV=development && node tasktool",
-    "general-compile": "set NODE_ENV=production && node tasktool"
+    "general": "cross-env NODE_ENV=development node tasktool",
+    "general-compile": "cross-env NODE_ENV=production node tasktool"
   },
   "author": "Carlos Galarza <carloslfu@gmail.com>",
   "repository": {
@@ -35,6 +35,7 @@
     "chai": "^3.5.0",
     "clean-webpack-plugin": "^0.1.3",
     "compression-webpack-plugin": "^0.2.0",
+    "cross-env": "^3.0.0",
     "css-loader": "^0.19.0",
     "file-loader": "^0.8.4",
     "html-webpack-plugin": "^1.6.1",

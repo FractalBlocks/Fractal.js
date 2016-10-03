@@ -65,9 +65,9 @@ let counterAndList = F.def({
 
   load: (ctx, i, Action) => {
     return { // static modules (Note that thay cannot be static child of itself - Infinite recursion)
-      counter0: F.createContext(counter, {action$: i.counter0Action}),
-      counter1: F.createContext(counter, {action$: i.counter1Action}),
-      imageSet: F.createContext(imageSet, {action$: i.imageSetAction}),
+      counter0: F.merge(counter, {action$: i.counter0Action}),
+      counter1: F.merge(counter, {action$: i.counter1Action}),
+      imageSet: F.merge(imageSet, {action$: i.imageSetAction}),
     }
   },
   actions: {
@@ -159,7 +159,7 @@ let counterAndList = F.def({
         h('br'),
         h('div', {style: {'padding': '10px 10px 10px 20px', 'background-color': 'white'}},
           R.addIndex(R.map)((child, idx) => {
-            return F.createContext(counterAndList, {action$: i.childAction(+idx), task$: ctx.task$, remove$: () => i.remove(+idx)}).interfaces.view(child)
+            return F.merge(counterAndList, {action$: i.childAction(+idx), task$: ctx.task$, remove$: () => i.remove(+idx)}).interfaces.view(child)
           }, m.childs)
         ),
       ])

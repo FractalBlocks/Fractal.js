@@ -4,7 +4,8 @@ import flyd from 'flyd'
 
 
 let engine = F.run({
-  root: F.log(require('./lazyCounterAndList').default),
+  logAll: true,
+  root: require('./lazyCounterAndList').default,
   tasks: {
     fetch: F.tasks.fetch.task(),
   },

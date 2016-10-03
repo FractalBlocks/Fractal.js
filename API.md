@@ -37,13 +37,13 @@ F.def({
   // a list of output names, by convention each name should finalize with $
   ouputNames: ['someOutput$'],
   // actions are described by array of two elements
-  // first an array with parameter types and second an update function in the form: (...params, model) -> newModel
+  // first an array with parameter types and second an update function in the form: (...params, state) -> newState
   // the action name may be UpperCamelCase
   // actions
   actions: {
-    NameOfAction: [[...paramTypes], (...params, model) => newModel],
+    NameOfAction: [[...paramTypes], (...params, state) => newState],
   },
-  // interfaces are functions that are executed in each model change
+  // interfaces are functions that are executed in each state change
   // interfaces are used for side effects that are continnous in time (signals of side effects)
   // interfaces can attach event listeners and can return data to the external world
   interfaces: {

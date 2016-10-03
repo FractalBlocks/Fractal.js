@@ -13,9 +13,27 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.3.0-beta.4 (Incomming ...)
+## v0.3.2-beta.0 (Incomming ...)
 
-- ...
+- Change queue option of servicer by isQueued
+- Document how to use dyamic modules. Is not for dynamic lists, for that use one module with list-items logic. Use dynamic modules only when have a tree like list-items-submodules (TODO)
+- Update examples and implement one showing use cases of dynamic modules
+- Update examples (replace `m` with `s`) (TODO)
+
+## v0.3.1-beta.1
+
+- Model is renamed in favor of state, Model is only the initial state
+- Update core (replace `model` with `state`)
+- Add test file in utils
+- Add `logVal` function to test helpers
+- Fix connectInterface bug
+
+## v0.3.1-beta.0
+
+- Implement async ctx.dispatch$ method for the same functionality as syncronous dispatch
+- Add addWindowListener and removeWindowListener method to view task
+- Add WindowListener task example with a drag and drop interface
+- Fix `merge` bug related to detection of an mixed array of tasks and actions
 
 ## v0.3.0-beta.3
 

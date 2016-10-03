@@ -43,6 +43,7 @@ The examples you can run are:
 - counterAndList
 - chat
 - mailboxNoRouter
+- tasks
 
 Open a command window into `Fractal.js` folder and run:
 
@@ -74,10 +75,15 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
-- Implement pouchdb integration example
-- Document granular log option for modules
+- Implement a way to compose modules in one place (@carloslfu)
+- Implement a way to reattach tasks, drivers and services (@carloslfu)
+- Implement CSS helpers for code reuse across objects (deep merge)
+- Document granular log option for modules (@MissyM)
+- Implement _error task and attach it by default, this can be done all app error handling (@carloslfu)
 - Implement and document serviceTest (FEATURE)
-- Implement _error task and attach it by default, this can be done all app error handling
+- Implement on demand large app loading example (@carloslfu)
+- Implement pouchdb integration example (@carloslfu)
+- Implement the Router inspired on [react-router](https://github.com/ReactTraining/react-router) (STARTED - @carloslfu)
 - Implement register of modules definitions and dispose them when dispose engine (MEMORY)
 - Implement a way to attach disposables to module definitions
 - Implement names for all the modules and examples
@@ -90,18 +96,20 @@ What are missing for this repo:
 - Improve the quickstart.
 - Reference tutorials whe done.
 - Implement the whole library in Typescript (EVALUATE INCREMENTAL)
+- Build Fractal logo in Haskell Diagrams and include source code (ELEGANT + FANCY)
 
 ## Ideas
 
 What maybe great for this repo:
 
-- Evaluate usage of Fractal for backend and nano-micro services approach
 - Evaluate converting project into a monorepo using Lernajs
-- Document integration of manifest.json for webapps
 - Implement a way to load workers
 - Implement a way to load service workers
-- Make a dynamicMds function for dynamic input handling FEATURE (Document!!!)
-- Make a driver for listenable things, abstract the socket driver FEATURE
+- Implement a test suite
+- Implement examples of test suite
+- Evaluate usage of Fractal for backend and nano-micro services approach
+- Explore porting Fractal to Haskell, makes sense build a DSL. A good starting point [Threepenny-gui] (https://wiki.haskell.org/Threepenny-gui) and [Haste Language](http://haste-lang.org/)
+- Document integration of manifest.json for webapps
 - Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
 - Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal.js
@@ -109,10 +117,6 @@ What maybe great for this repo:
 - Implement an i18n middleware example
 - Implement examples and document the service pattern
 - Implement fractalMail example using an IMAP and XMPP client, with OAuth 2.0
-- Implement the Router inspired on react-router
-- Implement debugging tools for service (log...) FEATURE
-- Implement a test suite
-- Implement examples of test suite
 - Improve and update examples, are very outdated (PARTIAL IMPLEMENTED)
 - Implement and document server side routing example
 - screenInfo as a Global listener(middleware) // maybe deprecated?
