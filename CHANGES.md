@@ -2,11 +2,11 @@
 
 ## v0.5.0 (Incomming, medium term ...)
 
-- Introduce TypeScript to repo (planned, evaluate)
+- Introduce TypeScript to repo (TODO FEATURE)
 
 ## NO-VERSION (Incomming, short term ...)
 
-- Router relased (work in progress)
+- Router Module relased (work in progress) (TODO: evalute this, maybe a router service instead)
 
 ## NO-VERSION (Incomming ...)
 
@@ -15,7 +15,7 @@
 
 ## v0.3.2-beta.0 (Incomming ...)
 
-- Change queue option of servicer by isQueued
+- Change queue option of service by isQueued
 - Document how to use dyamic modules. Is not for dynamic lists, for that use one module with list-items logic. Use dynamic modules only when have a tree like list-items-submodules (TODO)
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)

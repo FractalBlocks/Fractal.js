@@ -1,6 +1,6 @@
 # Fractal API (TODO: update this)
 
-The API is designed to be as simple as possible, helping to make and maintain code.
+The API is designed to be as simple as possible, helping to build and maintain code.
 
 Missing API parts (TODO):
 
