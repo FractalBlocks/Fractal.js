@@ -15,6 +15,7 @@
 
 ## v0.3.3-beta.0 (Incomming ...)
 
+- A way for connecting and compose modules declaratively (Work in progress) (DRAFTED)
 - logVal with F.logVal (BREAKING)
 - Change queue option of service by isQueued
 - Document how to use dyamic modules. Is not for dynamic lists, for that use one module with list-items logic. Use dynamic modules only when have a tree like list-items-submodules (TODO)
