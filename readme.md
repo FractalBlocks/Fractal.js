@@ -76,6 +76,7 @@ For a production version run: `npm run compile`, and see the result in the `dist
 What are missing for this repo:
 
 - Document use cases on stateless components and modules
+- Evaluate flatten composing
 - Implement a way to compose modules in one place (@carloslfu)
 - Implement a way to reattach tasks, drivers and services (@carloslfu)
 - Implement CSS helpers for code reuse across objects (deep merge)

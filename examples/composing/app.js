@@ -10,12 +10,56 @@ import builtDynamicMds from './dynamicModules'
 let moduleDef = F.def({
   logAll: true,
   name: 'Main',
+  // Fractal v0.3.3-beta.0 PROPOSAL
+  // streams: ['stream0$', 'stream1$', 'stream2$'],
+  streams: ['stream0$', 'stream1$', 'stream2$'],
   // inserted to model directly
   modules: {
     ...modules,
     m0: builtModules.submodule0,
     m1: builtModules.submodule1,
     m2: builtModules.submodule2,
+    // Fractal v0.3.3-beta.0 PROPOSAL
+    // one-point module composing
+    connected0: {
+      root: builtModules.submodule0,
+      init: { count: 0 },
+      inputs: {
+        // incommig actions via streams (note that inputs passed to function are of connected module)
+        stream1$: (i, val) => i._action('Rst'), // coupled reset with connected2 module
+      },
+      outputs: [
+        { count$: 'stream0$' }, // communication with modules via streams
+        {
+          // comunication with parent module (note that inputs passed to function are of parent module)
+          count$: (parentInputs, value) => parentInputs.someInput(val),
+          // typical action$ output binding
+          action$: (parentInputs, a) => parentInputs._childAction(builtModules.submodule0.update, a),
+        },
+      ],
+    },
+    connected1: {
+      root: builtModules.submodule1,
+      init: { count: 1 },
+      inputs: {
+        stream2$: (i, val) => i._action('Rst'),
+      },
+      outputs: [
+        { count$: 'stream1$' },
+        { count$: (parentInputs, value) => parentInputs.someInput(val) },
+      ],
+    },
+    connected2: {
+      root: builtModules.submodule2,
+      init: { count: 2 },
+      inputs: {
+        stream0$: (i, val) => i._action('Rst'),
+      },
+      outputs: [
+        { count$: 'stream2$' },
+        { count$: (parentInputs, value) => parentInputs.someInput(val) },
+      ],
+    },
   },
   groupedModules: { // inserted into model via keys (e.g. contact form modules)
     childMds: modules,

@@ -10,18 +10,28 @@ let moduleDef = F.def({
     hasRemove,
     count,
   }),
-  outputNames: ['remove$'],
+  outputNames: ['count$', 'remove$'],
+  inputs: {
+    countAction: (ctx, Action, name) => {
+      ctx.countChanged$(undefined)
+      return Action[name]()
+    },
+  },
   actions: {
     Inc: [[], m => R.evolve({count: R.inc}, m)],
+    Rst: [[], m => R.evolve({count: R.always(0)}, m)],
     Dec: [[], m => R.evolve({count: R.dec}, m)],
   },
   interfaces: {
-    view: ({styles, remove$}, i, m) => h('div', {key: m.key, class: {[styles.base]: true}}, [
-      h('div', {class: {[styles.counter]: true}}, m.count),
-      h('button', {on: { click: i._action('Inc') }}, 'Inc'),
-      h('button', {on: { click: i._action('Dec') }}, 'Dec'),
-      h('div', {class: {[styles.removeButton.base]: true, [styles.removeButton.hasRemove]: m.hasRemove}, on: { click: remove$ }}, 'X'),
-    ]),
+    view: ({styles, remove$}, i, m) => {
+      return h('div', {key: m.key, class: {[styles.base]: true}}, [
+        h('div', {class: {[styles.counter]: true}}, m.count),
+        h('button', {on: { click: i.countAction('Inc') }}, 'Inc'),
+        h('button', {on: { click: i.countAction('Rst') }}, 'Rst'),
+        h('button', {on: { click: i.countAction('Dec') }}, 'Dec'),
+        h('div', {class: {[styles.removeButton.base]: true, [styles.removeButton.hasRemove]: m.hasRemove}, on: { click: remove$ }}, 'X'),
+      ])
+    },
   },
   styles: {
     base: {

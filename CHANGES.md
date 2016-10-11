@@ -13,7 +13,7 @@
 - serviceTest module (drafted, work in progress)
 - ...
 
-## v0.3.2-beta.0 (Incomming ...)
+## v0.3.3-beta.0 (Incomming ...)
 
 - logVal with F.logVal (BREAKING)
 - Change queue option of service by isQueued
