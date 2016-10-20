@@ -20,7 +20,7 @@ If you want to learn more about Fractal's main foundations check out:
 - An awesome article called [Unidirectional user interface architectures](http://staltz.com/unidirectional-user-interface-architectures.html) by [Andre Staltz](http://staltz.com/)
 - A nice repo and discuss in [functional-frontend-architecture](https://github.com/paldepind/functional-frontend-architecture) by [Simon Friss Vindum](https://github.com/paldepind)
 - [Controlling Time and Space: understanding the many formulations of FRP](https://www.youtube.com/watch?v=Agu6jipKfYw) talk by Evan Czaplicki
-- An article on why Fractal.js is [implemented in Typescript](http://staltz.com/all-js-libraries-should-be-authored-in-typescript.html) (This is a work in progress) (TODO-DOCS)
+- An article on why Fractal.js will be [implemented in Typescript](http://staltz.com/all-js-libraries-should-be-authored-in-typescript.html) (See [Fractal Framework](https://github.com/fractalPlatform/Fractal))
 - [CSS in JS](https://vimeo.com/116209150) talk by Christopher Chedeau. [Slides here](https://speakerdeck.com/vjeux/react-css-in-js)
 - [Virtual DOM approach](https://medium.com/@yelouafi/react-less-virtual-dom-with-snabbdom-functions-everywhere-53b672cb2fe3#.nfir9w2fb)
 

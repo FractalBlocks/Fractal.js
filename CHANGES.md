@@ -1,19 +1,4 @@
-# Changes
-
-## v0.5.0 (Incomming, medium term ...)
-
-- Introduce TypeScript to repo (TODO FEATURE)
-
-## NO-VERSION (Incomming, short term ...)
-
-- Router Module relased (work in progress) (TODO: evalute this, maybe a router service instead)
-
-## NO-VERSION (Incomming ...)
-
-- serviceTest module (drafted, work in progress)
-- ...
-
-## v0.3.3-beta.0 (Incomming ...)
+## Will be in Fractal Framework (Typescript version)
 
 - A way for connecting and compose modules declaratively (Work in progress) (DRAFTED)
 - logVal with F.logVal (BREAKING)
@@ -21,6 +6,11 @@
 - Document how to use dyamic modules. Is not for dynamic lists, for that use one module with list-items logic. Use dynamic modules only when have a tree like list-items-submodules (TODO)
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
+
+
+## v0.3.3
+
+- Proxy polyfill is added in lib/polyfills.js
 
 ## v0.3.1-beta.1
 

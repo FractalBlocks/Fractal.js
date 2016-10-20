@@ -1,6 +1,6 @@
 {
   "name": "fractal-js",
-  "version": "v0.3.1-beta.1",
+  "version": "v0.3.3",
   "description": "An intuitive framework for building applications and interactive content",
   "main": "dist/fractal.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-proxy": "^1.1.0",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-plugin-transform-es2015-destructuring": "^6.9.0",
     "babel-plugin-transform-es2015-modules-umd": "^6.12.0",
