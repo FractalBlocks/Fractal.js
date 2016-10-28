@@ -1540,7 +1540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  return R.mapObjIndexed(function (md, name) {
 	    var _module = md.root ? md.root : md;
-	    merge(_module, connectionsMiddleFn(connectionsFn(_module, name), _module, name));
+	    return merge(_module, connectionsMiddleFn(connectionsFn(_module, name), _module, name));
 	  }, childDefs);
 	};
 	
