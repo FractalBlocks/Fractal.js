@@ -8,6 +8,11 @@
 - Update examples (replace `m` with `s`) (TODO)
 
 
+## v0.3.4
+
+- Fix bug with module merging
+- Remove deprecation notice while new version is done
+
 ## v0.3.3
 
 - Proxy polyfill is added in lib/polyfills.js
