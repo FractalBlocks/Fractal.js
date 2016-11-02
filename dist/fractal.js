@@ -5437,15 +5437,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  store._initialNotify = store.hasOwnProperty('_initialNotify') ? store._initialNotify : true;
 	  var eventQueue = [];
 	
-	  // data is a proxy for store that automatically notify changes
-	  var data = new Proxy(store, {
-	    set: function set(target, name, value) {
-	      target[name] = value;
-	      notify(name);
-	      return true;
-	    }
-	  });
-	
 	  var subscribers = -1;
 	
 	  var events = defObj.events(data, notify);
@@ -5463,19 +5454,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var init = R.curry(defObj.init)(data, emit);
 	  defObj.connect = R.curry(defObj.connect)(data, emit);
 	
-	  function notify(name) {
+	  function notify(name, data) {
 	    for (var subscriber in subscribers) {
 	      var parts = subscriber.split('_');
 	      if (parts[parts.length - 1] === name) {
-	        subscribers[subscriber](data[name]);
-	      }
-	    }
-	  }
-	
-	  function notifyAll() {
-	    for (var subscriber in subscribers) {
-	      if (data[subscriber]) {
-	        subscribers[subscriber](data[subscriber]);
+	        subscribers[subscriber](data);
 	      }
 	    }
 	  }
@@ -5486,7 +5469,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (subscribers == -1 && data._initialNotify) {
 	        // Fixed needs review
 	        subscribers = subs;
-	        notifyAll(); // notify all subscribers the first
 	      } else {
 	        subscribers = subs;
 	      }

@@ -7,6 +7,10 @@
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
+## v0.3.7
+
+- Remove Proxy from service, and notify is fixed
+
 ## v0.3.6
 
 - Add notify to events

@@ -11,7 +11,7 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 - The state is isolated, this mean is serializable and you can hot-swap code updating the UI without reload the navigator
 - You can lazy loading modules
 - Router module for easely URL integration and server side rendering (Work in progress)
-- Tools for socket.io integration
+- Tools for realtime and data-driven apps (Work in progress ...)
 
 See the detailed [architecture here](https://github.com/fractalPlatform/Fractal.js/blob/master/docs/ARCHITECTURE.md).
 
@@ -75,6 +75,10 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
+- Evaluate DataFlow: hierarchical flow (dispatching vs passive) vs global middleware vs service emmiter (Maybe a contextual shared state?)
+- Document paterns, anti-patterns and best practices (CRITICAL)
+- Remove flyd dependency
+- Allow to dispatch inputs to another inputs
 - Update free-style dependency to version 2.0
 - Document use cases on stateless components and modules
 - Evaluate flatten composing
