@@ -5439,10 +5439,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  var subscribers = -1;
 	
-	  var events = defObj.events(data, notify);
+	  var events = defObj.events(store, notify);
 	  function emit(name, value, cbObj) {
 	    if (events[name]) {
-	      if (data.connected || !isQueued) {
+	      if (store.connected || !isQueued) {
 	        events[name](value, cbObj);
 	      } else {
 	        eventQueue.push({ name: name, value: value, cbObj: cbObj });
@@ -5451,8 +5451,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      console.warn('There are no event handler for ' + name + ' in this service');
 	    }
 	  }
-	  var init = R.curry(defObj.init)(data, emit);
-	  defObj.connect = R.curry(defObj.connect)(data, emit);
+	  var init = R.curry(defObj.init)(store, emit);
+	  defObj.connect = R.curry(defObj.connect)(store, emit);
 	
 	  function notify(name, data) {
 	    for (var subscriber in subscribers) {
@@ -5466,7 +5466,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function subscribeAll(subs) {
 	    // avoid a bug with flyd.on TODO: needs review
 	    if (subs != undefined) {
-	      if (subscribers == -1 && data._initialNotify) {
+	      if (subscribers == -1 && store._initialNotify) {
 	        // Fixed needs review
 	        subscribers = subs;
 	      } else {
