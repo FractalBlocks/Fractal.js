@@ -5448,7 +5448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  var subscribers = -1;
 	
-	  var events = defObj.events(data);
+	  var events = defObj.events(data, notify);
 	  function emit(name, value, cbObj) {
 	    if (events[name]) {
 	      if (data.connected || !isQueued) {

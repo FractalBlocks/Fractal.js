@@ -1,4 +1,4 @@
-## Will be in Fractal Framework (Typescript version)
+## Soon ...
 
 - A way for connecting and compose modules declaratively (Work in progress) (DRAFTED)
 - logVal with F.logVal (BREAKING)
@@ -6,6 +6,10 @@
 - Document how to use dyamic modules. Is not for dynamic lists, for that use one module with list-items logic. Use dynamic modules only when have a tree like list-items-submodules (TODO)
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
+
+## v0.3.6
+
+- Add notify to events
 
 ## v0.3.5
 
