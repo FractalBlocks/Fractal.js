@@ -7,6 +7,16 @@
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
+
+## v0.3.9
+
+- Improved error message when f.data.fetch internal promise handler fails
+
+## v0.3.8
+
+- Allow emit and event from another in services
+- Dispatch an error when f.data.fetch internal promise fails
+
 ## v0.3.8
 
 - Fix service bug

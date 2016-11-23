@@ -75,6 +75,8 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
+- Inputs should have access to state (EVALUATE)
+- Fix log false dont shows log
 - Evaluate DataFlow: hierarchical flow (dispatching vs passive) vs global middleware vs service emmiter (Maybe a contextual shared state?)
 - Document paterns, anti-patterns and best practices (CRITICAL)
 - Remove flyd dependency
@@ -90,6 +92,7 @@ What are missing for this repo:
 - Implement _error task and attach it by default, this can be done all app error handling (@carloslfu)
 - Implement and document serviceTest (FEATURE)
 - Implement on demand large app loading example (@carloslfu)
+- Evaluate a F.data.fetch promise based API
 - Implement pouchdb integration example (@carloslfu)
 - Implement the Router inspired on [react-router](https://github.com/ReactTraining/react-router) (STARTED - @carloslfu)
 - Implement register of modules definitions and dispose them when dispose engine (MEMORY)

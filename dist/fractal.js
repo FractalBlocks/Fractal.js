@@ -5439,7 +5439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  var subscribers = -1;
 	
-	  var events = defObj.events(store, notify);
+	  var events = defObj.events(store, notify, emit);
 	  function emit(name, value, cbObj) {
 	    if (events[name]) {
 	      if (store.connected || !isQueued) {
@@ -5552,7 +5552,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	
 	  return fetch(obj.url, obj.options).then(status).then(obj.response).then(obj.success).catch(function (err) {
-	    if (!handled) obj.error('netError', err);
+	    if (!handled) {
+	      obj.error('netError', err);
+	    } else {
+	      console.log('ERROR in fetch handler!!!');
+	      console.error(err);
+	    }
 	  });
 	};
 	
@@ -5575,7 +5580,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    };
 	
-	    return fetch(obj.url, obj.options).then(status).then(obj.response);
+	    return fetch(obj.url, obj.options).then(status).then(obj.response).then;
 	  });
 	
 	  return Promise.all(promiseArray).then(success);
