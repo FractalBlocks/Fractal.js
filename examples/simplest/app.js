@@ -13,10 +13,9 @@ export default F.def({
   actions: {
   },
   interfaces: {
-    view: (ctx, i, m) => h('div', {key: m.key, class: {[styles.base]: true}}, ['Hello']),
+    view: ({ styles }, i, m) => h('div', {key: m.key, class: {[styles.base]: true}}, ['Hello']),
   },
-})
-
-let styles = F.style.rs({
-  base: {},
+  styles: {
+    base: {},
+  },
 })

@@ -8,6 +8,12 @@
 - Update examples (replace `m` with `s`) (TODO)
 
 
+## v0.3.10
+
+- Upgraded dependency free-style to version 2.2.0
+- Refactor style injection according new free-style API
+- Upgraded example/simplest to last fractal-js version
+
 ## v0.3.9
 
 - Improved error message when f.data.fetch internal promise handler fails
