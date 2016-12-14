@@ -1,6 +1,6 @@
 {
   "name": "fractal-js",
-  "version": "v0.3.11",
+  "version": "v0.4.0",
   "description": "An intuitive framework for building applications and interactive content",
   "main": "dist/fractal.js",
   "scripts": {
@@ -62,7 +62,7 @@
     "free-style": "^2.2.0",
     "mori": "^0.3.2",
     "ramda": "^0.18.0",
-    "snabbdom": "^0.2.7",
+    "snabbdom": "^0.5.4",
     "union-type": "^0.1.6",
     "url-mapper": "^1.1.0"
   }
