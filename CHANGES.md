@@ -7,6 +7,10 @@
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
+## v0.3.11
+
+- Improve example/simplest
+- Fix bug in style injection
 
 ## v0.3.10
 

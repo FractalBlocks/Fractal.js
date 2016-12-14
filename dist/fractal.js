@@ -356,7 +356,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  var classObj = rs_func(moduleName, stylesObj);
 	
-	  styleInstance.container.textContent = styleInstance.Style.getStyles();
+	  var styleElement = document.createElement('style');
+	  styleElement.textContent = styleInstance.Style.getStyles();
+	  styleInstance.container.appendChild(styleElement);
 	
 	  return classObj;
 	}
