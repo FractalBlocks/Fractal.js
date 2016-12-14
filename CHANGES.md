@@ -7,6 +7,10 @@
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
+## v0.4.1
+
+- Add stateChange driver
+
 ## v0.4.0
 
 - Upgraded snabbdom dependency to version 0.5.4
