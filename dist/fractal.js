@@ -6072,19 +6072,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  var lastContainer = void 0,
 	      renderer$ = void 0;
+	
+	  function wraperPatch(o, n) {
+	    var newContainer = patchfn(o, n);
+	    lastContainer = newContainer;
+	    return newContainer;
+	  }
+	
 	  return {
 	    attach: function attach(vnode$) {
 	      window.addEventListener('DOMContentLoaded', function () {
 	        var container = document.querySelector(selector);
-	        renderer$ = flyd.scan(patchfn, container, vnode$.map(function (vnode) {
-	          return h('div' + selector, [vnode]);
+	        renderer$ = flyd.scan(wraperPatch, container, vnode$.map(function (vnode) {
+	          return h('div' + selector, { key: selector }, [vnode]);
 	        }));
 	      });
 	    },
 	    reattach: function reattach(vnode$) {
-	      lastContainer = patchfn(document.querySelector(selector), h('div' + selector));
-	      renderer$ = flyd.scan(patchfn, lastContainer, vnode$.map(function (vnode) {
-	        return h('div' + selector, [vnode]);
+	      renderer$ = flyd.scan(wraperPatch, lastContainer, vnode$.map(function (vnode) {
+	        return h('div' + selector, { key: selector }, [vnode]);
 	      }));
 	    },
 	    dispose: function dispose() {

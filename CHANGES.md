@@ -7,6 +7,10 @@
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
+## v0.4.2
+
+- Bugfix HMR in view driver
+
 ## v0.4.1
 
 - Add stateChange driver

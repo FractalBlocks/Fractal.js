@@ -14,8 +14,8 @@ export default F.def({
   },
   interfaces: {
     view: ({ styles }, i, m) => h('div', {key: m.key, class: {[styles.base]: true}}, [
-      'Hello ',
-      h('span', {class: {[styles.highlight]: true}}, 'Mr. Dev'),
+      'Hello1 ',
+      h('span', {class: {[styles.highlight]: true}}, 'Mr. Dev2'),
     ]),
   },
   styles: {
