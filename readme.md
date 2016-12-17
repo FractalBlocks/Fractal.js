@@ -2,6 +2,10 @@
 
 Build your ideas as simple as possible. Fractal.js is an intuitive framework for building applications and interactive content.
 
+## News
+
+Fractal implementation in Typescript version comming soon, simplified API, faster and lightweight implementation, an online playground, more integrations, more tools, awesome examples and improved documentation. Made with love by @carloslfu.
+
 ## Why?
 
 - A clear and flexible architecture that scales
