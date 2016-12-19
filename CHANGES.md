@@ -7,6 +7,10 @@
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
+## v0.4.6
+
+- Routine recompile (workflow error with version, ups ... :D )
+
 ## v0.4.5
 
 - Bugfix changeState driver doesn't diff properly (Refactor)
