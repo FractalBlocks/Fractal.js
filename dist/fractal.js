@@ -6910,10 +6910,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        _states[name] = { last: {}, current: {} };
 	      }
+	      _states[name].current = states[stateName];
 	      if (!R.equals(_states[name].current.state, states[stateName].state)) {
 	        states[stateName].do(_states[name].current.state, states[stateName].state);
 	      }
-	      _states[name].current = states[stateName];
 	    }
 	  }
 	

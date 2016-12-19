@@ -7,6 +7,10 @@
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
+## v0.4.4
+
+- Bugfix changeState driver doesn't diff properly
+
 ## v0.4.3
 
 - Bugfix changeState driver
