@@ -5846,17 +5846,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }),
 	  task: function task(emitData) {
 	    var taskFn = this.types.caseOn({
-	      emit: function emit(key, value, _ref) {
-	        var _ref$success = _ref.success;
-	        var success = _ref$success === undefined ? function () {
-	          return 0;
-	        } : _ref$success;
-	        var _ref$error = _ref.error;
-	        var error = _ref$error === undefined ? function () {
-	          return 0;
-	        } : _ref$error;
-	
-	        emitData(key, value, { success: success, error: error });
+	      emit: function emit(key, value, cbs) {
+	        emitData(key, value, cbs);
 	      }
 	    });
 	

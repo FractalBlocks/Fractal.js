@@ -7,6 +7,10 @@
 - Update examples and implement one showing use cases of dynamic modules
 - Update examples (replace `m` with `s`) (TODO)
 
+## v0.4.8
+
+- Fix callbacks in Data Task and routine recompile
+
 ## v0.4.7
 
 - Routine recompile (workflow error with version, ups ... :D )
