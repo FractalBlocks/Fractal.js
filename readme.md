@@ -1,4 +1,6 @@
-<img src="https://github.com/fractalPlatform/Fractal.js/blob/master/assets/textlogo.png" width="520px">
+# Fractal.js (DEPRECATED)
+
+NOTE: this repo will not be maintained, use [Fractal Framework](https://github.com/fractalPlatform/Fractal) instead
 
 Build your ideas as simple as possible. Fractal.js is an intuitive framework for building applications and interactive content.
 
