@@ -1,6 +1,6 @@
 # Fractal.js (DEPRECATED)
 
-NOTE: this repo will not be maintained, use [Fractal Framework](https://github.com/fractalPlatform/Fractal) instead
+NOTE: this repo will not be maintained, use [Fractal Framework](https://github.com/FractalBlocks/Fractal) instead
 
 Build your ideas as simple as possible. Fractal.js is an intuitive framework for building applications and interactive content.
 
